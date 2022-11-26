@@ -98,18 +98,19 @@ export const playlistView = {
           align: "middle",
         },
       ],
+      playlistImage:null,
       tableItems: [],
       isSaveEditClicked: 1,
       editTopictId: "",
       courseImageNameForEdit: "",
-
+      imageRule: [],
       //Datatable End
       courseItems: [],
       subjectItems: [],
       topicItems: [],
       // For Add Department card
       isAddCardVisible: false,
-
+      isSaveTopicFormDataProcessing:false,
       // For Excel Download
       excelFields: {
         "Topic Code": "lms_topic_code",
@@ -127,15 +128,23 @@ export const playlistView = {
   
 
   //#region
-  playlistImage(val) {
-    this.playlistImage = val;
-    this.imageRule =
-      this.playlistImage != null
-        ? [(v) => !v || v.size <= 1048576 || "File size should be 1MB"]
-        : [];
-  },
-
   
+
+  watch: {
+    playlistImage(val) {
+      this.playlistImage = val;
+
+      this.imageRule =
+        this.playlistImage != null
+          ? [
+              (v) =>
+                !v ||
+                v.size <= 1048576 ||
+                this.$t("label_file_size_criteria_1_mb"),
+            ]
+          : [];
+    },
+  },
 
 
   computed: {
@@ -160,6 +169,10 @@ export const playlistView = {
   },
 
   methods: {
+    // playlistImage(val) {
+    //   this.playlistImage = val;
+      
+    // },
     // Get all Playlist from DB
     getAllPlaylist(e) {
       this.tableDataLoading = true;
@@ -320,6 +333,7 @@ export const playlistView = {
           headers: { Authorization: "Bearer " + ls.get("token") },
         })
         .then(({ data }) => {
+          console.log("Subjects",data);
           this.isSourceDataLoading = false;
           //User Unauthorized
           if (
@@ -369,7 +383,7 @@ export const playlistView = {
         });
     },
 
-    // let postData = new FormData();
+  // let postData = new FormData();
   // if (this.doctorProfileImage != null) {
   //   postData.append("doctor_profile_image", this.doctorProfileImage);
   // }
@@ -488,9 +502,10 @@ export const playlistView = {
       this.editPlaylisttId = item.playlist_id;
       this.isSaveEditClicked = 0;
       
-      this.getAllStream();
+     console.log("Edit Items", item)
 
       this.courseId = item.course_id;
+      this.getAllSubject();
       this.subjectId = item.subject_id;
       this.topicId = item.topic_id;
       this.playlist_name = item.playlist_name;

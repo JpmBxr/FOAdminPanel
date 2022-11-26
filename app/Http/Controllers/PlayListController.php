@@ -12,13 +12,13 @@ class PlayListController extends Controller
     $getQuery = DB::table('lms_youtube_video_playlist')
     ->join('lms_subject', 'lms_subject.lms_subject_id', '=', 'lms_youtube_video_playlist.subject_id')
     ->join('lms_topic', 'lms_topic.lms_topic_id', '=', 'lms_youtube_video_playlist.topic_id')
-
+    ->join('lms_course', 'lms_course.lms_course_id', '=', 'lms_youtube_video_playlist.course_id')
 
 
    
 
-    ->select('lms_youtube_video_playlist.playlist_id','lms_subject.lms_subject_name','lms_youtube_video_playlist.subject_id','lms_topic.lms_topic_name','lms_youtube_video_playlist.topic_id',
-    'lms_youtube_video_playlist.playlist_name',
+    ->select('lms_youtube_video_playlist.playlist_id','lms_subject.lms_subject_name','lms_subject.lms_subject_id','lms_topic.lms_topic_name','lms_youtube_video_playlist.topic_id',
+    'lms_youtube_video_playlist.playlist_name','lms_youtube_video_playlist.course_id',
     DB::raw('DATE_FORMAT(lms_youtube_video_playlist.playlist_created_date, "%d-%m-%Y") as playlist_created_date'),
    'lms_youtube_video_playlist.playlist_image_url',
     DB::raw("
@@ -67,7 +67,7 @@ class PlayListController extends Controller
        public function getTopicList(Request $request)
        {
            $getQuery = DB::table('lms_topic')
-               ->where('lms_topic_is_active', '=', 1)
+              
              
                ->where('lms_subject_id', '=', $request->subjectId)
    
@@ -101,6 +101,7 @@ class PlayListController extends Controller
              
                      $saveQuery = DB::table('lms_youtube_video_playlist')->insert(
                     [
+                        'course_id'=>$request->courseId,
                         'subject_id' => $request->subjectId,
                         'topic_id'=>$request->topicId,
                         'playlist_name' =>$pn,

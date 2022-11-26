@@ -220,14 +220,14 @@
               ></v-text-field>
               <v-spacer></v-spacer>
               <v-spacer></v-spacer>
-              <v-switch
+              <!-- <v-switch
                 class="pt-4 mx-1"
                 v-if="!tableDataLoading"
                 inset
                 v-model="includeDelete"
-                @change="getAllCourse"
+                @change="getAllStream"
               ></v-switch>
-  
+   -->
               <v-btn
                 icon
                 small
