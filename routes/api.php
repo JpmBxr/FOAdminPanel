@@ -337,6 +337,7 @@ Route::group(['middleware' => ['auth:api', 'permission:Edit Course']], function 
 
     // Enable disable course
     Route::post('web_enable_disable_course', 'CourseController@enableDisableCourse')->name('web_enable_disable_course');
+    Route::get('web_get_all_active_child_course_wp', 'TopicController@getActiveChildCourseWP')->name('web_get_all_active_child_course_wp');
 
 });
 
@@ -399,6 +400,7 @@ Route::group(['middleware' => ['auth:api', 'permission:Staff']], function () {
 
     // View All Enquiry
     Route::get('web_get_all_enquiry', 'EnquiryController@getAllEnquiry')->name('web_get_all_enquiry');
+    Route::get('web_get_all_scholarship', 'EnquiryController@getScholarship')->name('web_get_all_scholarship');
 
 });
 
@@ -479,4 +481,12 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('web_get_topic_list', 'PlayListController@getTopicList')->name('web_get_topic_list');
     Route::post('web_save_playlist', 'PlayListController@savePlaylist')->name('web_save_playlist');
 
+});
+Route::group(['middleware' => ['auth:api', 'permission:Staff']], function () {
+
+    // View All Information Source
+    Route::get('web_get_all_school', 'SchoolController@getAllSchool')->name('web_get_all_school');
+    // Save Edit Information source
+    Route::post('web_save_update_school', 'SchoolController@saveUpdateSchool')->name('web_save_update_school');
+    Route::post('web_enable_disable_school', 'SchoolController@enableDisableSchool')->name('web_enable_disable_school');
 });

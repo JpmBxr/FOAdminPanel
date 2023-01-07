@@ -63,7 +63,7 @@
                     :items-per-page="25"
                     @pagination="getAllEnquiry"
                     :footer-props="{
-                        itemsPerPageOptions: [25, 50, 100, -1]
+                        itemsPerPageOptions: [25, 50, 100, 200, -1]
                     }"
                 >
                     <template v-slot:no-data>
@@ -282,19 +282,37 @@ export default {
                 {
                     text: this.$t("label_date"),
                     value: "lms_enquiry_created_at",
-                    width: "10%",
+                    width: "15%",
                     sortable: false
                 },
                 {
                     text: this.$t("label_name"),
                     value: "lms_enquiry_full_name",
-                    width: "20%",
+                    width: "15%",
+                    sortable: false
+                },
+                {
+                    text: "Class",
+                    value: "lms_enquiry_class",
+                    width: "5%",
+                    sortable: false
+                },
+                {
+                    text: "Section",
+                    value: "lms_enquiry_section",
+                    width: "5%",
+                    sortable: false
+                },
+                {
+                    text: "Roll No.",
+                    value: "lms_roll_no",
+                    width: "5%",
                     sortable: false
                 },
                 {
                     text: "Course",
                     value: "lms_child_course_name",
-                    width: "20%",
+                    width: "5%",
                     sortable: false
                 },
                 {
@@ -334,12 +352,13 @@ export default {
             excelFields: {
                 Code: "lms_enquiry_code",
                 Date: "lms_enquiry_created_at",
-                Source: "source_name",
                 Name: "lms_enquiry_full_name",
+                Class: "lms_enquiry_class",
+                Section: "lms_enquiry_section",
+                RollNo: "lms_roll_no",
+                Course: "lms_child_course_name",
+                Source: "source_name",
                 Mobile: "lms_enquiry_mobile",
-                Email: "lms_enquiry_email",
-                School: "lms_enquiry_school_name",
-                Remarks: "lms_enquiry_remarks",
                 Status: "lms_enquiry_status"
             },
             excelData: [],
@@ -625,11 +644,14 @@ export default {
                 columns: [
                     { header: "Code", dataKey: "lms_enquiry_code" },
                     { header: "Name", dataKey: "lms_enquiry_full_name" },
+                    { header: "Class", dataKey: "lms_enquiry_class" },
+                    { header: "Section", dataKey: "lms_enquiry_section" },
+                    { header: "RollNo", dataKey: "lms_roll_no" },
+                    { header: "Course", dataKey: "lms_child_course_name" },
                     { header: "Source", dataKey: "source_name" },
-                    { header: "Date", dataKey: "lms_enquiry_created_at" },
-                    { header: "School", dataKey: "lms_enquiry_school_name" },
-                    { header: "Mobile Number", dataKey: "lms_enquiry_mobile" },
-                    { header: "Status", dataKey: "lms_enquiry_status" }
+                    { header: "Mobile", dataKey: "lms_enquiry_mobile" },
+                    { header: "Status", dataKey: "lms_enquiry_status" },
+
                 ],
                 body: this.tableItems,
                 //styles: { fillColor: [255, 0, 0] },

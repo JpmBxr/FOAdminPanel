@@ -125,6 +125,7 @@
                                         </v-select>
                                     </v-col>
                                 </v-row>
+                                
                                 <v-row dense class="mx-2">
                                     <v-col cols="12" md="6" sm="6">
                                         <v-select
@@ -176,6 +177,51 @@
                                                 </span>
                                             </template>
                                         </v-select>
+                                    </v-col>
+                                </v-row>
+
+                                <v-row dense class="ml-2 mr-2 mt-2">
+                                     <v-col cols="12" md="4" sm="6">
+                                        <v-select
+                                            outlined
+                                            dense
+                                            v-model="lms_enquiry_class"
+                                            :items="classItems"
+                                            item-text="lms_enquiry_class"
+                                            item-value="lms_enquiry_class"
+                                     >
+                                            <template #label>
+                                                 Class 
+                                            </template>
+                                        </v-select>
+                                    </v-col>
+
+                                    <v-col cols="12" md="4" sm="6">
+                                        <v-select
+                                            outlined
+                                            dense
+                                            v-model="lms_enquiry_section"
+                                            :items="sectionItems"
+                                          
+                                        >
+                                            <template #label>
+                                                 Section 
+                                              </template
+                                            >
+                                        </v-select>
+                                    </v-col>
+
+                                    <v-col cols="12" md="4" sm="6">
+                                        <v-text-field
+                                            v-model="lms_roll_no"
+                                            outlined
+                                            dense
+                                            
+                                        >
+                                            <template #label>
+                                              Roll No
+                                            </template>
+                                        </v-text-field>
                                     </v-col>
                                 </v-row>
 
@@ -607,6 +653,22 @@ export default {
     props: ["userPermissionDataProps", "enquiryDataProps"],
     data() {
         return {
+            
+            lms_enquiry_class: this.enquiryDataProps != null
+                    ? this.enquiryDataProps.lms_enquiry_class
+                    : "",
+            
+            classItems:["II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"],
+            
+            lms_enquiry_section:this.enquiryDataProps != null
+                    ? this.enquiryDataProps.lms_enquiry_section
+                    : "",
+            lms_roll_no:this.enquiryDataProps != null
+                 ? this.enquiryDataProps.lms_roll_no
+                  : "",      
+            sectionItems:["A","B","C","D","E","F","G"],
+            
+            
             childCourseItems: [],
 
             alertType: "",
@@ -782,6 +844,7 @@ export default {
         }
     },
     created() {
+        
         console.log(this.enquiryDataProps);
         // Token Config
         this.authorizationConfig = {
@@ -1038,7 +1101,20 @@ export default {
                     "isEnquiryBasicEdit",
                     this.isEnquiryBasicEdit
                 );
-
+              
+                basicFormData.append(
+                    "lms_enquiry_class",
+                    this.lms_enquiry_class
+                );
+                basicFormData.append(
+                    "lms_enquiry_section",
+                    this.lms_enquiry_section
+                );
+                basicFormData.append(
+                    "lms_roll_no",
+                    this.lms_roll_no
+                );
+              
                 basicFormData.append("centerId", ls.get("loggedUserCenterId"));
                 if (this.enquiryId != "") {
                     basicFormData.append("enquiryId", this.enquiryId);

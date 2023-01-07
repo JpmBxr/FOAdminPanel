@@ -53,7 +53,7 @@
                       :disabled="isSourceDataLoading"
                       item-text="lms_course_name"
                       item-value="lms_course_id"
-                      @change="getAllSubject()"
+                      @change="getAllSubject($event)"
                       :rules="[(v) => !!v || $t('label_required')]"
                     >
                       <template #label>
@@ -74,7 +74,7 @@
                       :disabled="isSourceDataLoading"
                       item-text="lms_subject_name"
                       item-value="lms_subject_id"
-                      @change="getAllTopic()"
+                      @change="getAllTopic($event)"
                       :rules="[(v) => !!v || $t('label_required')]"
                     >
                       <template #label>
@@ -220,14 +220,14 @@
               ></v-text-field>
               <v-spacer></v-spacer>
               <v-spacer></v-spacer>
-              <!-- <v-switch
+              <v-switch
                 class="pt-4 mx-1"
                 v-if="!tableDataLoading"
                 inset
                 v-model="includeDelete"
-                @change="getAllStream"
+                @change="getAllCourse"
               ></v-switch>
-   -->
+  
               <v-btn
                 icon
                 small
@@ -300,17 +300,17 @@
   
           <template v-slot:item.actions="{ item }">
             <v-icon
-              v-permission="'Edit Topic'"
+            
               small
               class="mr-2"
-              @click="editTopic(item)"
+              @click="editPlaylist(item)"
               color="primary"
               >mdi-pencil</v-icon
             >
   
             <v-icon
               v-if="item.lms_topic_is_active == 'Active'"
-              v-permission="'Edit Topic'"
+             
               small
               color="error"
               @click="disableTopic(item)"

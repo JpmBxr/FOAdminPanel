@@ -2829,14 +2829,50 @@ END
         ->select('lms_topic.lms_topic_id','lms_topic.lms_topic_name','lms_topic.lms_subject_id','lms_subject.lms_subject_name','lms_course.lms_course_id','lms_course.lms_course_name'
         ,'lms_topic.lms_topic_code',
         DB::raw('DATE_FORMAT(lms_topic.lms_topic_created_at, "%d-%m-%Y") as created_date', "%d-%m-%Y"),
+        DB::raw("( SELECT count(lms_youtube_video.video_id)
+        FROM lms_youtube_video,lms_youtube_video_playlist where
+        
+        lms_youtube_video.topic_id= lms_topic.lms_topic_id and
+        lms_youtube_video_playlist.playlist_id= lms_youtube_video.playlist_id and
+       
+
+        lms_topic.lms_topic_is_active=1 
+        and lms_youtube_video.is_video_active=1
+     
+        and lms_youtube_video.video_status=1
+        and lms_youtube_video_playlist.playlist_status=1
+  
+     
+
+   ) as totalVideo"),
+
+
+
+DB::raw("( SELECT count(lms_youtube_video.playlist_id)
+FROM lms_youtube_video,lms_youtube_video_playlist where
+
+lms_youtube_video.topic_id= lms_topic.lms_topic_id and
+lms_youtube_video_playlist.playlist_id= lms_youtube_video.playlist_id and
+
+
+lms_topic.lms_topic_is_active=1 
+and lms_youtube_video.is_video_active=1
+
+and lms_youtube_video.video_status=1
+and lms_youtube_video_playlist.playlist_status=1
+
+
+
+) as totalPlaylist"),
+
         )
         ->where(function ($q) use ($filterBy) {
                $q
                 ->where('lms_topic.lms_topic_name', 'like', "%$filterBy%");
                   })
         ->where('lms_topic.lms_topic_is_active', '=', 1)
-        ->orderBy('lms_topic.lms_topic_created_at','DESC')
-        ->paginate();
+       
+       ->paginate();
   
         return $getQuery;
       }

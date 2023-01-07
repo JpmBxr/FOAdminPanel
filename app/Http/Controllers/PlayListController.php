@@ -18,7 +18,7 @@ class PlayListController extends Controller
    
 
     ->select('lms_youtube_video_playlist.playlist_id','lms_subject.lms_subject_name','lms_subject.lms_subject_id','lms_topic.lms_topic_name','lms_youtube_video_playlist.topic_id',
-    'lms_youtube_video_playlist.playlist_name','lms_youtube_video_playlist.course_id',
+    'lms_youtube_video_playlist.playlist_name',
     DB::raw('DATE_FORMAT(lms_youtube_video_playlist.playlist_created_date, "%d-%m-%Y") as playlist_created_date'),
    'lms_youtube_video_playlist.playlist_image_url',
     DB::raw("

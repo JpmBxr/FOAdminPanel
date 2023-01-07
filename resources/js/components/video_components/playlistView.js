@@ -27,7 +27,7 @@ export const playlistView = {
         },
       ],
       isLoaderActive: false,
-
+      isSaveEditClicked: 1,
       courseId: "",
       subjectId: "",
       topicId:"",
@@ -98,19 +98,18 @@ export const playlistView = {
           align: "middle",
         },
       ],
-      playlistImage:null,
       tableItems: [],
       isSaveEditClicked: 1,
       editTopictId: "",
       courseImageNameForEdit: "",
-      imageRule: [],
+
       //Datatable End
       courseItems: [],
       subjectItems: [],
       topicItems: [],
       // For Add Department card
       isAddCardVisible: false,
-      isSaveTopicFormDataProcessing:false,
+
       // For Excel Download
       excelFields: {
         "Topic Code": "lms_topic_code",
@@ -128,23 +127,15 @@ export const playlistView = {
   
 
   //#region
-  
-
-  watch: {
-    playlistImage(val) {
-      this.playlistImage = val;
-
-      this.imageRule =
-        this.playlistImage != null
-          ? [
-              (v) =>
-                !v ||
-                v.size <= 1048576 ||
-                this.$t("label_file_size_criteria_1_mb"),
-            ]
-          : [];
-    },
+  playlistImage(val) {
+    this.playlistImage = val;
+    this.imageRule =
+      this.playlistImage != null
+        ? [(v) => !v || v.size <= 1048576 || "File size should be 1MB"]
+        : [];
   },
+
+  
 
 
   computed: {
@@ -166,13 +157,13 @@ export const playlistView = {
     };
     // Get All Stream
     this.getAllStream();
+    this.getAllSubject();
+    this.getAllTopic();
+
+   
   },
 
   methods: {
-    // playlistImage(val) {
-    //   this.playlistImage = val;
-      
-    // },
     // Get all Playlist from DB
     getAllPlaylist(e) {
       this.tableDataLoading = true;
@@ -294,6 +285,7 @@ export const playlistView = {
 
     // Get all Stream
     getAllStream() {  
+      console.log("stream");
       this.isSourceDataLoading = true;
       this.$http
         .get(`web_get_all_active_courses_without_pagination`, {
@@ -322,7 +314,7 @@ export const playlistView = {
     },
 
     // Get all Subject
-    getAllSubject() {
+    getAllSubject(e) {
       this.isSourceDataLoading = true;
       this.$http
         .get(`web_get_all_active_subject_based_on_course_without_pagination`, {
@@ -333,7 +325,6 @@ export const playlistView = {
           headers: { Authorization: "Bearer " + ls.get("token") },
         })
         .then(({ data }) => {
-          console.log("Subjects",data);
           this.isSourceDataLoading = false;
           //User Unauthorized
           if (
@@ -353,7 +344,7 @@ export const playlistView = {
     },
 
     // Get all Topic
-    getAllTopic() {
+    getAllTopic(e) {
       this.isSourceDataLoading = true;
       this.$http
         .get(`web_get_topic_list`, {
@@ -383,7 +374,7 @@ export const playlistView = {
         });
     },
 
-  // let postData = new FormData();
+    // let postData = new FormData();
   // if (this.doctorProfileImage != null) {
   //   postData.append("doctor_profile_image", this.doctorProfileImage);
   // }
@@ -413,7 +404,7 @@ export const playlistView = {
           postData.append("centerId", ls.get("loggedUserCenterId"));
           postData.append("loggedUserId", ls.get("loggedUserId"));
 
-          postData.append("editPlaylisttId", this.playlist_id);
+          postData.append("playlist_id", this.playlist_id);
         }
         this.$http
           .post("web_save_playlist", postData, this.authorizationConfig)
@@ -438,8 +429,7 @@ export const playlistView = {
               }
               // Course Saved
               else if (data.responseData == 2) {
-
-                
+               
                 this.courseId = "";
                 this.subjectId = "";
                 this.topicId = "";
@@ -497,19 +487,22 @@ export const playlistView = {
     },
 
     // Edit Course
-    editTopic(item) {
+    editPlaylist(item) {
+       console.warn("this item",item);
       this.isAddCardVisible = true;
       this.editPlaylisttId = item.playlist_id;
       this.isSaveEditClicked = 0;
-      
-     console.log("Edit Items", item)
-
-      this.courseId = item.course_id;
       this.getAllSubject();
+      this.getAllStream();
+     
+      this.getAllTopic();
       this.subjectId = item.subject_id;
+      this.courseId = item.lms_course_id;
+
       this.topicId = item.topic_id;
       this.playlist_name = item.playlist_name;
       this.playlist_img_url = item.playlist_img_url;
+
     },
   },
 };

@@ -15,7 +15,7 @@ class EnquiryController extends Controller
     public function getAllEnquiry(Request $request)
     {
 
-        $perPage = $request->per_page ? $request->perPage : 15;
+        $perPage = $request->perPage ? $request->perPage : 15;
         $filterBy = $request->filterBy;
         $centerId = $request->centerId;
         $result = DB::table('lms_enquiry')
@@ -68,6 +68,9 @@ class EnquiryController extends Controller
                 'lms_child_course.lms_child_course_name',
 
                 'lms_school_list.lms_school_id',
+                'lms_enquiry.lms_enquiry_class',
+                'lms_enquiry.lms_enquiry_section',
+                'lms_enquiry.lms_roll_no',
 
                 DB::raw("
                         (case when lms_enquiry.lms_enquiry_status  = '4' then 'Closed'
@@ -78,7 +81,7 @@ class EnquiryController extends Controller
 
                 DB::raw('lms_information_source.lms_information_source_name as source_name')
             )
-
+            ->orderBy('lms_enquiry.lms_enquiry_code','desc')
             ->paginate($perPage);
         return $result;
     }
@@ -204,6 +207,9 @@ class EnquiryController extends Controller
             $enquiryWorkExp = $request->enquiryWorkExp;
             $enquiryAbout = $request->enquiryAbout;
             $isEnquiryBasicEdit = $request->isEnquiryBasicEdit;
+            $lms_enquiry_class=$request->lms_enquiry_class;
+            $lms_enquiry_section=$request->lms_enquiry_section;
+            $lms_enquiry_roll_no=$request->lms_enquiry_roll_no;
 
             $result = EnquiryModel::saveEditEnquiryBasicInfo(
                 $centerId,
@@ -230,7 +236,12 @@ class EnquiryController extends Controller
                 $enquiryWorkExp,
                 $enquiryAbout,
                 $isEnquiryBasicEdit,
-                $lms_child_course_id
+                $lms_child_course_id,
+                $lms_enquiry_class,
+                $lms_enquiry_section,
+                $lms_enquiry_roll_no
+
+
             );
             return response()->json($result);
         }
