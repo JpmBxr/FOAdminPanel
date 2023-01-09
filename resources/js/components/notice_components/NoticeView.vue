@@ -1,5 +1,5 @@
 <template>
-  <div style="background-color: #d7d8db; height: 100%" id="app">
+  <div style=" margin:auto; padding:auto; width:1200px;" id="app">
     <v-container style="background-color: #fff" class="ma-4 pa-0" width="100%">
       <v-overlay :value="isLoaderActive" color="primary">
         <v-progress-circular

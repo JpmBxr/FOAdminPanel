@@ -333,6 +333,33 @@ Route::group(['middleware' => ['auth:api', 'permission:Staff']], function () {
 
 });
 
+//Child Course
+
+Route::group(['middleware' => ['auth:api']], function () {
+
+    // View All Course
+    Route::get('web_get_all_child_course', 'CourseController@getAllChildCourse')->name('web_get_all_child_course');
+    // Save Edit Course
+    Route::post('web_save_update_child_course', 'CourseController@saveUpdateChildCourse')->name('web_save_update_child_course');
+    // Enable disable course
+    Route::post('web_enable_disable_child_course', 'CourseController@enableDisableChildCourse')->name('web_enable_disable_child_course');
+    // View All Active Courses for Subject Page
+    Route::get('web_get_all_active_child_course_wp', 'TopicController@getActiveChildCourseWP')->name('web_get_all_active_child_course_wp');
+});
+
+//Assignment
+Route::group(['middleware' => ['auth:api']], function () {
+
+    Route::get('web_get_all_assignment_documents', 'AssignmentController@getDocumentAssignmentWise')->name('web_get_all_assignment_documents');
+    Route::get('web_get_all_assignment', 'AssignmentController@getAllAssignment')->name('web_get_all_assignment');
+    Route::get('web_get_get_all_submitted_assignment', 'AssignmentController@getAllSubmittedAssignment')->name('web_get_get_all_submitted_assignment');
+    Route::get('web_get_submitted_assignment_details', 'AssignmentController@getSubmittedAssignmentDetails')->name('web_get_submitted_assignment_details');
+    Route::post('web_evaluate_assignment', 'AssignmentController@evaluateAssignment')->name('web_evaluate_assignment');
+    Route::post('web_save_update_assignment', 'AssignmentController@saveUpdateAssignment')->name('web_evaluate_assignment');
+    Route::post('web_upload_assignment', 'AssignmentController@uploadAssignment')->name('web_upload_assignment');
+    Route::post('web_delete_assignment', 'AssignmentController@deleteAssignment')->name('web_delete_assignment');
+    Route::post('web_enable_disable_assignment', 'AssignmentController@enableDisableAssignment')->name('web_enable_disable_assignment');
+});
 Route::group(['middleware' => ['auth:api', 'permission:Edit Course']], function () {
 
     // Enable disable course
@@ -354,6 +381,126 @@ Route::group(['middleware' => ['auth:api', 'permission:Subject']], function () {
 
 });
 
+//Students
+
+Route::group(['middleware' => ['auth:api', 'permission:Staff']], function () {
+
+    // View All Students- APP
+    Route::get('web_get_all_students', 'EnquiryController@getAllRegisteredStudents')->name('web_get_all_students');
+
+    // View All Students- Internal
+    Route::get('web_get_all_students_internal', 'EnquiryController@getAllRegisteredStudentsInternal')->name('web_get_all_students_internal');
+
+    // View All Students- Batch
+    Route::get('web_get_all_students_batch', 'EnquiryController@getAllRegisteredStudentsBatch')->name('web_get_all_students_batch');
+
+    //   // View All Students
+    Route::get('web_get_all_students_all', 'EnquiryController@getAllRegisteredStudentsAll')->name('web_get_all_students_all');
+    //Update Enquiry Details
+    Route::post('web_update_student_details', 'EnquiryController@updateStudentDetails')->name('web_update_student_details');
+
+    Route::get('web_get_student_attendance_date_wise', 'BatchController@getStudentAttendanceDateWise')->name('web_get_student_attendance_date_wise');
+});
+//Batch
+Route::group(['middleware' => ['auth:api']], function () {
+
+    // Get - Batch
+    Route::get('web_get_all_batch', 'BatchController@getAllBatch')->name('web_get_all_batch');
+    Route::get('web_get_all_active_faculties_without_pagination', 'BatchController@getActiveFaculties')->name('web_get_all_active_faculties_without_pagination');
+
+    Route::get('web_get_slot_details_by_Batch_without_pagination', 'BatchController@getAllSlotDetailsByBatch')->name('web_get_slot_details_by_Batch_without_pagination');
+    Route::get('web_get_get_all_student_batch_wise', 'BatchController@getAllBatchWiseStudent')->name('web_get_get_all_student_batch_wise');
+    Route::get('web_get_all_students_not_in_batch', 'BatchController@getAllStudentNotInBatch')->name('web_get_all_students_not_in_batch');
+    Route::get('web_get_all_students_not_in_batch_without_pagination', 'BatchController@getAllStudentNotInBatchWithoutPagination')->name('web_get_all_students_not_in_batch_without_pagination');
+    Route::get('web_get_all_batch_wise_slot_details', 'BatchController@getAllBatchWiseSlotDetails')->name('web_get_all_batch_wise_slot_details');
+    //  Post - Batch
+    Route::post('web_save_update_batch', 'BatchController@saveUpdateBatch')->name('web_save_update_batch');
+    Route::post('web_enable_disable_batch', 'BatchController@enableDisableBatch')->name('web_enable_disable_batch');
+    Route::post('web_disable_slot', 'BatchController@disableSlot')->name('web_disable_slot');
+
+    Route::post('web_student_assign_batch', 'BatchController@studentAssignBatch')->name('web_student_assign_batch');
+
+    Route::get('web_get_all_batch_without_pagination', 'BatchController@getAllBatchWithoutPagination')->name('web_get_all_batch_without_pagination');
+});
+
+
+//Subscription
+Route::group(['middleware' => ['auth:api']], function () {
+
+    // Get - Subscription
+    Route::get('web_get_all_subscription', 'SubscriptionController@getAllSubscription')->name('web_get_all_subscription');
+    Route::get('web_get_all_assigned_subscription', 'SubscriptionController@getAllAssignedSubscription')->name('web_get_all_assigned_subscription');
+
+    // Post - Subscription
+    Route::post('web_save_update_subscription', 'SubscriptionController@saveUpdateSubscription')->name('web_save_update_subscription');
+    Route::post('web_enable_disable_subscription', 'SubscriptionController@enableDisableSubscription')->name('web_enable_disable_subscription');
+    Route::post('web_assign_subscription', 'SubscriptionController@addSubscription')->name('web_assign_subscription');
+    Route::post('web_enable_disable_student_subscription', 'SubscriptionController@enableDisableStudentSubscription')->name('web_enable_disable_student_subscription');
+});
+//Notice
+Route::group(['middleware' => ['auth:api']], function () {
+
+    // List All Notice
+    Route::get('web_get_all_notice', 'NoticeController@getAllNotice')->name('web_get_all_notice');
+    Route::get('web_get_all_role_without_pagination', 'NoticeController@getAllRoles')->name('web_get_all_role_without_pagination');
+    // Save update notice
+    Route::post('web_save_update_notice', 'NoticeController@saveUpdateNotice')->name('web_save_update_notice');
+    Route::post('web_enable_disable_notice', 'NoticeController@enableDisableNotice')->name('web_enable_disable_notice');
+});
+Route::group(['middleware' => ['auth:api']], function () {
+
+    // List All notification
+    Route::get('web_get_all_notification', 'NoticeController@getAllNotification')->name('web_get_all_notification');
+    // Route::get('web_get_all_role_without_pagination', 'NoticeController@getAllRoles')->name('web_get_all_role_without_pagination');
+    // Save update notice
+    Route::post('web_save_notification', 'NoticeController@saveNotification')->name('web_save_notification');
+    Route::post('web_delete_notification', 'NoticeController@deleteNotification')->name('web_delete_notification');
+});
+//Post
+Route::group(['middleware' => ['auth:api']], function () {
+
+    // List All Notice
+    Route::get('web_get_all_post', 'NoticeController@getAllPost')->name('web_get_all_post');
+    // Route::get('web_get_all_role_without_pagination', 'NoticeController@getAllRoles')->name('web_get_all_role_without_pagination');
+    // // Save update notice
+    // Route::post('web_save_update_notice', 'NoticeController@saveUpdateNotice')->name('web_save_update_notice');
+    Route::post('web_is_approve_post', 'NoticeController@isApprovePost')->name('web_is_approve_post');
+});
+//Report
+Route::group(['middleware' => ['auth:api']], function () {
+
+    //Get All Exam Schedule
+    Route::get('web_get_all_exam_schedule_report', 'ExamReportController@getAllExamSchedule_Report')->name('web_get_all_exam_schedule_report');
+    Route::get('web_get_all_exam_student_wise_report', 'ExamReportController@getStudentWiseExamSchedule_Report')->name('web_get_all_exam_student_wise_report');
+    Route::get('web_get_all_exam_student_report', 'ExamReportController@getStudentWiseReport')->name('web_get_all_exam_student_report');
+});
+//Attendance
+Route::group(['middleware' => ['auth:api']], function () {
+
+    // Get - Batch
+    Route::get('web_get_all_batch_attendance', 'BatchController@getAllBatchAttendance')->name('web_get_all_batch_attendance');
+    Route::get('web_get_all_attendance_dates', 'BatchController@getAttendanceDates')->name('web_get_all_attendance_dates');
+    Route::get('web_get_all_attendance_date_wise', 'BatchController@getAttendanceDateWise')->name('web_get_all_attendance_date_wise');
+});
+//Library
+Route::group(['middleware' => ['auth:api']], function () {
+
+    Route::get('web_get_all_book_list', 'LibraryController@getAllBookLIst')->name('web_get_all_book_list');
+    Route::get('web_get_all_student_book_wise', 'LibraryController@getAllStudentListBookWise')->name('web_get_all_student_book_wise');
+    Route::get('web_get_all_students_book_issue', 'LibraryController@getAllRegisteredStudents')->name('web_get_all_students_book_issue');
+    Route::get('web_get_send_email', 'StaffController@sendMail')->name('web_get_send_email');
+
+    Route::post('web_save_update_book_list', 'LibraryController@saveUpdateBookList')->name('web_save_update_book_list');
+    Route::post('web_enable_disable_book', 'LibraryController@enableDisableBook')->name('web_enable_disable_book');
+    Route::post('web_enable_return_book', 'LibraryController@returnBook')->name('web_enable_return_book');
+    Route::post('web_enable_issue_book', 'LibraryController@issueBook')->name('web_enable_issue_book');
+    Route::post('web_staff_attendance', 'UserController@staffAttendance')->name('web_staff_attendance');
+    Route::get('web_staff_attendance_status', 'UserController@getStaffAttendanceStatus')->name('web_staff_attendance_status');
+
+      
+     
+});
+
 Route::group(['middleware' => ['auth:api', 'permission:Topic']], function () {
 
     // View All Subject
@@ -361,6 +508,8 @@ Route::group(['middleware' => ['auth:api', 'permission:Topic']], function () {
 
     // View All Active Courses for Subject Page
     Route::get('web_get_all_active_subject_based_on_course_without_pagination', 'TopicController@getActiveSubjectBasedOnCourseWithoutPagination')->name('web_get_all_active_subject_based_on_course_without_pagination');
+    
+    Route::get('web_get_all_active_class_based_on_stream_without_pagination', 'TopicController@getActiveClassBasedOnStreamWithoutPagination')->name('web_get_all_active_subject_based_on_course_without_pagination');
     // Save Edit Subject
     Route::post('web_save_update_topic', 'TopicController@saveUpdateTopic')->name('web_save_update_topic');
     // Enable disable Subject

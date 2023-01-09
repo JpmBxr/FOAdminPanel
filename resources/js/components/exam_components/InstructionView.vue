@@ -38,8 +38,7 @@
                                 <v-icon
                                     color="white"
                                     @click="
-                                        isAddInstructionCardVisible =
-                                            !isAddInstructionCardVisible
+                                        isAddInstructionCardVisible = !isAddInstructionCardVisible
                                     "
                                     >mdi-plus</v-icon
                                 >
@@ -60,32 +59,32 @@
                                     :items-per-page="15"
                                     @pagination="getAllInstruction"
                                     :footer-props="{
-                                        itemsPerPageOptions: [5, 10, 15],
+                                        itemsPerPageOptions: [5, 10, 15]
                                     }"
                                 >
                                     <template v-slot:no-data>
                                         <p
                                             class="font-weight-black bold title"
-                                            style="color: red"
+                                            style="color:red"
                                         >
                                             {{ $t("label_no_data_found") }}
                                         </p>
                                     </template>
                                     <template
                                         v-slot:item.lms_exam_instruction_content="{
-                                            item,
+                                            item
                                         }"
                                     >
                                         <div
                                             v-html="
                                                 item.lms_exam_instruction_content
                                             "
-                                            style="align-content: center"
+                                            style="align-content: center;"
                                         ></div>
                                     </template>
                                     <template
                                         v-slot:item.lms_exam_instruction_is_active="{
-                                            item,
+                                            item
                                         }"
                                     >
                                         <v-chip
@@ -152,7 +151,7 @@
                                         <v-icon
                                             v-if="
                                                 item.lms_exam_instruction_is_active ==
-                                                'Active'
+                                                    'Active'
                                             "
                                             v-permission="'Edit Exam Schedule'"
                                             small
@@ -163,7 +162,7 @@
                                         <v-icon
                                             v-if="
                                                 item.lms_exam_instruction_is_active ==
-                                                'Inactive'
+                                                    'Inactive'
                                             "
                                             v-permission="'Edit Exam Schedule'"
                                             small
@@ -200,8 +199,7 @@
                                 <v-icon
                                     color="white"
                                     @click="
-                                        isAddInstructionCardVisible =
-                                            !isAddInstructionCardVisible
+                                        isAddInstructionCardVisible = !isAddInstructionCardVisible
                                     "
                                     >mdi-minus</v-icon
                                 >
@@ -249,7 +247,7 @@
                                             color="primary"
                                             :disabled="
                                                 !isSaveInstructionFormValid ||
-                                                isSaveInstructionFormDataProcessing
+                                                    isSaveInstructionFormDataProcessing
                                             "
                                             @click="saveInstruction"
                                             >{{
@@ -268,8 +266,7 @@
                                             tile
                                             color="primary"
                                             @click="
-                                                isAddInstructionCardVisible =
-                                                    !isAddInstructionCardVisible
+                                                isAddInstructionCardVisible = !isAddInstructionCardVisible
                                             "
                                             >Cancel</v-btn
                                         >
@@ -310,7 +307,7 @@ import "katex/dist/katex.min.css";
 
 export default {
     components: {
-        VueEditor,
+        VueEditor
     },
     props: ["userPermissionDataProps"],
 
@@ -320,16 +317,16 @@ export default {
             breadCrumbItem: [
                 {
                     text: this.$t("label_home"),
-                    disabled: false,
+                    disabled: false
                 },
                 {
                     text: this.$t("label_exam"),
-                    disabled: false,
+                    disabled: false
                 },
                 {
                     text: this.$t("label_instruction"),
-                    disabled: false,
-                },
+                    disabled: false
+                }
             ],
 
             // Form Labels
@@ -345,10 +342,10 @@ export default {
             instructionName: "",
             instructionContentName: "",
             instructionRules: [
-                (v) => !!v || this.$t("label_instruction_title_required"),
+                v => !!v || this.$t("label_instruction_title_required")
             ],
             instructionContentRules: [
-                (v) => !!v || this.$t("label_instruction_content_required"),
+                v => !!v || this.$t("label_instruction_content_required")
             ],
             authorizationConfig: "",
             //content:'',
@@ -367,7 +364,7 @@ export default {
                 [{ color: [] }, { background: [] }],
                 ["clean"],
 
-                ["link", "formula", "image", "video"],
+                ["link", "formula", "image", "video"]
             ],
 
             // Snack Bar
@@ -388,13 +385,13 @@ export default {
                     text: this.$t("label_instruction_name"),
                     value: "lms_exam_instruction_title",
                     width: "20%",
-                    sortable: false,
+                    sortable: false
                 },
                 {
                     text: this.$t("label_instruction_content"),
                     value: "lms_exam_instruction_content",
                     width: "60%",
-                    sortable: false,
+                    sortable: false
                 },
 
                 {
@@ -402,15 +399,15 @@ export default {
                     value: "lms_exam_instruction_is_active",
                     align: "middle",
                     width: "5%",
-                    sortable: false,
+                    sortable: false
                 },
                 {
                     text: this.$t("label_actions"),
                     value: "actions",
                     sortable: false,
                     width: "5%",
-                    align: "middle",
-                },
+                    align: "middle"
+                }
             ],
             tableItems: [],
             isDepartmentDataProcessing: false,
@@ -425,14 +422,14 @@ export default {
             excelFields: {
                 "Instruction Name": "lms_exam_instruction_title",
                 "Instruction Contect": "lms_exam_instruction_content",
-                Status: "lms_exam_instruction_is_active",
+                Status: "lms_exam_instruction_is_active"
             },
             excelData: [],
             excelFileName:
                 "InstructionListAsExcel" +
                 "_" +
                 moment().format("DD/MM/YYYY") +
-                ".xls",
+                ".xls"
         };
     },
     mounted() {
@@ -443,9 +440,9 @@ export default {
         dataTableRowNumbering() {
             return this.tableItems.map((items, index) => ({
                 ...items,
-                index: index + 1,
+                index: index + 1
             }));
-        },
+        }
 
         //End
     },
@@ -453,7 +450,7 @@ export default {
     created() {
         // Token Config
         this.authorizationConfig = {
-            headers: { Authorization: "Bearer " + ls.get("token") },
+            headers: { Authorization: "Bearer " + ls.get("token") }
         };
     },
 
@@ -490,7 +487,7 @@ export default {
                                 item.lms_exam_instruction_is_active == "Active"
                                     ? 0
                                     : 1,
-                            loggedUserId: ls.get("loggedUserId"),
+                            loggedUserId: ls.get("loggedUserId")
                         },
                         this.authorizationConfig
                     )
@@ -520,7 +517,7 @@ export default {
                             }
                         }
                     })
-                    .catch((error) => {
+                    .catch(error => {
                         this.isDepartmentDataProcessing = false;
                         this.snackBarColor = "error";
                         this.changeSnackBarMessage(
@@ -551,7 +548,7 @@ export default {
                         instructionContentName: this.instructionContentName,
                         isSaveEditClicked: 1,
                         centerId: ls.get("loggedUserCenterId"),
-                        loggedUserId: ls.get("loggedUserId"),
+                        loggedUserId: ls.get("loggedUserId")
                     };
                 } else {
                     postData = {
@@ -560,7 +557,7 @@ export default {
                         instructionId: this.editInstructionId,
                         isSaveEditClicked: 0,
                         centerId: ls.get("loggedUserCenterId"),
-                        loggedUserId: ls.get("loggedUserId"),
+                        loggedUserId: ls.get("loggedUserId")
                     };
                 }
                 this.$http
@@ -629,7 +626,7 @@ export default {
                             }
                         }
                     })
-                    .catch((error) => {
+                    .catch(error => {
                         this.isSaveInstructionFormDataProcessing = false;
                         this.snackBarColor = "error";
                         this.changeSnackBarMessage(
@@ -647,9 +644,9 @@ export default {
                 .get(`web_get_all_instruction?page=${e.page}`, {
                     params: {
                         centerId: ls.get("loggedUserCenterId"),
-                        perPage: e.itemsPerPage,
+                        perPage: e.itemsPerPage
                     },
-                    headers: { Authorization: "Bearer " + ls.get("token") },
+                    headers: { Authorization: "Bearer " + ls.get("token") }
                 })
                 .then(({ data }) => {
                     this.tableDataLoading = false;
@@ -665,7 +662,7 @@ export default {
                         this.excelData = data.data;
                     }
                 })
-                .catch((error) => {
+                .catch(error => {
                     this.tableDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
@@ -685,21 +682,21 @@ export default {
                 columns: [
                     {
                         header: "Instruction Title",
-                        dataKey: "lms_exam_instruction_title",
+                        dataKey: "lms_exam_instruction_title"
                     },
                     {
                         header: "Instruction Content",
-                        dataKey: "lms_exam_instruction_content",
+                        dataKey: "lms_exam_instruction_content"
                     },
                     {
                         header: "Status",
-                        dataKey: "lms_exam_instruction_is_active",
-                    },
+                        dataKey: "lms_exam_instruction_is_active"
+                    }
                 ],
                 body: this.tableItems,
                 //styles: { fillColor: [255, 0, 0] },
                 // columnStyles: { 0: { halign: 'center', fillColor: [0, 255, 0] } },
-                margin: { top: 10 },
+                margin: { top: 10 }
             });
             pdfDoc.save(
                 "InstructionListAsPDF" +
@@ -707,8 +704,8 @@ export default {
                     moment().format("DD/MM/YYYY") +
                     ".pdf"
             );
-        },
-    },
+        }
+    }
 };
 </script>
 

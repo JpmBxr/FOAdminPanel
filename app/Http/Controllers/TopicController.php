@@ -16,6 +16,7 @@ class TopicController extends Controller
     // Check Course Code in DB and then Save
     public function saveUpdateTopic(Request $request)
     {
+      
         // Server side validation rules
         $validation = Validator::make($request->all(), [
             'centerId' => 'bail | required |numeric ',
@@ -31,21 +32,21 @@ class TopicController extends Controller
             // Server side validation fails
             return response()->json(['error' => $validation->errors()->first(), 'responseData' => 0]);
         } else {
-
+              
             $centerId = $request->centerId;
             $loggedUserId = $request->loggedUserId;
             $courseId = $request->courseId;
             $subjectId = $request->subjectId;
-
+       
             $topicCode = trim($request->topicCode);
             $topicName = $request->topicName;
             $isSaveEditClicked = $request->isSaveEditClicked;
 
             $topicId = $request->topicId;
-
+            $classId = $request->classId;
             $result = TopicModel::saveUpdateTopic($centerId,
                 $loggedUserId, $topicCode, $topicName,
-                $isSaveEditClicked, $courseId, $subjectId, $topicId);
+                $isSaveEditClicked, $courseId, $subjectId, $topicId,$classId);
             return response()->json($result);
         }
 
@@ -56,13 +57,13 @@ class TopicController extends Controller
     {
         $centerId = $request->centerId;
         $perPage = $request->perPage ? $request->perPage : 50;
-        
+        $filterBy=$request->searchText;  
         $getData = DB::table("lms_topic")->
             leftJoin('lms_subject', 'lms_subject.lms_subject_id', '=', 'lms_topic.lms_subject_id')->
             leftJoin('lms_course', 'lms_course.lms_course_id', '=', 'lms_topic.lms_course_id')->
-
-            select(['lms_topic.lms_subject_id', 'lms_topic.lms_course_id', 'lms_subject_name', 'lms_course_name', 'lms_topic_id',
-            'lms_topic_code', 'lms_topic_name',
+            leftJoin('lms_child_course', 'lms_topic.lms_child_course_id', '=', 'lms_child_course.lms_child_course_id')->
+            select(['lms_topic.lms_subject_id', 'lms_topic.lms_course_id', 'lms_subject_name', 'lms_course_name', 'lms_topic_id','lms_topic_name',
+            'lms_topic_code', 'lms_child_course.lms_child_course_name',
             DB::raw("( SELECT count(distinct lms_youtube_video.video_id)
             FROM lms_youtube_video where
 
@@ -72,6 +73,15 @@ class TopicController extends Controller
             DB::raw("IF(lms_topic_is_active = 1, 'Active','Inactive')as lms_topic_is_active")])->
 
             where('lms_topic.lms_center_id', $centerId)
+            ->where(function ($q) use ($filterBy) {
+                $q->orWhere('lms_topic.lms_topic_code', 'like', "%$filterBy%")
+                    ->orWhere('lms_topic.lms_topic_name', 'like', "%$filterBy%")
+                    ->orWhere('lms_child_course.lms_child_course_name', 'like', "%$filterBy%");
+               
+                  
+
+            })
+            ->orderBy('lms_topic.lms_topic_created_at','DESC')
             ->paginate($perPage);
         return $getData;
     }
@@ -100,6 +110,22 @@ class TopicController extends Controller
             ->where('lms_course_id', $courseId)
             ->where('lms_subject_is_active', 1)
             ->where('lms_center_id', $centerId)
+            ->get();
+        return $getQuery;
+
+    }
+    
+    public function getActiveClassBasedOnStreamWithoutPagination(Request $request)
+    {
+       
+        $centerId = $request->centerId;
+        $courseId = $request->courseId;
+
+        $getQuery = DB::table("lms_child_course")->
+            select(['lms_child_course_id', 'lms_child_course_name'])
+            ->where('lms_course_id', $courseId)
+            ->where('lms_child_course_is_active', 1)
+     
             ->get();
         return $getQuery;
 

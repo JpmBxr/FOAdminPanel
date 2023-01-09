@@ -13,7 +13,8 @@ class  TopicModel extends Model
      // Check Subject Code in DB and then Save
     public static function saveUpdateTopic($centerId,
     $loggedUserId, $topicCode, $topicName,
-    $isSaveEditClicked, $courseId,$subjectId,$topicId) {
+    $isSaveEditClicked, $courseId,$subjectId,$topicId,$classId) {
+     
         if ($isSaveEditClicked == 1) {
 
             // If save course is clicked
@@ -35,7 +36,8 @@ class  TopicModel extends Model
                         'lms_topic_name' => $topicName,
                         'lms_course_id' => $courseId,
                         'lms_subject_id' => $subjectId,
-                        'lms_topic_created_by'=>$loggedUserId
+                        'lms_topic_created_by'=>$loggedUserId,
+                        'lms_child_course_id'=>$classId
 
 
                     ]
@@ -70,6 +72,7 @@ class  TopicModel extends Model
                     'lms_course_id' => $courseId,
                     'lms_topic_name' => $topicName,
                     'lms_topic_code' => $topicCode,
+                    'lms_child_course_id'=>$classId,
                     'lms_course_id' => $courseId,
                     'lms_subject_id' => $subjectId,
                     'lms_topic_updated_at' => now(),

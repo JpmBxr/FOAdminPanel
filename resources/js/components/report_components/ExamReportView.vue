@@ -1,5 +1,5 @@
 <template>
-  <div style="background-color: #d7d8db; height:100%" id="app">
+  <div style=" margin:auto; padding:auto; width:1200px;" id="app">
     <!-- Card Start -->
     <v-container
       fluid
