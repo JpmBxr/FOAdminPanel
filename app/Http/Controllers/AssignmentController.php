@@ -76,7 +76,7 @@ class AssignmentController extends Controller
         $getData = DB::table("lms_assignment")
             ->Join('lms_subject', 'lms_subject.lms_subject_id', '=', 'lms_assignment.lms_subject_id')
             ->Join('lms_topic', 'lms_topic.lms_topic_id', '=', 'lms_assignment.lms_topic_id')
-           
+            ->leftjoin('lms_child_course', 'lms_child_course.lms_child_course_id', '=', 'lms_assignment.lms_child_course_id')
             
             ->select(['lms_assignment.lms_assignment_id',
               
@@ -89,6 +89,8 @@ class AssignmentController extends Controller
                 'lms_assignment.lms_subject_id',
                 'lms_assignment.lms_topic_id',
                 'lms_assignment.lms_course_id',
+                'lms_child_course.lms_child_course_name',
+                'lms_child_course.lms_child_course_id',
                  DB::raw("IF(lms_assignment_status = 1, 'Active','Inactive')as lms_assignment_status")
               
                 
@@ -164,11 +166,12 @@ public function saveUpdateAssignment(Request $request)
              $lms_assignment_submission_last_date = $request->lms_assignment_submission_last_date;
               $lms_assignment_score = $request->lms_assignment_score;
 
-              $lms_course_id = $request->lms_course_id;
+             $lms_course_id = $request->lms_course_id;
             $lms_batch_id = $request->lms_batch_id;
             $lms_subject_id = $request->lms_subject_id;
             $lms_topic_id = $request->lms_topic_id;
             $lms_user_id = $request->loggedUserId;
+            $classId= $request->classId;
 
             $result = AssignmentModel::saveUpdateAssignment(
                 $centerId,
@@ -183,7 +186,8 @@ public function saveUpdateAssignment(Request $request)
                 $lms_topic_id,
                 $lms_assignment_submission_last_date,
                 $lms_assignment_score,
-                $lms_course_id
+                $lms_course_id,
+                $classId
            
 
             );

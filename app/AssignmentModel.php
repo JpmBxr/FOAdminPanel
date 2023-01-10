@@ -18,7 +18,8 @@ class AssignmentModel extends Model
                 $lms_topic_id,
                  $lms_assignment_submission_last_date,
                 $lms_assignment_score,
-                $lms_course_id
+                $lms_course_id,
+                $classId
              
     ) {
         if ($isSaveEditClicked == 1) {
@@ -35,7 +36,8 @@ class AssignmentModel extends Model
                     'lms_topic_id' => $lms_topic_id,
                     'lms_assignment_submission_last_date' => $lms_assignment_submission_last_date,
                     'lms_assignment_score' => $lms_assignment_score,
-                    'lms_course_id'=>$lms_course_id
+                    'lms_course_id'=>$lms_course_id,
+                    'lms_child_course_id'=>$classId,
                                    ]
             );
             if ($saveQuery > 0) {
@@ -64,7 +66,8 @@ class AssignmentModel extends Model
                     'lms_topic_id' => $lms_topic_id,
                     'lms_assignment_submission_last_date' => $lms_assignment_submission_last_date,
                     'lms_assignment_score' => $lms_assignment_score,
-                     'lms_course_id'=>$lms_course_id
+                     'lms_course_id'=>$lms_course_id,
+                     'lms_child_course_id'=>$classId,
                     
 
                 ]);

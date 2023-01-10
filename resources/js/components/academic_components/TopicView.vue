@@ -72,8 +72,18 @@
                                             getAllActiveSubjectBasedonClass()
                                         "
                                         :disabled="isSourceDataLoading"
+                                        :rules="[
+                                            (v) => !!v || $t('label_required'),
+                                        ]"
                                     >
-                                        <template #label> Class </template>
+                                        <template #label>
+                                            Class
+                                            <span class="red--text">
+                                                <strong>{{
+                                                    $t("label_star")
+                                                }}</strong>
+                                            </span>
+                                        </template>
                                     </v-select>
                                 </v-col>
 
@@ -611,10 +621,12 @@ export default {
         // Edit Course
 
         editTopic(item) {
+            console.log(item);
             this.isAddCardVisible = true;
             this.editTopictId = item.lms_topic_id;
             this.isSaveEditClicked = 0;
             this.courseId = item.lms_course_id;
+            this.classId = item.lms_child_course_id;
             this.getAllActiveClassBasedonStream();
             this.getAllActiveSubjectBasedonClass();
             this.subjectId = item.lms_subject_id;
@@ -775,6 +787,7 @@ export default {
                                 this.subjectId = "";
                                 this.topicName = "";
                                 this.topicCode = "";
+                                this.classId = "";
                             }
                             // Course update failed
                             else if (data.responseData == 5) {

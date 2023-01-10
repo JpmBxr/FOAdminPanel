@@ -62,7 +62,7 @@ class TopicController extends Controller
             leftJoin('lms_subject', 'lms_subject.lms_subject_id', '=', 'lms_topic.lms_subject_id')->
             leftJoin('lms_course', 'lms_course.lms_course_id', '=', 'lms_topic.lms_course_id')->
             leftJoin('lms_child_course', 'lms_topic.lms_child_course_id', '=', 'lms_child_course.lms_child_course_id')->
-            select(['lms_topic.lms_subject_id', 'lms_topic.lms_course_id', 'lms_subject_name', 'lms_course_name', 'lms_topic_id','lms_topic_name',
+            select(['lms_topic.lms_subject_id', 'lms_topic.lms_course_id', 'lms_subject_name', 'lms_course_name', 'lms_topic_id','lms_topic_name','lms_child_course.lms_child_course_id',
             'lms_topic_code', 'lms_child_course.lms_child_course_name',
             DB::raw("( SELECT count(distinct lms_youtube_video.video_id)
             FROM lms_youtube_video where
