@@ -1,5 +1,5 @@
 <template>
-    <div style="background-color: #d7d8db; height: 100%" id="app">
+    <div style="margin: auto; padding: auto; width: 1200px" id="app">
         <v-container
             style="background-color: #fff"
             class="ma-4 pa-0"
@@ -91,7 +91,8 @@
                                             item-text="lms_information_source_name"
                                             item-value="lms_information_source_id"
                                             :rules="[
-                                                v => !!v || $t('label_required')
+                                                (v) =>
+                                                    !!v || $t('label_required'),
                                             ]"
                                         >
                                             <template #label>
@@ -125,7 +126,7 @@
                                         </v-select>
                                     </v-col>
                                 </v-row>
-                                
+
                                 <v-row dense class="mx-2">
                                     <v-col cols="12" md="6" sm="6">
                                         <v-select
@@ -165,7 +166,8 @@
                                             item-text="lms_child_course_name"
                                             item-value="lms_child_course_id"
                                             :rules="[
-                                                v => !!v || $t('label_required')
+                                                (v) =>
+                                                    !!v || $t('label_required'),
                                             ]"
                                         >
                                             <template #label>
@@ -181,7 +183,7 @@
                                 </v-row>
 
                                 <v-row dense class="ml-2 mr-2 mt-2">
-                                     <v-col cols="12" md="4" sm="6">
+                                    <v-col cols="12" md="4" sm="6">
                                         <v-select
                                             outlined
                                             dense
@@ -189,10 +191,8 @@
                                             :items="classItems"
                                             item-text="lms_enquiry_class"
                                             item-value="lms_enquiry_class"
-                                     >
-                                            <template #label>
-                                                 Class 
-                                            </template>
+                                        >
+                                            <template #label> Class </template>
                                         </v-select>
                                     </v-col>
 
@@ -202,12 +202,10 @@
                                             dense
                                             v-model="lms_enquiry_section"
                                             :items="sectionItems"
-                                          
                                         >
                                             <template #label>
-                                                 Section 
-                                              </template
-                                            >
+                                                Section
+                                            </template>
                                         </v-select>
                                     </v-col>
 
@@ -216,10 +214,9 @@
                                             v-model="lms_roll_no"
                                             outlined
                                             dense
-                                            
                                         >
                                             <template #label>
-                                              Roll No
+                                                Roll No
                                             </template>
                                         </v-text-field>
                                     </v-col>
@@ -233,7 +230,8 @@
                                             v-model="firstName"
                                             @keypress="isCharacters"
                                             :rules="[
-                                                v => !!v || $t('label_required')
+                                                (v) =>
+                                                    !!v || $t('label_required'),
                                             ]"
                                         >
                                             <template #label>
@@ -253,7 +251,8 @@
                                             v-model="lastName"
                                             @keypress="isCharacters"
                                             :rules="[
-                                                v => !!v || $t('label_required')
+                                                (v) =>
+                                                    !!v || $t('label_required'),
                                             ]"
                                         >
                                             <template #label>
@@ -300,7 +299,8 @@
                                             v-model="selectedGender"
                                             :items="genderItems"
                                             :rules="[
-                                                v => !!v || $t('label_required')
+                                                (v) =>
+                                                    !!v || $t('label_required'),
                                             ]"
                                         >
                                             <template #label>
@@ -346,9 +346,11 @@
                                                     v-bind="attrs"
                                                     v-on="on"
                                                     :rules="[
-                                                        v =>
+                                                        (v) =>
                                                             !!v ||
-                                                            $t('label_required')
+                                                            $t(
+                                                                'label_required'
+                                                            ),
                                                     ]"
                                                 >
                                                     <template #label>
@@ -408,9 +410,14 @@
                                                     v-bind="attrs"
                                                     v-on="on"
                                                 >
-                                                    <template #label>{{
-                                                        $t("label_doj")
-                                                    }}</template>
+                                                    <template #label>
+                                                        {{ $t("label_doj") }}
+                                                        <span class="red--text">
+                                                            <strong>{{
+                                                                $t("label_star")
+                                                            }}</strong>
+                                                        </span>
+                                                    </template>
                                                 </v-text-field>
                                             </template>
                                             <v-date-picker
@@ -451,16 +458,16 @@
                                             :counter="10"
                                             @keypress="isDigit"
                                             :rules="[
-                                                v =>
+                                                (v) =>
                                                     !!v ||
                                                     $t(
                                                         'label_provide_valid_mobile_number'
                                                     ),
-                                                v =>
+                                                (v) =>
                                                     (v && v.length >= 10) ||
                                                     $t(
                                                         'label_mobile_number_10_digits'
-                                                    )
+                                                    ),
                                             ]"
                                         >
                                             <template #label>
@@ -495,16 +502,16 @@
                                             v-model="email"
                                             type="email"
                                             :rules="[
-                                                v =>
+                                                (v) =>
                                                     !!v || $t('label_required'),
-                                                v =>
+                                                (v) =>
                                                     !v ||
                                                     /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
                                                         v
                                                     ) ||
                                                     $t(
                                                         'label_provide_valid_email'
-                                                    )
+                                                    ),
                                             ]"
                                         >
                                             <template #label>
@@ -530,7 +537,7 @@
                                             <template
                                                 v-slot:selection="{
                                                     index,
-                                                    text
+                                                    text,
                                                 }"
                                             >
                                                 <v-chip
@@ -619,8 +626,8 @@
                         color="primary"
                         :disabled="
                             !isBasicHoldingFormValid ||
-                                isBasicFormDataProcessing ||
-                                alertMessage == ''
+                            isBasicFormDataProcessing ||
+                            alertMessage == ''
                         "
                         @click="saveBasicInfo()"
                         >{{
@@ -653,22 +660,35 @@ export default {
     props: ["userPermissionDataProps", "enquiryDataProps"],
     data() {
         return {
-            
-            lms_enquiry_class: this.enquiryDataProps != null
+            lms_enquiry_class:
+                this.enquiryDataProps != null
                     ? this.enquiryDataProps.lms_enquiry_class
                     : "",
-            
-            classItems:["II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"],
-            
-            lms_enquiry_section:this.enquiryDataProps != null
+
+            classItems: [
+                "II",
+                "III",
+                "IV",
+                "V",
+                "VI",
+                "VII",
+                "VIII",
+                "IX",
+                "X",
+                "XI",
+                "XII",
+            ],
+
+            lms_enquiry_section:
+                this.enquiryDataProps != null
                     ? this.enquiryDataProps.lms_enquiry_section
                     : "",
-            lms_roll_no:this.enquiryDataProps != null
-                 ? this.enquiryDataProps.lms_roll_no
-                  : "",      
-            sectionItems:["A","B","C","D","E","F","G"],
-            
-            
+            lms_roll_no:
+                this.enquiryDataProps != null
+                    ? this.enquiryDataProps.lms_roll_no
+                    : "",
+            sectionItems: ["A", "B", "C", "D", "E", "F", "G"],
+
             childCourseItems: [],
 
             alertType: "",
@@ -734,7 +754,7 @@ export default {
                 "Married",
                 "Widowed",
                 "Seprated",
-                "Not specified"
+                "Not specified",
             ],
             selectedGender:
                 this.enquiryDataProps != null
@@ -803,7 +823,7 @@ export default {
             isUploadDocumentFormValid: true,
             isUploadDocumentFormDataProcessing: false,
 
-            fileRule: []
+            fileRule: [],
         };
     },
     watch: {
@@ -812,9 +832,9 @@ export default {
             this.mobileRules =
                 this.whatsAppNumber != ""
                     ? [
-                          v =>
+                          (v) =>
                               (v && v.length >= 10) ||
-                              this.$t("label_whatsapp_mobile_number_10_digits")
+                              this.$t("label_whatsapp_mobile_number_10_digits"),
                       ]
                     : [];
         },
@@ -824,10 +844,10 @@ export default {
             this.imageRule =
                 this.selectedProfilePicture != null
                     ? [
-                          v =>
+                          (v) =>
                               !v ||
                               v.size <= 1048576 ||
-                              this.$t("label_file_size_criteria_1_mb")
+                              this.$t("label_file_size_criteria_1_mb"),
                       ]
                     : [];
         },
@@ -836,19 +856,18 @@ export default {
             this.whatsAppMobileRules =
                 this.whatsApp != " "
                     ? [
-                          v =>
+                          (v) =>
                               (v && v.length >= 10) ||
-                              this.$t("label_whatsapp_mobile_number_10_digits")
+                              this.$t("label_whatsapp_mobile_number_10_digits"),
                       ]
                     : [];
-        }
+        },
     },
     created() {
-        
         console.log(this.enquiryDataProps);
         // Token Config
         this.authorizationConfig = {
-            headers: { Authorization: "Bearer " + ls.get("token") }
+            headers: { Authorization: "Bearer " + ls.get("token") },
         };
         // Get Prefix Setting
         this.getPrefixModuleWise();
@@ -874,9 +893,9 @@ export default {
                 .get(`web_get_all_active_child_course_wp`, {
                     params: {
                         centerId: ls.get("loggedUserCenterId"),
-                        courseId: this.selectedCourseId
+                        courseId: this.selectedCourseId,
                     },
-                    headers: { Authorization: "Bearer " + ls.get("token") }
+                    headers: { Authorization: "Bearer " + ls.get("token") },
                 })
                 .then(({ data }) => {
                     this.subjectDataLoading = false;
@@ -890,7 +909,7 @@ export default {
                         this.childCourseItems = data;
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.isSourceDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
@@ -955,9 +974,9 @@ export default {
                 .get(`web_get_prefix_module_wise`, {
                     params: {
                         centerId: ls.get("loggedUserCenterId"),
-                        prefixModuleName: "Enquiry Code"
+                        prefixModuleName: "Enquiry Code",
                     },
-                    headers: { Authorization: "Bearer " + ls.get("token") }
+                    headers: { Authorization: "Bearer " + ls.get("token") },
                 })
                 .then(({ data }) => {
                     //User Unauthorized
@@ -986,7 +1005,7 @@ export default {
                         }
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
                         this.$t("label_something_went_wrong")
@@ -999,9 +1018,9 @@ export default {
             this.$http
                 .get(`web_get_all_active_sources_without_pagination`, {
                     params: {
-                        centerId: ls.get("loggedUserCenterId")
+                        centerId: ls.get("loggedUserCenterId"),
                     },
-                    headers: { Authorization: "Bearer " + ls.get("token") }
+                    headers: { Authorization: "Bearer " + ls.get("token") },
                 })
                 .then(({ data }) => {
                     this.isSourceDataLoading = false;
@@ -1015,7 +1034,7 @@ export default {
                         this.sourceItems = data;
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.isSourceDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
@@ -1030,9 +1049,9 @@ export default {
             this.$http
                 .get(`web_get_active_course_without_pagination`, {
                     params: {
-                        centerId: ls.get("loggedUserCenterId")
+                        centerId: ls.get("loggedUserCenterId"),
                     },
-                    headers: { Authorization: "Bearer " + ls.get("token") }
+                    headers: { Authorization: "Bearer " + ls.get("token") },
                 })
                 .then(({ data }) => {
                     this.isCourseDataLoading = false;
@@ -1046,7 +1065,7 @@ export default {
                         this.courseItems = data;
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.isCourseDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
@@ -1061,9 +1080,9 @@ export default {
             this.$http
                 .get(`web_get_active_school_without_pagination`, {
                     params: {
-                        centerId: ls.get("loggedUserCenterId")
+                        centerId: ls.get("loggedUserCenterId"),
                     },
-                    headers: { Authorization: "Bearer " + ls.get("token") }
+                    headers: { Authorization: "Bearer " + ls.get("token") },
                 })
                 .then(({ data }) => {
                     this.isSchoolDataLoading = false;
@@ -1077,7 +1096,7 @@ export default {
                         this.schoolItems = data;
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.isSchoolDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
@@ -1092,8 +1111,8 @@ export default {
                 this.authorizationConfig = {
                     headers: {
                         Authorization: "Bearer " + ls.get("token"),
-                        "content-type": "multipart/form-data"
-                    }
+                        "content-type": "multipart/form-data",
+                    },
                 };
                 this.isBasicFormDataProcessing = true;
                 let basicFormData = new FormData();
@@ -1101,7 +1120,7 @@ export default {
                     "isEnquiryBasicEdit",
                     this.isEnquiryBasicEdit
                 );
-              
+
                 basicFormData.append(
                     "lms_enquiry_class",
                     this.lms_enquiry_class
@@ -1110,11 +1129,8 @@ export default {
                     "lms_enquiry_section",
                     this.lms_enquiry_section
                 );
-                basicFormData.append(
-                    "lms_roll_no",
-                    this.lms_roll_no
-                );
-              
+                basicFormData.append("lms_roll_no", this.lms_roll_no);
+
                 basicFormData.append("centerId", ls.get("loggedUserCenterId"));
                 if (this.enquiryId != "") {
                     basicFormData.append("enquiryId", this.enquiryId);
@@ -1273,8 +1289,11 @@ export default {
                                 );
                             }
                         }
+                        this.$router.push({
+                            name: "EnquiryDirectory",
+                        });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.isBasicFormDataProcessing = false;
                         this.snackBarColor = "error";
                         this.changeSnackBarMessage(
@@ -1282,7 +1301,7 @@ export default {
                         );
                     });
             }
-        }
-    }
+        },
+    },
 };
 </script>

@@ -639,3 +639,9 @@ Route::group(['middleware' => ['auth:api', 'permission:Staff']], function () {
     Route::post('web_save_update_school', 'SchoolController@saveUpdateSchool')->name('web_save_update_school');
     Route::post('web_enable_disable_school', 'SchoolController@enableDisableSchool')->name('web_enable_disable_school');
 });
+
+Route::group(['middleware' => ['auth:api', 'permission:Add Staff|Edit Staff']], function () {
+
+    // save staff basic info
+    Route::post('web_register_user', 'EnquiryController@registerUser')->name('web_register_user');
+});

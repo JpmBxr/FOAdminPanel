@@ -151,7 +151,7 @@ class EnquiryController extends Controller
     // Add/Edit Enquiry Basic Info
     public function saveEditEnquiryBasicInfo(Request $request)
     {
-
+       
         // Server side validation rules
         $validation = Validator::make($request->all(), [
             // Later on check nullable with numeric condition(presently removed from code)
@@ -199,7 +199,7 @@ class EnquiryController extends Controller
             $enquiryDOB = $request->enquiryDOB;
             $enquiryDOJ = $request->enquiryDOJ;
             $enquiryContactNumber = $request->enquiryContactNumber;
-            $whatsAppNumber = $request->whatsAppNumber;
+            $whatsAppNumber = $request->enquiryWhatsAppNumber;
             $enquiryEmail = $request->enquiryEmail;
             $enquiryCurrentAddress = $request->enquiryCurrentAddress;
             $enquiryPermanentAddress = $request->enquiryPermanentAddress;
@@ -209,7 +209,7 @@ class EnquiryController extends Controller
             $isEnquiryBasicEdit = $request->isEnquiryBasicEdit;
             $lms_enquiry_class=$request->lms_enquiry_class;
             $lms_enquiry_section=$request->lms_enquiry_section;
-            $lms_enquiry_roll_no=$request->lms_enquiry_roll_no;
+            $lms_enquiry_roll_no=$request->lms_roll_no;
 
             $result = EnquiryModel::saveEditEnquiryBasicInfo(
                 $centerId,

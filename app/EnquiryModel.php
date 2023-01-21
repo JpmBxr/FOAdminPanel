@@ -76,7 +76,7 @@ class EnquiryModel extends Model
         $lms_enquiry_permanent_address,
         $lms_user_can_change_profile_image
     ) {
-
+    
 
         if ($lms_user_can_change_profile_image == "true") {
             $lms_user_can_change_profile_image = 1;
@@ -196,7 +196,10 @@ class EnquiryModel extends Model
         $enquiryWorkExp,
         $enquiryAbout,
         $isEnquiryBasicEdit,
-        $lms_child_course_id
+        $lms_child_course_id,
+        $lms_enquiry_class,
+        $lms_enquiry_section,
+        $lms_enquiry_roll_no
     ) {
 
         if ($isEnquiryBasicEdit == 1) {
@@ -257,6 +260,9 @@ class EnquiryModel extends Model
                                 'lms_enquiry_gender' => $enquiryGender,
                                 'lms_enquiry_updated_at' => now(),
                                 'lms_enquiry_updated_by' => $loggedUserId,
+                                'lms_enquiry_class'=> $lms_enquiry_class,
+                                'lms_enquiry_section' => $lms_enquiry_section,
+                                'lms_roll_no' => $lms_enquiry_roll_no
 
                             ]);
                     } else {
@@ -353,6 +359,9 @@ class EnquiryModel extends Model
                                 'lms_enquiry_gender' => $enquiryGender,
                                 'lms_enquiry_created_by' => $loggedUserId,
                                 'lms_enquiry_handled_by' => $loggedUserId,
+                                'lms_enquiry_class'=> $lms_enquiry_class,
+                                'lms_enquiry_section' => $lms_enquiry_section,
+                                'lms_roll_no' => $lms_enquiry_roll_no
                             ]
                         );
                     } else {
