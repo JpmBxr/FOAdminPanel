@@ -1,5 +1,5 @@
 <template>
-    <div style=" margin:auto; padding:auto; width:1200px;" id="app">
+    <div style="margin: auto; padding: auto; width: 1200px" id="app">
         <v-container
             style="background-color: #fff"
             class="ma-4 pa-0"
@@ -63,22 +63,18 @@
                     :items-per-page="25"
                     @pagination="getAllEnquiry"
                     :footer-props="{
-                        itemsPerPageOptions: [25, 50, 100, 200, -1]
+                        itemsPerPageOptions: [25, 50, 100, 200, -1],
                     }"
                 >
                     <template v-slot:no-data>
                         <p
                             class="font-weight-black bold title"
-                            style="color:red"
+                            style="color: red"
                         >
                             {{ $t("label_no_data_found") }}
                         </p>
                     </template>
-                    <template
-                        v-slot:item.lms_enquiry_status="{
-                            item
-                        }"
-                    >
+                    <template v-slot:item.lms_enquiry_status="{ item }">
                         <v-chip
                             x-small
                             :color="getStatusColor(item.lms_enquiry_status)"
@@ -162,7 +158,7 @@
                                     v-permission="'Add Enquiry|Edit Enquiry'"
                                     small
                                     class="mr-2"
-                                    @click="registerUser(item)"
+                                    @click="editEnquiry(item)"
                                     color="teal"
                                     >mdi-account-plus</v-icon
                                 >
@@ -276,56 +272,56 @@ export default {
                 {
                     text: this.$t("label_code"),
                     value: "lms_enquiry_code",
-                    width: "10%",
-                    sortable: false
+                    width: "7%",
+                    sortable: false,
                 },
                 {
                     text: this.$t("label_date"),
                     value: "lms_enquiry_created_at",
                     width: "15%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: this.$t("label_name"),
                     value: "lms_enquiry_full_name",
-                    width: "15%",
-                    sortable: false
+                    width: "10%",
+                    sortable: false,
                 },
                 {
                     text: "Class",
                     value: "lms_enquiry_class",
                     width: "5%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: "Section",
                     value: "lms_enquiry_section",
                     width: "5%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: "Roll No.",
                     value: "lms_roll_no",
                     width: "5%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: "Course",
                     value: "lms_child_course_name",
                     width: "5%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: this.$t("label_source"),
                     value: "source_name",
                     width: "5%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: this.$t("label_mobile"),
                     value: "lms_enquiry_mobile",
-                    width: "10%",
-                    sortable: false
+                    width: "8%",
+                    sortable: false,
                 },
 
                 {
@@ -333,15 +329,15 @@ export default {
                     value: "lms_enquiry_status",
                     align: "middle",
                     width: "5%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: this.$t("label_actions"),
                     value: "actions",
                     sortable: false,
-                    width: "20%",
-                    align: "middle"
-                }
+                    width: "25%",
+                    align: "middle",
+                },
             ],
             tableItems: [],
             isDataProcessing: false,
@@ -359,14 +355,14 @@ export default {
                 Course: "lms_child_course_name",
                 Source: "source_name",
                 Mobile: "lms_enquiry_mobile",
-                Status: "lms_enquiry_status"
+                Status: "lms_enquiry_status",
             },
             excelData: [],
             excelFileName:
                 "EnquiryListAsExcel" +
                 "_" +
                 moment().format("DD/MM/YYYY") +
-                ".xls"
+                ".xls",
         };
     },
     computed: {
@@ -374,9 +370,9 @@ export default {
         dataTableRowNumbering() {
             return this.tableItems.map((items, index) => ({
                 ...items,
-                index: index + 1
+                index: index + 1,
             }));
-        }
+        },
 
         //End
     },
@@ -384,7 +380,7 @@ export default {
     created() {
         // Token Config
         this.authorizationConfig = {
-            headers: { Authorization: "Bearer " + ls.get("token") }
+            headers: { Authorization: "Bearer " + ls.get("token") },
         };
 
         // Get all active sources
@@ -398,9 +394,9 @@ export default {
             this.$http
                 .get(`web_get_all_active_sources_without_pagination`, {
                     params: {
-                        centerId: ls.get("loggedUserCenterId")
+                        centerId: ls.get("loggedUserCenterId"),
                     },
-                    headers: { Authorization: "Bearer " + ls.get("token") }
+                    headers: { Authorization: "Bearer " + ls.get("token") },
                 })
                 .then(({ data }) => {
                     this.isSourceDataLoading = false;
@@ -414,7 +410,7 @@ export default {
                         this.sourceData = data;
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.isSourceDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
@@ -431,7 +427,7 @@ export default {
         viewEnquiry(item) {
             this.$router.push({
                 name: "AddEnquiry",
-                params: { enquiryDataProps: item }
+                params: { enquiryDataProps: item },
             });
         },
         // Edit Staff
@@ -440,13 +436,13 @@ export default {
             console.log(item);
             this.$router.push({
                 name: "AddEnquiry",
-                params: { enquiryDataProps: item }
+                params: { enquiryDataProps: item },
             });
         },
         // Add Staff
         addEnquiry() {
             this.$router.push({
-                name: "AddEnquiry"
+                name: "AddEnquiry",
             });
         },
 
@@ -468,7 +464,7 @@ export default {
                             mobileNumber: item.lms_enquiry_mobile,
                             enquiryEmail: item.lms_enquiry_email,
                             lms_enquiry_id: item.lms_enquiry_id,
-                            password: "123456"
+                            password: "123456",
                         },
                         this.authorizationConfig
                     )
@@ -510,7 +506,7 @@ export default {
                             }
                         }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.isDataProcessing = false;
                         this.snackBarColor = "error";
                         this.changeSnackBarMessage(
@@ -537,7 +533,7 @@ export default {
                             loggedUserId: ls.get("loggedUserId"),
                             lms_enquiry_id: item.lms_enquiry_id,
                             lms_enquiry_status:
-                                item.lms_enquiry_status == "Active" ? 0 : 1
+                                item.lms_enquiry_status == "Active" ? 0 : 1,
                         },
                         this.authorizationConfig
                     )
@@ -567,7 +563,7 @@ export default {
                             }
                         }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.isDataProcessing = false;
                         this.snackBarColor = "error";
                         this.changeSnackBarMessage(
@@ -589,7 +585,7 @@ export default {
                         e.itemsPerPage == -1
                             ? this.totalItemsInDB
                             : e.itemsPerPage,
-                    filterBy: this.selectedSource
+                    filterBy: this.selectedSource,
                 };
             } else {
                 postData = {
@@ -598,14 +594,14 @@ export default {
                         e.itemsPerPage == -1
                             ? this.totalItemsInDB
                             : e.itemsPerPage,
-                    filterBy: this.staffSearchCriteria
+                    filterBy: this.staffSearchCriteria,
                 };
             }
 
             this.$http
                 .get(`web_get_all_enquiry?page=${e.page}`, {
                     params: postData,
-                    headers: { Authorization: "Bearer " + ls.get("token") }
+                    headers: { Authorization: "Bearer " + ls.get("token") },
                 })
                 .then(({ data }) => {
                     this.tableDataLoading = false;
@@ -621,7 +617,7 @@ export default {
                         this.excelData = data.data;
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.tableDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
@@ -651,12 +647,11 @@ export default {
                     { header: "Source", dataKey: "source_name" },
                     { header: "Mobile", dataKey: "lms_enquiry_mobile" },
                     { header: "Status", dataKey: "lms_enquiry_status" },
-
                 ],
                 body: this.tableItems,
                 //styles: { fillColor: [255, 0, 0] },
                 // columnStyles: { 0: { halign: 'center', fillColor: [0, 255, 0] } },
-                margin: { top: 10 }
+                margin: { top: 10 },
             });
             pdfDoc.save(
                 "EnquiryListAsPDF" +
@@ -664,8 +659,8 @@ export default {
                     moment().format("DD/MM/YYYY") +
                     ".pdf"
             );
-        }
-    }
+        },
+    },
 };
 </script>
 
