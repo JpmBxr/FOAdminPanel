@@ -173,10 +173,10 @@ a[x-apple-data-detectors] {
                      </tr> 
              
                      <tr style="border-collapse:collapse"> 
-                      <td align="center" style="padding:0;Margin:0"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'open sans', 'helvetica neue', helvetica, arial, sans-serif;line-height:23px;color:#333333;font-size:15px;font-style:normal;font-weight:bold;color:#333333"">User Id:&nbsp; {{ $details['loginId'] }}</p> </td> 
+                      <td align="center" style="padding:0;Margin:0"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'open sans', 'helvetica neue', helvetica, arial, sans-serif;line-height:23px;color:#333333;font-size:15px;font-style:normal;font-weight:bold;color:#333333"">User Id:&nbsp; {{ $details['loginId']??'' }}</p> </td> 
                      </tr> 
                      <tr style="border-collapse:collapse"> 
-                      <td align="center" style="padding:0;Margin:0"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'open sans', 'helvetica neue', helvetica, arial, sans-serif;line-height:23px;color:#333333;font-size:15px;font-style:normal;font-weight:bold;color:#333333"">Password:&nbsp;{{ $details['password'] }}</p> </td> 
+                      <td align="center" style="padding:0;Margin:0"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'open sans', 'helvetica neue', helvetica, arial, sans-serif;line-height:23px;color:#333333;font-size:15px;font-style:normal;font-weight:bold;color:#333333"">Password:&nbsp;{{ $details['password']??'' }}</p> </td> 
                      </tr> 
                     
                      <tr style="border-collapse:collapse"> 

@@ -281,7 +281,17 @@ const router = new Router({
                     },
                     props: true
                 },
-
+                // Enquiry - Add Register
+                {
+                    path: "enquiry/add-register",
+                    component: require("../../components/enquiry_components/AddRegisterView.vue")
+                        .default,
+                    name: "AddRegister",
+                    meta: {
+                        requiresAuth: true
+                    },
+                    props: true
+                },
                 // School - Add School
                 {
                     path: "school/add-school",

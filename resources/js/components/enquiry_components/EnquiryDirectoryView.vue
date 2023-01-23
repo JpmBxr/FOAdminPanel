@@ -158,7 +158,7 @@
                                     v-permission="'Add Enquiry|Edit Enquiry'"
                                     small
                                     class="mr-2"
-                                    @click="editEnquiry(item)"
+                                    @click="register(item)"
                                     color="teal"
                                     >mdi-account-plus</v-icon
                                 >
@@ -436,6 +436,14 @@ export default {
             console.log(item);
             this.$router.push({
                 name: "AddEnquiry",
+                params: { enquiryDataProps: item },
+            });
+        },
+
+        register(item) {
+            console.log(item);
+            this.$router.push({
+                name: "AddRegister",
                 params: { enquiryDataProps: item },
             });
         },

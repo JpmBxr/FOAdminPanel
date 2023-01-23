@@ -328,7 +328,7 @@ class EnquiryModel extends Model
                             ->where('lms_notification_setting_id', 2)
                             ->get();
 
-                        echo $checkEmailSMSSentQuery;
+                      
 
                         $enquiryCreateQuery = DB::table('lms_enquiry')->insertGetId(
                             [
@@ -379,14 +379,14 @@ class EnquiryModel extends Model
                 }
                 DB::commit();
 
-                if ($checkEmailSMSSentQuery[0]->lms_notification_setting_is_mail == "1") {
-                    //send Mail
-                    EnquiryModel::sendMail($centerId, $enquiryCode, $enquiryContactNumber, $enquiryEmail);
-                }
-                if ($checkEmailSMSSentQuery[0]->lms_notification_setting_is_sms == "1") {
-                    //send SMS
-                    EnquiryModel::sendSMS($centerId, $enquiryPassword, $enquiryContactNumber, $checkEmailSMSSentQuery[0]->lms_notification_setting_template, $enquiryFirstName);
-                }
+                // if ($checkEmailSMSSentQuery[0]->lms_notification_setting_is_mail == "1") {
+                //     //send Mail
+                //     EnquiryModel::sendMail($centerId, $enquiryCode, $enquiryContactNumber, $enquiryEmail);
+                // }
+                // if ($checkEmailSMSSentQuery[0]->lms_notification_setting_is_sms == "1") {
+                //     //send SMS
+                //     EnquiryModel::sendSMS($centerId, $enquiryPassword, $enquiryContactNumber, $checkEmailSMSSentQuery[0]->lms_notification_setting_template, $enquiryFirstName);
+                // }
 
                 if ($checkEmailSMSSentQuery[0]->lms_notification_setting_is_sms == "1" && $checkEmailSMSSentQuery[0]->lms_notification_setting_is_mail == "1") {
                     //send SMS & Email Both
@@ -405,17 +405,18 @@ class EnquiryModel extends Model
                 DB::rollback();
 
                 $result_data['responseData'] = 5;
-                return $result_data;
+                return $ex->getMessage();
             }
         }
     }
+
 
     //End of Add Enquiry
 
     public static function sendMail($centerId, $enquiryCode, $enquiryContactNumber, $enquiryEmail)
     {
         $getEmailSettingQuery = DB::table('lms_email_setting')->where('lms_center_id', $centerId)
-            ->where('lms_email_setting_is_active', 1)
+            ->where('lms_email_setting_is_active', 2)
             ->get();
 
         $config = array(
@@ -430,6 +431,7 @@ class EnquiryModel extends Model
             'pretend' => false,
 
         );
+    
         Config::set('mail', $config);
         $staffDetails = [
             'enquiryCode' => $enquiryCode,
@@ -449,6 +451,7 @@ class EnquiryModel extends Model
                 array($enquiryFirstName, $enquiryContactNumber),
                 $smsTemplate
             ));
+          
             $smsApiKey = $getSMSSettingQuery[0]->lms_sms_api_key;
             $smsSenderId = $getSMSSettingQuery[0]->lms_sms_setting_sender_id;
 
