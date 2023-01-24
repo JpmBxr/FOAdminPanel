@@ -637,20 +637,7 @@
                         }}</v-btn
                     >
 
-                    <v-btn
-                        color="primary"
-                        :disabled="
-                            !isBasicHoldingFormValid ||
-                            isBasicFormDataProcessing ||
-                            alertMessage == ''
-                        "
-                        @click="registerUser()"
-                        >{{
-                            isBasicFormDataProcessing == true
-                                ? $t("label_processing")
-                                : $t("label_save")
-                        }}</v-btn
-                    >
+           
                 </v-stepper-content>
             </v-stepper>
 
@@ -1122,6 +1109,7 @@ export default {
         //Save basic info
         saveBasicInfo() {
             if (this.$refs.holdingFormBasic.validate()) {
+               
                 // Save/Edit Basic Info
                 this.authorizationConfig = {
                     headers: {
@@ -1271,7 +1259,7 @@ export default {
 
                             // Enquiry Saved
                             else if (data.responseData == 4) {
-                                alert(data.responseData);
+                             
                                 this.snackBarColor = "success";
                                 this.changeSnackBarMessage(
                                     this.$t("label_enquiry_details_saved")
@@ -1281,11 +1269,12 @@ export default {
                                 this.enquiryUserId = data.enquiryUserId;
                                 this.enquiryCode = data.enquiryCode;
 
-                                setTimeout(() => {
+
+                                setTimeout(()=>{
                                     this.$router.push({
-                                        name: "EnquiryDirectory",
-                                    });
-                                }, 2000);
+                                      name: "EnquiryDirectory",
+                                      });
+                                  },2000)
                                 // this.stepperInfo = 2;
                             }
                             // Enquiry save failed
@@ -1301,12 +1290,12 @@ export default {
                                 this.changeSnackBarMessage(
                                     this.$t("label_enquiry_details_updated")
                                 );
-
-                                setTimeout(() => {
+                               
+                                setTimeout(()=>{
                                     this.$router.push({
-                                        name: "EnquiryDirectory",
-                                    });
-                                }, 2000);
+                                      name: "EnquiryDirectory",
+                                      });
+                                  },2000)
                                 // this.stepperInfo = 2;
                             } else if (data.responseData == 7) {
                                 this.snackBarColor = "error";
@@ -1315,6 +1304,7 @@ export default {
                                 );
                             }
                         }
+                      
                     })
                     .catch((error) => {
                         this.isBasicFormDataProcessing = false;

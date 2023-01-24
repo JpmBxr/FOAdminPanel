@@ -158,7 +158,7 @@
                                     v-permission="'Add Enquiry|Edit Enquiry'"
                                     small
                                     class="mr-2"
-                                    @click="register(item)"
+                                    @click="registerUser(item)"
                                     color="teal"
                                     >mdi-account-plus</v-icon
                                 >
@@ -440,7 +440,7 @@ export default {
             });
         },
 
-        register(item) {
+        registerUser(item) {
             console.log(item);
             this.$router.push({
                 name: "AddRegister",
@@ -455,74 +455,74 @@ export default {
         },
 
         // Enable  Disable Staff Status
-        registerUser(item, $event) {
-            let userDecision = confirm(this.$t("label_student_admission"));
-            if (userDecision) {
-                this.isDataProcessing = true;
-                this.$http
-                    .post(
-                        "web_register_user",
-                        {
-                            centerId: ls.get("loggedUserCenterId"),
-                            loggedUserId: ls.get("loggedUserId"),
-                            courseId: item.lms_course_id,
-                            childCourseId: item.lms_child_course_id,
-                            firstName: item.lms_enquiry_first_name,
-                            lastName: item.lms_enquiry_last_name,
-                            mobileNumber: item.lms_enquiry_mobile,
-                            enquiryEmail: item.lms_enquiry_email,
-                            lms_enquiry_id: item.lms_enquiry_id,
-                            password: "123456",
-                        },
-                        this.authorizationConfig
-                    )
-                    .then(({ data }) => {
-                        console.log(data.responseData);
-                        this.isDataProcessing = false;
-                        //User Unauthorized
-                        if (
-                            data.error == "Unauthorized" ||
-                            data.permissionError == "Unauthorized"
-                        ) {
-                            this.$store.dispatch("actionUnauthorizedLogout");
-                        } else {
-                            // Staff Status changed
-                            if (data.responseData == 1) {
-                                this.snackBarColor = "success";
-                                this.changeSnackBarMessage(
-                                    this.$t("label_staff_status_changed")
-                                );
-                                this.getAllEnquiry(event);
-                            } else if (data.responseData == 3) {
-                                this.snackBarColor = "error";
-                                this.changeSnackBarMessage(
-                                    this.$t("label_email_exists")
-                                );
-                                this.getAllEnquiry(event);
-                            } else if (data.responseData == 4) {
-                                this.snackBarColor = "error";
-                                this.changeSnackBarMessage(
-                                    this.$t("label_mobile_exists")
-                                );
-                                this.getAllEnquiry(event);
-                            } else if (data.responseData == 2) {
-                                console.log("Error");
-                                this.snackBarColor = "error";
-                                this.changeSnackBarMessage(
-                                    this.$t("label_something_went_wrong")
-                                );
-                            }
-                        }
-                    })
-                    .catch((error) => {
-                        this.isDataProcessing = false;
-                        this.snackBarColor = "error";
-                        this.changeSnackBarMessage(
-                            this.$t("label_something_went_wrong")
-                        );
-                    });
-            }
-        },
+        // registerUser(item, $event) {
+        //     let userDecision = confirm(this.$t("label_student_admission"));
+        //     if (userDecision) {
+        //         this.isDataProcessing = true;
+        //         this.$http
+        //             .post(
+        //                 "web_register_user",
+        //                 {
+        //                     centerId: ls.get("loggedUserCenterId"),
+        //                     loggedUserId: ls.get("loggedUserId"),
+        //                     courseId: item.lms_course_id,
+        //                     childCourseId: item.lms_child_course_id,
+        //                     firstName: item.lms_enquiry_first_name,
+        //                     lastName: item.lms_enquiry_last_name,
+        //                     mobileNumber: item.lms_enquiry_mobile,
+        //                     enquiryEmail: item.lms_enquiry_email,
+        //                     lms_enquiry_id: item.lms_enquiry_id,
+        //                     password: "123456",
+        //                 },
+        //                 this.authorizationConfig
+        //             )
+        //             .then(({ data }) => {
+        //                 console.log(data.responseData);
+        //                 this.isDataProcessing = false;
+        //                 //User Unauthorized
+        //                 if (
+        //                     data.error == "Unauthorized" ||
+        //                     data.permissionError == "Unauthorized"
+        //                 ) {
+        //                     this.$store.dispatch("actionUnauthorizedLogout");
+        //                 } else {
+        //                     // Staff Status changed
+        //                     if (data.responseData == 1) {
+        //                         this.snackBarColor = "success";
+        //                         this.changeSnackBarMessage(
+        //                             this.$t("label_staff_status_changed")
+        //                         );
+        //                         this.getAllEnquiry(event);
+        //                     } else if (data.responseData == 3) {
+        //                         this.snackBarColor = "error";
+        //                         this.changeSnackBarMessage(
+        //                             this.$t("label_email_exists")
+        //                         );
+        //                         this.getAllEnquiry(event);
+        //                     } else if (data.responseData == 4) {
+        //                         this.snackBarColor = "error";
+        //                         this.changeSnackBarMessage(
+        //                             this.$t("label_mobile_exists")
+        //                         );
+        //                         this.getAllEnquiry(event);
+        //                     } else if (data.responseData == 2) {
+        //                         console.log("Error");
+        //                         this.snackBarColor = "error";
+        //                         this.changeSnackBarMessage(
+        //                             this.$t("label_something_went_wrong")
+        //                         );
+        //                     }
+        //                 }
+        //             })
+        //             .catch((error) => {
+        //                 this.isDataProcessing = false;
+        //                 this.snackBarColor = "error";
+        //                 this.changeSnackBarMessage(
+        //                     this.$t("label_something_went_wrong")
+        //                 );
+        //             });
+        //     }
+        // },
 
         // Enable  Disable Staff Status
         async enableDisableEnquiry(item, $event) {

@@ -10,15 +10,15 @@
                     <v-list-item two-line>
                         <v-list-item-content>
                             <v-list-item-title class="text-h5">
-                                <strong>Register Student</strong>
+                                <strong>Add Register</strong>
                             </v-list-item-title>
                             <v-list-item-subtitle
                                 >{{ $t("label_home")
                                 }}<v-icon>mdi-forward</v-icon>
-                                {{ $t("label_enquiry") }}
+                              Add Register
                                 <v-icon>mdi-forward</v-icon>
-                                Register Student
-                            </v-list-item-subtitle>
+                              Add Register</v-list-item-subtitle
+                            >
                         </v-list-item-content>
                     </v-list-item>
                 </v-toolbar-title>
@@ -627,13 +627,15 @@
                             isBasicFormDataProcessing ||
                             alertMessage == ''
                         "
-                        @click="registerUser()"
+                        @click="saveBasicInfo()"
                         >{{
                             isBasicFormDataProcessing == true
                                 ? $t("label_processing")
-                                : "Register"
+                                : 'Register'
                         }}</v-btn
                     >
+
+             
                 </v-stepper-content>
             </v-stepper>
 
@@ -1114,20 +1116,9 @@ export default {
                 };
                 this.isBasicFormDataProcessing = true;
                 let basicFormData = new FormData();
-                basicFormData.append(
-                    "isEnquiryBasicEdit",
-                    this.isEnquiryBasicEdit
-                );
+               
 
-                basicFormData.append(
-                    "lms_enquiry_class",
-                    this.lms_enquiry_class
-                );
-                basicFormData.append(
-                    "lms_enquiry_section",
-                    this.lms_enquiry_section
-                );
-                basicFormData.append("lms_roll_no", this.lms_roll_no);
+               
 
                 basicFormData.append("centerId", ls.get("loggedUserCenterId"));
                 if (this.enquiryId != "") {
@@ -1140,7 +1131,7 @@ export default {
                 basicFormData.append("enquirySourceId", this.selectedSourceId);
                 if (this.selectedCourseId != "") {
                     basicFormData.append(
-                        "enquiryCourseId",
+                        "courseId",
                         this.selectedCourseId
                     );
                 }
@@ -1151,32 +1142,9 @@ export default {
                     );
                 }
 
-                if (this.selectedSchoolId != "") {
-                    basicFormData.append(
-                        "enquirySchoolId",
-                        this.selectedSchoolId
-                    );
-                }
                 basicFormData.append("enquiryFirstName", this.firstName);
                 basicFormData.append("enquiryLastName", this.lastName);
-                if (this.fatherName != "") {
-                    basicFormData.append("enquiryFathersName", this.fatherName);
-                }
-                if (this.motherName != "") {
-                    basicFormData.append("enquiryMothersName", this.motherName);
-                }
-
-                basicFormData.append("enquiryGender", this.selectedGender);
-                if (this.selectedMaritalStatus != "") {
-                    basicFormData.append(
-                        "enquiryMaritalStatus",
-                        this.selectedMaritalStatus
-                    );
-                }
-                basicFormData.append("enquiryDOB", this.selectedDOB);
-                if (this.selectedDOJ != "") {
-                    basicFormData.append("enquiryDOJ", this.selectedDOJ);
-                }
+               
                 basicFormData.append(
                     "enquiryContactNumber",
                     this.contactNumber
@@ -1188,31 +1156,11 @@ export default {
                     );
                 }
                 basicFormData.append("enquiryEmail", this.email);
-                if (this.selectedProfilePicture != null) {
-                    basicFormData.append(
-                        "enquiryProfileImage",
-                        this.selectedProfilePicture
-                    );
-                }
-
-                basicFormData.append(
-                    "enquiryCurrentAddress",
-                    this.currentAddress
-                );
-                basicFormData.append(
-                    "enquiryPermanentAddress",
-                    this.permanentAddress
-                );
-                basicFormData.append(
-                    "enquiryQualification",
-                    this.qualification
-                );
-                basicFormData.append("enquiryWorkExp", this.workExperience);
-                basicFormData.append("enquiryAbout", this.aboutEnquiry);
+ 
 
                 this.$http
                     .post(
-                        "web_save_edit_enquiry_basic_info",
+                        "web_register_user",
                         basicFormData,
                         this.authorizationConfig
                     )
@@ -1226,139 +1174,30 @@ export default {
                             this.$store.dispatch("actionUnauthorizedLogout");
                         } else {
                             // Server side validation fails
-                            if (data.responseData == 0) {
-                                this.snackBarColor = "error";
-                                this.changeSnackBarMessage(data.error);
-                            }
-                            // Profile Image uppload failed
-                            else if (data.responseData == 1) {
-                                this.snackBarColor = "error";
-                                this.changeSnackBarMessage(
-                                    this.$t("label_image_upload_failed")
-                                );
-                            }
-                            // Email exists
-                            else if (data.responseData == 2) {
-                                this.snackBarColor = "error";
-                                this.changeSnackBarMessage(
-                                    this.$t("label_email_exists")
-                                );
-                            }
-                            // Mobile exists
-                            else if (data.responseData == 3) {
-                                this.snackBarColor = "error";
-                                this.changeSnackBarMessage(
-                                    this.$t("label_mobile_exists")
-                                );
-                            }
-
-                            // Enquiry Saved
-                            else if (data.responseData == 4) {
-                                alert(data.responseData);
-                                this.snackBarColor = "success";
-                                this.changeSnackBarMessage(
-                                    this.$t("label_enquiry_details_saved")
-                                );
-                                this.isEnquiryBasicEdit = 1;
-                                this.enquiryId = data.enquiryId;
-                                this.enquiryUserId = data.enquiryUserId;
-                                this.enquiryCode = data.enquiryCode;
-
-                                setTimeout(() => {
-                                    this.$router.push({
-                                        name: "EnquiryDirectory",
-                                    });
-                                }, 2000);
-                                // this.stepperInfo = 2;
-                            }
-                            // Enquiry save failed
-                            else if (data.responseData == 5) {
-                                this.snackBarColor = "error";
-                                this.changeSnackBarMessage(
-                                    this.$t("label_something_went_wrong")
-                                );
-                            }
-                            // Edit Success
-                            else if (data.responseData == 6) {
-                                this.snackBarColor = "success";
-                                this.changeSnackBarMessage(
-                                    this.$t("label_enquiry_details_updated")
-                                );
-
-                                setTimeout(() => {
-                                    this.$router.push({
-                                        name: "EnquiryDirectory",
-                                    });
-                                }, 2000);
-                                // this.stepperInfo = 2;
-                            } else if (data.responseData == 7) {
-                                this.snackBarColor = "error";
-                                this.changeSnackBarMessage(
-                                    this.$t("label_something_went_wrong")
-                                );
-                            }
-                        }
-                    })
-                    .catch((error) => {
-                        this.isBasicFormDataProcessing = false;
-                        this.snackBarColor = "error";
-                        this.changeSnackBarMessage(
-                            this.$t("label_something_went_wrong")
-                        );
-                    });
-            }
-        },
-
-        registerUser(item, $event) {
-            let userDecision = confirm(this.$t("label_student_admission"));
-            if (userDecision) {
-                this.isDataProcessing = true;
-                this.$http
-                    .post(
-                        "web_register_user",
-                        {
-                            centerId: ls.get("loggedUserCenterId"),
-                            loggedUserId: ls.get("loggedUserId"),
-                            courseId: item.lms_course_id,
-                            childCourseId: item.lms_child_course_id,
-                            firstName: item.lms_enquiry_first_name,
-                            lastName: item.lms_enquiry_last_name,
-                            mobileNumber: item.lms_enquiry_mobile,
-                            enquiryEmail: item.lms_enquiry_email,
-                            lms_enquiry_id: item.lms_enquiry_id,
-                            password: "123456",
-                        },
-                        this.authorizationConfig
-                    )
-                    .then(({ data }) => {
-                        console.log(data.responseData);
-                        this.isDataProcessing = false;
-                        //User Unauthorized
-                        if (
-                            data.error == "Unauthorized" ||
-                            data.permissionError == "Unauthorized"
-                        ) {
-                            this.$store.dispatch("actionUnauthorizedLogout");
-                        } else {
-                            // Staff Status changed
                             if (data.responseData == 1) {
                                 this.snackBarColor = "success";
                                 this.changeSnackBarMessage(
-                                    this.$t("label_staff_status_changed")
+                                    "Student Registered"
                                 );
-                                this.getAllEnquiry(event);
+
+                                setTimeout(() => {
+                                    this.$router.push({
+                                        name: "EnquiryDirectory",
+                                    });
+                                }, 2000);
+                              
                             } else if (data.responseData == 3) {
                                 this.snackBarColor = "error";
                                 this.changeSnackBarMessage(
                                     this.$t("label_email_exists")
                                 );
-                                this.getAllEnquiry(event);
+                              
                             } else if (data.responseData == 4) {
                                 this.snackBarColor = "error";
                                 this.changeSnackBarMessage(
                                     this.$t("label_mobile_exists")
                                 );
-                                this.getAllEnquiry(event);
+                            
                             } else if (data.responseData == 2) {
                                 console.log("Error");
                                 this.snackBarColor = "error";
@@ -1369,7 +1208,7 @@ export default {
                         }
                     })
                     .catch((error) => {
-                        this.isDataProcessing = false;
+                        this.isBasicFormDataProcessing = false;
                         this.snackBarColor = "error";
                         this.changeSnackBarMessage(
                             this.$t("label_something_went_wrong")

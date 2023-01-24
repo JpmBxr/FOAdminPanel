@@ -210,6 +210,7 @@ class EnquiryController extends Controller
             $lms_enquiry_class=$request->lms_enquiry_class;
             $lms_enquiry_section=$request->lms_enquiry_section;
             $lms_enquiry_roll_no=$request->lms_roll_no;
+            
 
             $result = EnquiryModel::saveEditEnquiryBasicInfo(
                 $centerId,
@@ -252,14 +253,15 @@ class EnquiryController extends Controller
     {
         $courseId = $request->courseId;
         $centerId = $request->centerId;
-        $firstName = $request->firstName;
-        $lastName = $request->lastName;
-        $mobileNumber = $request->mobileNumber;
+        $firstName = $request->enquiryFirstName;
+        $lastName = $request->enquiryLastName;
+        $mobileNumber = $request->enquiryContactNumber;
         $password = $request->password;
-        $loggedUserId = $request->loggedUserId;
+        $loggedUserId = $request->enquiryUserId;
         $enquiryEmail = $request->enquiryEmail;
-        $lms_enquiry_id = $request->lms_enquiry_id;
-        $childCourseId = $request->childCourseId;
+        $lms_enquiry_id = $request->enquiryId;
+        $childCourseId = $request->lms_child_course_id;
+        $loggedUserId=$request->loggedUserId;
         $result = EnquiryModel::registerUser(
             $centerId,
             $courseId,
@@ -270,7 +272,8 @@ class EnquiryController extends Controller
             $loggedUserId,
             $enquiryEmail,
             $lms_enquiry_id,
-            $childCourseId
+            $childCourseId,
+            $loggedUserId
         );
         return response()->json($result);
     }

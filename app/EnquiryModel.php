@@ -199,7 +199,8 @@ class EnquiryModel extends Model
         $lms_child_course_id,
         $lms_enquiry_class,
         $lms_enquiry_section,
-        $lms_enquiry_roll_no
+        $lms_enquiry_roll_no,
+        $lms_profile_image
     ) {
 
         if ($isEnquiryBasicEdit == 1) {
@@ -222,7 +223,7 @@ class EnquiryModel extends Model
                     if ($checkEmailQuery->count() == 0) {
 
                         DB::table('lms_enquiry')
-                            ->where('lms_enquiry_id', $enquiryUserId)
+                            ->where('lms_enquiry_id', $enquiryId)
                             ->where('lms_center_id', $centerId)
                             ->update([
                                 'lms_enquiry_first_name' => $enquiryFirstName,
@@ -388,24 +389,26 @@ class EnquiryModel extends Model
                 //     EnquiryModel::sendSMS($centerId, $enquiryPassword, $enquiryContactNumber, $checkEmailSMSSentQuery[0]->lms_notification_setting_template, $enquiryFirstName);
                 // }
 
-                if ($checkEmailSMSSentQuery[0]->lms_notification_setting_is_sms == "1" && $checkEmailSMSSentQuery[0]->lms_notification_setting_is_mail == "1") {
-                    //send SMS & Email Both
-                    EnquiryModel::sendMail($centerId, $enquiryCode, $enquiryContactNumber, $enquiryEmail);
-                    EnquiryModel::sendSMS($centerId, $enquiryContactNumber, $checkEmailSMSSentQuery[0]->lms_notification_setting_template, $enquiryFirstName);
-                }
+                // if ($checkEmailSMSSentQuery[0]->lms_notification_setting_is_sms == "1" && $checkEmailSMSSentQuery[0]->lms_notification_setting_is_mail == "1") {
+                //     //send SMS & Email Both
+                //     EnquiryModel::sendMail($centerId, $enquiryCode, $enquiryContactNumber, $enquiryEmail);
+                //     EnquiryModel::sendSMS($centerId, $enquiryContactNumber, $checkEmailSMSSentQuery[0]->lms_notification_setting_template, $enquiryFirstName);
+                // }
                 // If saved success
 
                 $result_data['responseData'] = 4;
                 $result_data['enquiryId'] = $enquiryCreateQuery;
                 $result_data['enquiryCode'] = $enquiryCode;
-
                 return $result_data;
-            } catch (Exception $ex) {
+               
+            } 
+            
+            catch (Exception $ex) {
 
                 DB::rollback();
 
                 $result_data['responseData'] = 5;
-                return $ex->getMessage();
+                return $result_data;
             }
         }
     }
