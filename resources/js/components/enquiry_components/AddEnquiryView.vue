@@ -10,7 +10,7 @@
                     <v-list-item two-line>
                         <v-list-item-content>
                             <v-list-item-title class="text-h5">
-                                <strong>{{ $t("label_add_enquiry") }}</strong>
+                                <strong>{{label_add_enquiry}}</strong>
                             </v-list-item-title>
                             <v-list-item-subtitle
                                 >{{ $t("label_home")
@@ -18,7 +18,7 @@
                                 {{ $t("label_enquiry") }}
                                 <v-icon>mdi-forward</v-icon>
                                 {{
-                                    $t("label_add_enquiry")
+                                   label_add_enquiry
                                 }}</v-list-item-subtitle
                             >
                         </v-list-item-content>
@@ -524,7 +524,7 @@
                                             </template>
                                         </v-text-field>
                                     </v-col>
-                                    <v-col cols="12" md="3">
+                                 <v-col cols="12" md="3">
                                         <v-file-input
                                             v-model="selectedProfilePicture"
                                             color="primary"
@@ -553,7 +553,7 @@
                                                 $t("label_profile_image")
                                             }}</template>
                                         </v-file-input>
-                                    </v-col>
+                                    </v-col> 
                                 </v-row>
 
                                 <!-- New Row Start -->
@@ -820,6 +820,10 @@ export default {
                 this.enquiryDataProps != null
                     ? this.enquiryDataProps.lms_user_id
                     : "",
+           label_add_enquiry:
+                this.enquiryDataProps != null
+                    ? "Edit Enquiry"
+                    : "Add Enquiry",
             isEnquiryBasicEdit: this.enquiryDataProps != null ? 1 : 0,
             whatsAppMobileRules: [],
             isUploadDocumentFormValid: true,

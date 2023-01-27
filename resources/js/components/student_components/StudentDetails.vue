@@ -1,5 +1,5 @@
 <template>
-    <div style=" margin:auto; padding:auto; width:1200px;" id="app">
+    <div style="margin: auto; padding: auto; width: 1200px" id="app">
         <v-container
             style="background-color: #fff"
             class="ma-4 pa-0"
@@ -48,13 +48,13 @@
                                         >
                                             <img
                                                 :src="
-                                                    buildPostImages(
-                                                        item.lms_post_image
+                                                    buildCoverImages(
+                                                        bookCoverImage
                                                     )
                                                 "
                                                 :lazy-src="
-                                                    buildPostImages(
-                                                        item.lms_post_image
+                                                    buildCoverImages(
+                                                        bookCoverImage
                                                     )
                                                 "
                                             />
@@ -116,9 +116,9 @@
                                                 v-model="firstName"
                                                 @keypress="isCharacters"
                                                 :rules="[
-                                                    v =>
+                                                    (v) =>
                                                         !!v ||
-                                                        $t('label_required')
+                                                        $t('label_required'),
                                                 ]"
                                             >
                                                 <template #label>
@@ -138,9 +138,9 @@
                                                 v-model="lastName"
                                                 @keypress="isCharacters"
                                                 :rules="[
-                                                    v =>
+                                                    (v) =>
                                                         !!v ||
-                                                        $t('label_required')
+                                                        $t('label_required'),
                                                 ]"
                                             >
                                                 <template #label>
@@ -191,7 +191,8 @@
                                             v-model="selectedGender"
                                             :items="genderItems"
                                             :rules="[
-                                                v => !!v || $t('label_required')
+                                                (v) =>
+                                                    !!v || $t('label_required'),
                                             ]"
                                         >
                                             <template #label>
@@ -237,9 +238,11 @@
                                                     v-bind="attrs"
                                                     v-on="on"
                                                     :rules="[
-                                                        v =>
+                                                        (v) =>
                                                             !!v ||
-                                                            $t('label_required')
+                                                            $t(
+                                                                'label_required'
+                                                            ),
                                                     ]"
                                                 >
                                                     <template #label>
@@ -290,16 +293,16 @@
                                             :counter="10"
                                             @keypress="isDigit"
                                             :rules="[
-                                                v =>
+                                                (v) =>
                                                     !!v ||
                                                     $t(
                                                         'label_provide_valid_mobile_number'
                                                     ),
-                                                v =>
+                                                (v) =>
                                                     (v && v.length >= 10) ||
                                                     $t(
                                                         'label_mobile_number_10_digits'
-                                                    )
+                                                    ),
                                             ]"
                                         >
                                             <template #label>
@@ -334,16 +337,16 @@
                                             v-model="email"
                                             type="email"
                                             :rules="[
-                                                v =>
+                                                (v) =>
                                                     !!v || $t('label_required'),
-                                                v =>
+                                                (v) =>
                                                     !v ||
                                                     /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
                                                         v
                                                     ) ||
                                                     $t(
                                                         'label_provide_valid_email'
-                                                    )
+                                                    ),
                                             ]"
                                         >
                                             <template #label>
@@ -369,7 +372,7 @@
                                             <template
                                                 v-slot:selection="{
                                                     index,
-                                                    text
+                                                    text,
                                                 }"
                                             >
                                                 <v-chip
@@ -416,7 +419,7 @@
 
                                 <!-- New Row Start -->
                                 <v-row dense class="mx-2">
-                                    <v-col cols="12" md="3">
+                                    <v-col cols="12" md="4">
                                         <v-text-field
                                             regular
                                             dense
@@ -427,7 +430,7 @@
                                             }}</template>
                                         </v-text-field>
                                     </v-col>
-                                    <v-col cols="12" md="3">
+                                    <v-col cols="12" md="4">
                                         <v-text-field
                                             regular
                                             dense
@@ -437,6 +440,36 @@
                                                 $t("label_work_experience")
                                             }}</template>
                                         </v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" md="4">
+                                        <v-file-input
+                                            v-model="selectedProfilePicture"
+                                            color="primary"
+                                            dense
+                                            show-size
+                                            accept="image/*"
+                                            :rules="imageRule"
+                                        >
+                                            <template
+                                                v-slot:selection="{
+                                                    index,
+                                                    text,
+                                                }"
+                                            >
+                                                <v-chip
+                                                    v-if="index < 2"
+                                                    color="primary"
+                                                    dark
+                                                    label
+                                                    small
+                                                    >{{ text }}</v-chip
+                                                >
+                                            </template>
+                                            <template #label>{{
+                                                $t("label_profile_image")
+                                            }}</template>
+                                        </v-file-input>
                                     </v-col>
                                 </v-row>
                             </v-form>
@@ -463,7 +496,7 @@
                                             color="primary"
                                             :disabled="
                                                 !isUpdateStudentHoldingFormValid ||
-                                                    isStudentUpdateFormDataProcessing
+                                                isStudentUpdateFormDataProcessing
                                             "
                                             @click="updateStudentDetails()"
                                             >{{
@@ -625,12 +658,15 @@ import VueMask from "v-mask";
 Vue.use(VueMask);
 export default {
     components: {
-        StudentExamDetails
+        StudentExamDetails,
     },
+
     props: ["userPermissionDataProps", "studentDetailsDataProps"],
 
     data() {
         return {
+            url: process.env.MIX_PROFILE_URL,
+
             authorizationConfig: "",
             testProp: "Test",
             isLoaderActive: false,
@@ -642,7 +678,7 @@ export default {
                 "Married",
                 "Widowed",
                 "Seprated",
-                "Not specified"
+                "Not specified",
             ],
             selectedDOB: new Date().toISOString().substr(0, 10),
             modalDOB: false,
@@ -650,7 +686,7 @@ export default {
             items: ["Basic Info", "Course", "Exam", "Courseware", "Attendance"],
             text: "",
             genderItems: ["Male", "Female", "Transgender"],
-            profileImagesUrl: process.env.MIX_USER_PROFILE_IMAGE_URL,
+
             selectedDOB:
                 this.studentDetailsDataProps != null
                     ? this.studentDetailsDataProps.lms_enquiry_date_of_birth
@@ -763,6 +799,14 @@ export default {
                 this.studentDetailsDataProps != null
                     ? this.studentDetailsDataProps.lms_student_id
                     : "",
+
+            bookCoverImage:
+                this.studentDetailsDataProps.lms_student_profile_image,
+
+            selectedProfilePicture: null,
+            profileImagesUrl: "",
+            altprofileImagesUrl: "",
+
             tableItemsBatchWiseStudent: [],
             tableLoadingDataText: this.$t("label_loading_attendance_data"),
             tableHeaderStudent: [
@@ -772,28 +816,28 @@ export default {
                     value: "lms_batch_code",
                     width: "15%",
                     sortable: false,
-                    align: "center"
+                    align: "center",
                 },
                 {
                     text: "Date",
                     value: "lms_attendance_date",
                     width: "15%",
                     sortable: false,
-                    align: "center"
+                    align: "center",
                 },
                 {
                     text: "Subject",
                     value: "lms_subject_name",
                     width: "15%",
                     sortable: false,
-                    align: "center"
+                    align: "center",
                 },
                 {
                     text: "Start Time",
                     value: "lms_batch_slot_start_time",
                     width: "10%",
                     sortable: false,
-                    align: "center"
+                    align: "center",
                 },
 
                 {
@@ -801,37 +845,53 @@ export default {
                     value: "lms_batch_slot_end_time",
                     width: "10%",
                     sortable: false,
-                    align: "center"
+                    align: "center",
                 },
                 {
                     text: "Status",
                     value: "AttendanceStatus",
                     width: "20%",
                     sortable: false,
-                    align: "center"
-                }
-            ]
+                    align: "center",
+                },
+            ],
         };
     },
-    watch: {},
+    watch: {
+        selectedProfilePicture(val) {
+            this.selectedProfilePicture = val;
+
+            this.imageRule =
+                this.selectedProfilePicture != null
+                    ? [
+                          (v) =>
+                              !v ||
+                              v.size <= 1048576 ||
+                              this.$t("label_file_size_criteria_1_mb"),
+                      ]
+                    : $t("label_required");
+        },
+    },
     computed: {
         dataTableRowNumberingStudent() {
             return this.tableItemsBatchWiseStudent.map((items, index) => ({
                 ...items,
-                index: index + 1
+                index: index + 1,
             }));
-        }
+        },
     },
     created() {
         // Token Config
         this.authorizationConfig = {
-            headers: { Authorization: "Bearer " + ls.get("token") }
+            headers: { Authorization: "Bearer " + ls.get("token") },
         };
         this.getAttendanceDateWise();
         // if (this.studentDetailsDataProps == null) this.previousPage();
         // if (this.studentDetailsDataProps != null)
         //     console.log(JSON.stringify(this.studentDetailsDataProps));
         // else this.previousPage();
+        this.profileImagesUrl = process.env.MIX_PROFILE_URL;
+        this.altprofileImagesUrl = this.profileImagesUrl + "NotAvailable.jpg";
     },
     methods: {
         getStatusColor(is_course_active) {
@@ -845,9 +905,9 @@ export default {
             this.$http
                 .get(`web_get_student_attendance_date_wise`, {
                     params: {
-                        lms_user_id: this.lms_user_id
+                        lms_user_id: this.lms_user_id,
                     },
-                    headers: { Authorization: "Bearer " + ls.get("token") }
+                    headers: { Authorization: "Bearer " + ls.get("token") },
                 })
                 .then(({ data }) => {
                     this.tableDataLoading = false;
@@ -861,7 +921,7 @@ export default {
                         this.tableItemsBatchWiseStudent = data;
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.tableDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
@@ -924,6 +984,13 @@ export default {
 
                     postData.append("centerId", ls.get("loggedUserCenterId"));
 
+                    if (this.selectedProfilePicture != "") {
+                        postData.append(
+                            "selectedProfilePicture",
+                            this.selectedProfilePicture
+                        );
+                    }
+
                     console.log(postData);
                     this.$http
                         .post(
@@ -963,7 +1030,7 @@ export default {
                                 }
                             }
                         })
-                        .catch(error => {
+                        .catch((error) => {
                             this.isStudentUpdateFormDataProcessing = false;
                             Global.showErrorAlert(
                                 true,
@@ -975,10 +1042,16 @@ export default {
                 }
             }
         },
-
+        //#region [buildCoverImages]
+        buildCoverImages(images) {
+            return images != null
+                ? this.profileImagesUrl + images
+                : this.altprofileImagesUrl;
+        },
+        //#endregion
         previousPage() {
             this.$router.push({
-                name: "StudentDirectory"
+                name: "StudentDirectory",
             });
         },
 
@@ -1027,8 +1100,8 @@ export default {
                 evt.preventDefault();
                 return false;
             }
-        }
-    }
+        },
+    },
 };
 </script>
 

@@ -171,7 +171,7 @@ class EnquiryModel extends Model
     }
 
     // Add Edit Enquiry
-    public static function saveEditEnquiryBasicInfo(
+   public static function saveEditEnquiryBasicInfo(
         $centerId,
         $enquiryId,
         $loggedUserId,
@@ -199,8 +199,7 @@ class EnquiryModel extends Model
         $lms_child_course_id,
         $lms_enquiry_class,
         $lms_enquiry_section,
-        $lms_enquiry_roll_no,
-        $lms_profile_image
+        $lms_enquiry_roll_no
     ) {
 
         if ($isEnquiryBasicEdit == 1) {
@@ -296,6 +295,8 @@ class EnquiryModel extends Model
         } else {
             //Save the enquiry
             //trans
+
+
             DB::beginTransaction();
             try {
                 $checkMobileNumberQuery = DB::table('lms_enquiry')->where('lms_enquiry_mobile', $enquiryContactNumber)->get();
@@ -414,6 +415,7 @@ class EnquiryModel extends Model
     }
 
 
+
     //End of Add Enquiry
 
     public static function sendMail($centerId, $enquiryCode, $enquiryContactNumber, $enquiryEmail)
@@ -473,117 +475,120 @@ class EnquiryModel extends Model
         }
     }
 
-    // Save Enquiry
-    public static function registerUser($centerId, $courseId, $firstName, $lastName, $mobileNumber, $password, $loggedUserId, $enquiryEmail, $lms_enquiry_id, $childCourseId)
-    {
-        try {
+  // Save Enquiry
+  public static function registerUser($centerId ,$courseId, $firstName, $lastName, $mobileNumber, $password, $loggedUserId, $enquiryEmail, $lms_enquiry_id, $childCourseId,$selectedImage)
+  {
+      try {
 
-            DB::beginTransaction();
+          DB::beginTransaction();
 
-            $checkMobileNumberQuery = DB::table('lms_student')->where('lms_student_mobile_number', $mobileNumber)->get();
-            if ($checkMobileNumberQuery->count() == 0) {
-                // Mobile no do not exist
-                $checkEmailQuery = DB::table('lms_student')->where('lms_student_email', $enquiryEmail)->get();
-                if ($checkEmailQuery->count() == 0) {
+          $checkMobileNumberQuery = DB::table('lms_student')->where('lms_student_mobile_number', $mobileNumber)->get();
+          if ($checkMobileNumberQuery->count() == 0) {
+              // Mobile no do not exist
+              $checkEmailQuery = DB::table('lms_student')->where('lms_student_email', $enquiryEmail)->get();
+              if ($checkEmailQuery->count() == 0) {
+                $rand=random_int(111111, 999999);
+                  $userId = DB::table('lms_user')->insertGetId(
+                      [
+                          'role_id' => 1,
+                          'password' => bcrypt($rand),
+                          'password_normal' =>  $rand,
+                          'lms_user_mobile' => $mobileNumber,
+                          'lms_center_id' => $centerId,
+                          'lms_user_created_by' => $loggedUserId,
+                      ]
+                  );
+                  $getCenterCodeQuery = DB::table('lms_center_details')
+                      ->select(['lms_center_code'])
+                      ->where('lms_center_id', $centerId)
+                      ->get();
 
-                    $userId = DB::table('lms_user')->insertGetId(
-                        [
-                            'role_id' => 1,
-                            'password' => bcrypt($password),
-                            'password_normal' => $password,
-                            'lms_user_mobile' => $mobileNumber,
-                            'lms_center_id' => $centerId,
-                            'lms_user_created_by' => $loggedUserId,
-                        ]
-                    );
-                    $getCenterCodeQuery = DB::table('lms_center_details')
-                        ->select(['lms_center_code'])
-                        ->where('lms_center_id', $centerId)
-                        ->get();
+                  $getStudentCodePrefixQuery = DB::table('lms_prefix_setting')
+                      ->select(['lms_prefix'])
+                      ->where('lms_center_id', $centerId)
+                      ->where('lms_prefix_module_name', "Student Code")
+                      ->get();
+                  $studentCodePrefix = $getStudentCodePrefixQuery[0]->lms_prefix . $getCenterCodeQuery[0]->lms_center_code . date('y');
+                  $studentCode = IdGenerator::generate([
+                      'table' => 'lms_student', 'length' => 14, 'prefix' => $studentCodePrefix,
+                      'reset_on_prefix_change' => true, 'field' => 'lms_student_code',
+                  ]);
 
-                    $getStudentCodePrefixQuery = DB::table('lms_prefix_setting')
-                        ->select(['lms_prefix'])
-                        ->where('lms_center_id', $centerId)
-                        ->where('lms_prefix_module_name', "Student Code")
-                        ->get();
-                    $studentCodePrefix = $getStudentCodePrefixQuery[0]->lms_prefix . $getCenterCodeQuery[0]->lms_center_code . date('y');
-                    $studentCode = IdGenerator::generate([
-                        'table' => 'lms_student', 'length' => 14, 'prefix' => $studentCodePrefix,
-                        'reset_on_prefix_change' => true, 'field' => 'lms_student_code',
-                    ]);
-                    $studentId = DB::table('lms_student')->insertGetId(
-                        [
-                            'lms_center_id' => $centerId,
-                            'lms_enquiry_id' => $lms_enquiry_id,
-                            'lms_user_id' => $userId,
-                            'lms_student_email' => $enquiryEmail,
-                            'role_id' => 1,
-                            'lms_student_code' => $studentCode,
-                            'lms_student_first_name' => ucfirst($firstName),
-                            'lms_student_last_name' => ucfirst($lastName),
-                            'lms_student_full_name' => ucfirst($firstName) . ' ' . ucfirst($lastName),
-                            'lms_student_mobile_number' => $mobileNumber,
-                            'lms_student_created_by' => $loggedUserId,
+                  
+                  $studentId = DB::table('lms_student')->insertGetId(
+                      [
+                          'lms_center_id' => $centerId,
+                          'lms_enquiry_id' => $lms_enquiry_id,
+                          'lms_user_id' => $userId,
+                          'lms_student_email' => $enquiryEmail,
+                          'role_id' => 1,
+                          'lms_student_code' => $studentCode,
+                          'lms_student_first_name' => ucfirst($firstName),
+                          'lms_student_last_name' => ucfirst($lastName),
+                          'lms_student_full_name' => ucfirst($firstName) . ' ' . ucfirst($lastName),
+                          'lms_student_mobile_number' => $mobileNumber,
+                          'lms_student_created_by' => $loggedUserId,
+                          'lms_student_profile_image'=>  $selectedImage
 
-                        ]
-                    );
+                      ]
+                  );
 
-                    $getRegistrationCodePrefixQuery = DB::table('lms_prefix_setting')
-                        ->select(['lms_prefix'])
-                        ->where('lms_center_id', $centerId)
-                        ->where('lms_prefix_module_name', "Registration Code")
-                        ->get();
-                    $registrationCodePrefix = $getRegistrationCodePrefixQuery[0]->lms_prefix . $getCenterCodeQuery[0]->lms_center_code . date('y');
-                    $registrationCode = IdGenerator::generate([
-                        'table' => 'lms_student_course_mapping', 'length' => 14, 'prefix' => $registrationCodePrefix,
-                        'reset_on_prefix_change' => true, 'field' => 'lms_registration_code',
-                    ]);
+                  $getRegistrationCodePrefixQuery = DB::table('lms_prefix_setting')
+                      ->select(['lms_prefix'])
+                      ->where('lms_center_id', $centerId)
+                      ->where('lms_prefix_module_name', "Registration Code")
+                      ->get();
+                  $registrationCodePrefix = $getRegistrationCodePrefixQuery[0]->lms_prefix . $getCenterCodeQuery[0]->lms_center_code . date('y');
+                  $registrationCode = IdGenerator::generate([
+                      'table' => 'lms_student_course_mapping', 'length' => 14, 'prefix' => $registrationCodePrefix,
+                      'reset_on_prefix_change' => true, 'field' => 'lms_registration_code',
+                  ]);
 
-                    DB::table('lms_student_course_mapping')->insertGetId(
-                        [
+                  DB::table('lms_student_course_mapping')->insertGetId(
+                      [
 
-                            'lms_center_id' => $centerId,
-                            'lms_course_id' => $courseId,
-                            'lms_child_course_id' => $childCourseId,
-                            'lms_user_id' => $userId,
-                            'lms_student_id' => $studentId,
-                            'lms_registration_code' => $registrationCode,
-                            'lms_student_course_mapping_created_by' => $loggedUserId,
-                            'lms_student_registration_type' => '2'
+                          'lms_center_id' => $centerId,
+                          'lms_course_id' => $courseId,
+                          'lms_child_course_id' => $childCourseId,
+                          'lms_user_id' => $userId,
+                          'lms_student_id' => $studentId,
+                          'lms_registration_code' => $registrationCode,
+                          'lms_student_course_mapping_created_by' => $loggedUserId,
+                          'lms_student_registration_type' => '2'
 
-                        ]
-                    );
+                      ]
+                  );
 
-                    DB::table('lms_enquiry')
-                        ->where('lms_enquiry_id', $lms_enquiry_id)
-                        ->update([
-                            'lms_enquiry_status' => '3',
-                            'lms_enquiry_updated_at' => now(),
-                            'lms_enquiry_updated_by' => $loggedUserId,
+                  DB::table('lms_enquiry')
+                      ->where('lms_enquiry_id', $lms_enquiry_id)
+                      ->update([
+                          'lms_enquiry_status' => '3',
+                          'lms_enquiry_updated_at' => now(),
+                          'lms_enquiry_updated_by' => $loggedUserId,
 
-                        ]);
-                } else {
-                    // Email exists
-                    $result_data['responseData'] = 3;
-                    return $result_data;
-                }
-            } else {
-                //Mobile no exist
+                      ]);
+              } else {
+                  // Email exists
+                  $result_data['responseData'] = 3;
+                  return $result_data;
+              }
+          } else {
+              //Mobile no exist
 
-                $result_data['responseData'] = 4;
-                return $result_data;
-            }
+              $result_data['responseData'] = 4;
+              return $result_data;
+          }
 
-            DB::commit();
-            // $resultData['result'] = "success";
-            $result_data['responseData'] = 1;
-            return $result_data;
-        } catch (Exception $ex) {
+          DB::commit();
+          // $resultData['result'] = "success";
+          $result_data['responseData'] = 1;
+          return $result_data;
+      } catch (Exception $ex) {
 
-            DB::rollback();
-            //$result_data['responseData'] = $ex -> getMessage();
-            $result_data['responseData'] = '2';
-            return $result_data;
-        }
-    }
+          DB::rollback();
+          //$result_data['responseData'] = $ex -> getMessage();
+          $result_data['responseData'] = '2';
+          return $result_data;
+      }
+  }
 }

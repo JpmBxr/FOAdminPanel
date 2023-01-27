@@ -304,6 +304,30 @@ const router = new Router({
                     props: true
                 },
 
+                // School - Add School
+                {
+                    path: "/home/discounts/view-discounts",
+                    component: require("../../components/accounts_components/DiscountDirectoryView.vue")
+                        .default,
+                    name: "Discounts",
+                    meta: {
+                        requiresAuth: true
+                    },
+                    props: true
+                },
+
+                {
+                    path: "enquiry/add-discount",
+                    component: require("../../components/accounts_components/AddDiscount.vue")
+                        .default,
+                    name: "AddDiscount",
+                    meta: {
+                        requiresAuth: true
+                    },
+                    props: true
+                },
+
+
                 // Exam Schedule - Directory
                 {
                     path: "exam/exam-schedule-directory",

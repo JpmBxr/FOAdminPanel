@@ -210,7 +210,6 @@ class EnquiryController extends Controller
             $lms_enquiry_class=$request->lms_enquiry_class;
             $lms_enquiry_section=$request->lms_enquiry_section;
             $lms_enquiry_roll_no=$request->lms_roll_no;
-            
 
             $result = EnquiryModel::saveEditEnquiryBasicInfo(
                 $centerId,
@@ -248,9 +247,11 @@ class EnquiryController extends Controller
         }
     }
 
+
     // To register user
     public function registerUser(Request $request)
     {
+      
         $courseId = $request->courseId;
         $centerId = $request->centerId;
         $firstName = $request->enquiryFirstName;
@@ -261,7 +262,21 @@ class EnquiryController extends Controller
         $enquiryEmail = $request->enquiryEmail;
         $lms_enquiry_id = $request->enquiryId;
         $childCourseId = $request->lms_child_course_id;
-        $loggedUserId=$request->loggedUserId;
+	    $loggedUserId=$request->loggedUserId;
+    
+ 
+         if ($request->hasFile('selectedProfilePicture')) {
+            $file= $request->file('selectedProfilePicture');
+            $filename = uniqid() . time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = 'public/user_profile_images';
+            $request->file('selectedProfilePicture')->storeAs($destinationPath, $filename);
+            $selectedImage= $filename;
+        }
+        else{
+            $selectedImage= '';  
+        }
+   
+       
         $result = EnquiryModel::registerUser(
             $centerId,
             $courseId,
@@ -273,17 +288,19 @@ class EnquiryController extends Controller
             $enquiryEmail,
             $lms_enquiry_id,
             $childCourseId,
-            $loggedUserId
+		    $selectedImage
         );
-        return response()->json($result);
+  
+         return response()->json($result);
     }
+
 
 
     //Get All Registered Students - App
     public function getAllRegisteredStudents(Request $request)
     {
 
-        $perPage = $request->per_page ? $request->perPage : 100;
+        $perPage = $request->perPage ? $request->perPage : 100;
         $filterBy = $request->filterBy;
         $centerId = $request->centerId;
         $result = DB::table('lms_student')

@@ -367,6 +367,7 @@ export const BookList = {
 
         //#region [buildCoverImages]
         buildCoverImages(images) {
+            
             return images != null
                 ? this.coverImagesUrl + images
                 : this.altBookCoverImage;

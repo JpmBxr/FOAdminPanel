@@ -644,4 +644,8 @@ Route::group(['middleware' => ['auth:api', 'permission:Add Staff|Edit Staff']], 
 
     // save staff basic info
     Route::post('web_register_user', 'EnquiryController@registerUser')->name('web_register_user');
+    Route::get('web_get_all_discounts', 'DiscountController@getAllDiscount')->name('web_get_all_discounts');
+    Route::post('web_save_edit_discounts', 'DiscountController@saveEditDiscount')->name('web_save_edit_discounts');
+    
+
 });

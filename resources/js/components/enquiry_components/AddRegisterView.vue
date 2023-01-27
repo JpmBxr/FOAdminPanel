@@ -15,9 +15,9 @@
                             <v-list-item-subtitle
                                 >{{ $t("label_home")
                                 }}<v-icon>mdi-forward</v-icon>
-                              Add Register
+                                Add Register
                                 <v-icon>mdi-forward</v-icon>
-                              Add Register</v-list-item-subtitle
+                                Add Register</v-list-item-subtitle
                             >
                         </v-list-item-content>
                     </v-list-item>
@@ -493,7 +493,7 @@
                                             }}</template>
                                         </v-text-field>
                                     </v-col>
-                                    <v-col cols="12" md="3">
+                                    <v-col cols="12" md="6">
                                         <v-text-field
                                             outlined
                                             dense
@@ -521,36 +521,6 @@
                                                 </span>
                                             </template>
                                         </v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" md="3">
-                                        <v-file-input
-                                            v-model="selectedProfilePicture"
-                                            color="primary"
-                                            outlined
-                                            dense
-                                            show-size
-                                            accept="image/*"
-                                            :rules="imageRule"
-                                        >
-                                            <template
-                                                v-slot:selection="{
-                                                    index,
-                                                    text,
-                                                }"
-                                            >
-                                                <v-chip
-                                                    v-if="index < 2"
-                                                    color="primary"
-                                                    dark
-                                                    label
-                                                    small
-                                                    >{{ text }}</v-chip
-                                                >
-                                            </template>
-                                            <template #label>{{
-                                                $t("label_profile_image")
-                                            }}</template>
-                                        </v-file-input>
                                     </v-col>
                                 </v-row>
 
@@ -616,6 +586,39 @@
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
+
+                                <v-row dense class="ml-2 mr-2">
+                                    <v-col cols="12" md="3">
+                                        <v-file-input
+                                            v-model="selectedProfilePicture"
+                                            color="primary"
+                                            outlined
+                                            dense
+                                            show-size
+                                            accept="image/*"
+                                            :rules="imageRule"
+                                        >
+                                            <template
+                                                v-slot:selection="{
+                                                    index,
+                                                    text,
+                                                }"
+                                            >
+                                                <v-chip
+                                                    v-if="index < 2"
+                                                    color="primary"
+                                                    dark
+                                                    label
+                                                    small
+                                                    >{{ text }}</v-chip
+                                                >
+                                            </template>
+                                            <template #label>{{
+                                                $t("label_profile_image")
+                                            }}</template>
+                                        </v-file-input>
+                                    </v-col>
+                                </v-row>
                             </v-card>
                         </v-form>
                     </v-card>
@@ -631,11 +634,9 @@
                         >{{
                             isBasicFormDataProcessing == true
                                 ? $t("label_processing")
-                                : 'Register'
+                                : "Register"
                         }}</v-btn
                     >
-
-             
                 </v-stepper-content>
             </v-stepper>
 
@@ -849,7 +850,7 @@ export default {
                               v.size <= 1048576 ||
                               this.$t("label_file_size_criteria_1_mb"),
                       ]
-                    : [];
+                    : $t("label_required");
         },
         whatsApp(val) {
             this.whatsApp = val;
@@ -1116,24 +1117,16 @@ export default {
                 };
                 this.isBasicFormDataProcessing = true;
                 let basicFormData = new FormData();
-               
-
-               
 
                 basicFormData.append("centerId", ls.get("loggedUserCenterId"));
                 if (this.enquiryId != "") {
                     basicFormData.append("enquiryId", this.enquiryId);
                 }
                 basicFormData.append("loggedUserId", ls.get("loggedUserId"));
-                if (this.enquiryUserId != "") {
-                    basicFormData.append("enquiryUserId", this.enquiryUserId);
-                }
+
                 basicFormData.append("enquirySourceId", this.selectedSourceId);
                 if (this.selectedCourseId != "") {
-                    basicFormData.append(
-                        "courseId",
-                        this.selectedCourseId
-                    );
+                    basicFormData.append("courseId", this.selectedCourseId);
                 }
                 if (this.lms_child_course_id != "") {
                     basicFormData.append(
@@ -1141,10 +1134,16 @@ export default {
                         this.lms_child_course_id
                     );
                 }
+                if (this.selectedProfilePicture != "") {
+                    basicFormData.append(
+                        "selectedProfilePicture",
+                        this.selectedProfilePicture
+                    );
+                }
 
                 basicFormData.append("enquiryFirstName", this.firstName);
                 basicFormData.append("enquiryLastName", this.lastName);
-               
+
                 basicFormData.append(
                     "enquiryContactNumber",
                     this.contactNumber
@@ -1156,7 +1155,6 @@ export default {
                     );
                 }
                 basicFormData.append("enquiryEmail", this.email);
- 
 
                 this.$http
                     .post(
@@ -1185,19 +1183,16 @@ export default {
                                         name: "EnquiryDirectory",
                                     });
                                 }, 2000);
-                              
                             } else if (data.responseData == 3) {
                                 this.snackBarColor = "error";
                                 this.changeSnackBarMessage(
                                     this.$t("label_email_exists")
                                 );
-                              
                             } else if (data.responseData == 4) {
                                 this.snackBarColor = "error";
                                 this.changeSnackBarMessage(
                                     this.$t("label_mobile_exists")
                                 );
-                            
                             } else if (data.responseData == 2) {
                                 console.log("Error");
                                 this.snackBarColor = "error";
