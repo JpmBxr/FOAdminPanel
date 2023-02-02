@@ -15,9 +15,9 @@
                             <v-list-item-subtitle
                                 >{{ $t("label_home")
                                 }}<v-icon>mdi-forward</v-icon>
-                                Add Register
+                              Add Register
                                 <v-icon>mdi-forward</v-icon>
-                                Add Register</v-list-item-subtitle
+                              Add Register</v-list-item-subtitle
                             >
                         </v-list-item-content>
                     </v-list-item>
@@ -522,6 +522,7 @@
                                             </template>
                                         </v-text-field>
                                     </v-col>
+                                  
                                 </v-row>
 
                                 <!-- New Row Start -->
@@ -586,8 +587,17 @@
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
-
+                                
                                 <v-row dense class="ml-2 mr-2">
+                                    <v-col cols="12" md="1" sm="12" class="pl-4">
+                                <v-avatar color="indigo">
+                                    <img
+                                     
+                                        :src="preview"
+                                    />
+                                  
+                                </v-avatar>
+                                  </v-col>
                                     <v-col cols="12" md="3">
                                         <v-file-input
                                             v-model="selectedProfilePicture"
@@ -597,6 +607,7 @@
                                             show-size
                                             accept="image/*"
                                             :rules="imageRule"
+                                            @change="checkFile($event)" 
                                         >
                                             <template
                                                 v-slot:selection="{
@@ -618,6 +629,7 @@
                                             }}</template>
                                         </v-file-input>
                                     </v-col>
+
                                 </v-row>
                             </v-card>
                         </v-form>
@@ -634,9 +646,11 @@
                         >{{
                             isBasicFormDataProcessing == true
                                 ? $t("label_processing")
-                                : "Register"
+                                : 'Register'
                         }}</v-btn
                     >
+
+             
                 </v-stepper-content>
             </v-stepper>
 
@@ -656,11 +670,14 @@
 <script>
 // Secure Local Storage
 import SecureLS from "secure-ls";
+
+import { Global } from "../../components/helpers/global";
 const ls = new SecureLS({ encodingType: "aes" });
 export default {
     props: ["userPermissionDataProps", "enquiryDataProps"],
     data() {
         return {
+            preview:null,
             lms_enquiry_class:
                 this.enquiryDataProps != null
                     ? this.enquiryDataProps.lms_enquiry_class
@@ -841,16 +858,18 @@ export default {
         },
         selectedProfilePicture(val) {
             this.selectedProfilePicture = val;
-
+          
             this.imageRule =
                 this.selectedProfilePicture != null
                     ? [
+                   
                           (v) =>
                               !v ||
                               v.size <= 1048576 ||
                               this.$t("label_file_size_criteria_1_mb"),
                       ]
-                    : $t("label_required");
+                    :    $t('label_required') ;
+            
         },
         whatsApp(val) {
             this.whatsApp = val;
@@ -887,6 +906,14 @@ export default {
         }
     },
     methods: {
+        checkFile(file) {
+    let reader = new FileReader()
+    reader.onload = (event) => {
+       this.preview= event.target.result
+        // console.log(event.target.result)
+    }
+    reader.readAsDataURL(file)
+},
         // Get all active child course based on course
         getAllActiveChildCourse() {
             this.subjectDataLoading = true;
@@ -1117,16 +1144,22 @@ export default {
                 };
                 this.isBasicFormDataProcessing = true;
                 let basicFormData = new FormData();
+               
+
+               
 
                 basicFormData.append("centerId", ls.get("loggedUserCenterId"));
                 if (this.enquiryId != "") {
                     basicFormData.append("enquiryId", this.enquiryId);
                 }
                 basicFormData.append("loggedUserId", ls.get("loggedUserId"));
-
+              
                 basicFormData.append("enquirySourceId", this.selectedSourceId);
                 if (this.selectedCourseId != "") {
-                    basicFormData.append("courseId", this.selectedCourseId);
+                    basicFormData.append(
+                        "courseId",
+                        this.selectedCourseId
+                    );
                 }
                 if (this.lms_child_course_id != "") {
                     basicFormData.append(
@@ -1134,16 +1167,16 @@ export default {
                         this.lms_child_course_id
                     );
                 }
-                if (this.selectedProfilePicture != "") {
+                if(this.selectedProfilePicture != ""){
                     basicFormData.append(
                         "selectedProfilePicture",
                         this.selectedProfilePicture
-                    );
+                    ); 
                 }
 
                 basicFormData.append("enquiryFirstName", this.firstName);
                 basicFormData.append("enquiryLastName", this.lastName);
-
+               
                 basicFormData.append(
                     "enquiryContactNumber",
                     this.contactNumber
@@ -1154,7 +1187,57 @@ export default {
                         this.whatsAppNumber
                     );
                 }
+                basicFormData.append(
+                    "enquiryCurrentAddress",
+                    this.currentAddress
+                );
+                basicFormData.append(
+                    "enquiryPermanentAddress",
+                    this.permanentAddress
+                );
+                if (this.fatherName != "") {
+                    basicFormData.append("enquiryFathersName", this.fatherName);
+                }
+                if (this.motherName != "") {
+                    basicFormData.append("enquiryMothersName", this.motherName);
+                }
+
+                basicFormData.append("enquiryGender", this.selectedGender);
+                if (this.selectedMaritalStatus != "") {
+                    basicFormData.append(
+                        "enquiryMaritalStatus",
+                        this.selectedMaritalStatus
+                    );
+                }
+                basicFormData.append("enquiryDOB", this.selectedDOB);
+                if (this.whatsAppNumber != null) {
+                    basicFormData.append(
+                        "enquiryWhatsAppNumber",
+                        this.whatsAppNumber
+                    );
+                }
+                if (this.selectedDOJ != "") {
+                    basicFormData.append("enquiryDOJ", this.selectedDOJ);
+                }
+                basicFormData.append(
+                    "enquiryContactNumber",
+                    this.contactNumber
+                );
+                basicFormData.append(
+                    "enquiryCurrentAddress",
+                    this.currentAddress
+                );
+                basicFormData.append(
+                    "enquiryPermanentAddress",
+                    this.permanentAddress
+                );
+                basicFormData.append(
+                    "enquiryQualification",
+                    this.qualification
+                );
+                basicFormData.append("enquiryWorkExp", this.workExperience);
                 basicFormData.append("enquiryEmail", this.email);
+ 
 
                 this.$http
                     .post(
@@ -1174,25 +1257,38 @@ export default {
                             // Server side validation fails
                             if (data.responseData == 1) {
                                 this.snackBarColor = "success";
-                                this.changeSnackBarMessage(
-                                    "Student Registered"
-                                );
+                                // this.changeSnackBarMessage(
+                                //     "Student Registered"
+                                                // );
+                                                const result =  Global.showConfirmationAlert(
+                                        `Student Registration Id ${data.registrationCode}
 
-                                setTimeout(() => {
-                                    this.$router.push({
-                                        name: "EnquiryDirectory",
-                                    });
-                                }, 2000);
+                                        Student  Course Id ${data.studentCode}
+                                        `,
+                                        "Student Registered Successfully",
+                                        "success"
+                                    );
+                            if (result.isConfirmed) {
+                             
+                                                    this.$router.push({
+                                                    name: "EnquiryDirectory",
+                                                    });
+                                                
+                                  }
+    
+                              
                             } else if (data.responseData == 3) {
                                 this.snackBarColor = "error";
                                 this.changeSnackBarMessage(
                                     this.$t("label_email_exists")
                                 );
+                              
                             } else if (data.responseData == 4) {
                                 this.snackBarColor = "error";
                                 this.changeSnackBarMessage(
                                     this.$t("label_mobile_exists")
                                 );
+                            
                             } else if (data.responseData == 2) {
                                 console.log("Error");
                                 this.snackBarColor = "error";
@@ -1209,6 +1305,13 @@ export default {
                             this.$t("label_something_went_wrong")
                         );
                     });
+            }
+            else{
+                Global.showErrorAlert(
+          true,
+          "error",
+          "Please update student Information from Edit Section for Registering"   
+        );
             }
         },
     },

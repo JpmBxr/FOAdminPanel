@@ -495,7 +495,7 @@
                                             }}</template>
                                         </v-text-field>
                                     </v-col>
-                                    <v-col cols="12" md="3">
+                                    <v-col cols="12" md="6">
                                         <v-text-field
                                             outlined
                                             dense
@@ -524,7 +524,7 @@
                                             </template>
                                         </v-text-field>
                                     </v-col>
-                                 <v-col cols="12" md="3">
+                                 <v-col cols="12" md="3" v-if="false">
                                         <v-file-input
                                             v-model="selectedProfilePicture"
                                             color="primary"

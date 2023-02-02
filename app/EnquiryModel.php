@@ -476,7 +476,10 @@ class EnquiryModel extends Model
     }
 
   // Save Enquiry
-  public static function registerUser($centerId ,$courseId, $firstName, $lastName, $mobileNumber, $password, $loggedUserId, $enquiryEmail, $lms_enquiry_id, $childCourseId,$selectedImage)
+  public static function registerUser($centerId ,$courseId, $firstName, $lastName, $mobileNumber, $password, $loggedUserId,
+   $enquiryEmail, $lms_enquiry_id, $childCourseId,$selectedImage,$enquiryCurrentAddress,$enquiryPermanentAddress
+   ,$enquiryFathersName,$enquiryMothersName,$enquiryGender,$enquiryMaritalStatus,$enquiryDOB,$enquiryDOJ,$whatsAppNumber, $enquiryQualification,
+   $enquiryWorkExp)
   {
       try {
 
@@ -567,6 +570,25 @@ class EnquiryModel extends Model
                           'lms_enquiry_updated_by' => $loggedUserId,
 
                       ]);
+               DB::table('lms_enquiry')
+                ->where('lms_enquiry_id', $lms_enquiry_id)
+              ->update([
+                     'lms_enquiry_first_name'=>$firstName,
+                     'lms_enquiry_last_name'=>$lastName,
+                     'lms_enquiry_mobile'=>$mobileNumber,
+                     'lms_enquiry_email'=>$enquiryEmail,
+                     'lms_enquiry_local_address'=>$enquiryCurrentAddress,
+                     'lms_enquiry_permanent_address'=>$enquiryPermanentAddress,
+                     'lms_enquiry_father_name'=>$enquiryFathersName,
+                     'lms_enquiry_mother_name'=>$enquiryMothersName,
+                     'lms_enquiry_gender'=>$enquiryGender,
+                     'lms_enquiry_marital_status'=>$enquiryMaritalStatus,
+                     'lms_enquiry_date_of_birth' => $enquiryDOB,
+                     'lms_enquiry_date' => $enquiryDOJ,
+                     'lms_enquiry_whatsapp_contact' => $whatsAppNumber,
+                     'lms_enquiry_qualification' => $enquiryQualification == "null" ? null : $enquiryQualification,
+                     'lms_enquiry_work_experience' => $enquiryWorkExp,
+                      ]);
               } else {
                   // Email exists
                   $result_data['responseData'] = 3;
@@ -582,12 +604,14 @@ class EnquiryModel extends Model
           DB::commit();
           // $resultData['result'] = "success";
           $result_data['responseData'] = 1;
+          $result_data['studentCode'] = $studentCode;
+          $result_data['registrationCode'] = $registrationCode;
           return $result_data;
       } catch (Exception $ex) {
 
           DB::rollback();
-          //$result_data['responseData'] = $ex -> getMessage();
-          $result_data['responseData'] = '2';
+       //   $result_data['responseData'] = $ex -> getMessage();
+           $result_data['responseData'] = '2';
           return $result_data;
       }
   }

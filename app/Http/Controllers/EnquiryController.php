@@ -123,6 +123,11 @@ class EnquiryController extends Controller
         $lms_enquiry_permanent_address = $request->lms_enquiry_permanent_address;
         $lms_user_can_change_profile_image = $request->lms_user_can_change_profile_image;
 
+        // if ($request->has('oldBookCoverImage')) {
+        //     if (file_exists(storage_path('app/public/book_cover_images/' . $oldBookCoverImage))) {
+        //         unlink(storage_path('app/public/book_cover_images/' . $oldBookCoverImage));
+        //     }
+        // }
 
         $result = EnquiryModel::updateStudentDetails(
             $lms_user_id,
@@ -263,8 +268,19 @@ class EnquiryController extends Controller
         $lms_enquiry_id = $request->enquiryId;
         $childCourseId = $request->lms_child_course_id;
 	    $loggedUserId=$request->loggedUserId;
-    
- 
+        $enquiryCurrentAddress = $request->enquiryCurrentAddress;
+        $enquiryPermanentAddress = $request->enquiryPermanentAddress;
+        $enquiryFathersName = $request->enquiryFathersName;
+        $enquiryMothersName = $request->enquiryMothersName;
+        $enquiryGender = $request->enquiryGender;
+        $enquiryMaritalStatus = $request->enquiryMaritalStatus;
+        $enquiryDOB = $request->enquiryDOB;
+        $enquiryDOJ = $request->enquiryDOJ;
+        $enquiryContactNumber = $request->enquiryContactNumber;
+        $whatsAppNumber = $request->enquiryWhatsAppNumber;
+        $enquiryQualification = $request->enquiryQualification;
+        $enquiryWorkExp = $request->enquiryWorkExp;
+     
          if ($request->hasFile('selectedProfilePicture')) {
             $file= $request->file('selectedProfilePicture');
             $filename = uniqid() . time() . '.' . $file->getClientOriginalExtension();
@@ -288,7 +304,19 @@ class EnquiryController extends Controller
             $enquiryEmail,
             $lms_enquiry_id,
             $childCourseId,
-		    $selectedImage
+		    $selectedImage,
+            $enquiryCurrentAddress,
+            $enquiryPermanentAddress,
+            $enquiryFathersName,
+            $enquiryMothersName,
+            $enquiryGender,
+            $enquiryMaritalStatus,
+            $enquiryDOB,
+            $enquiryDOJ,
+            $whatsAppNumber,
+            $enquiryQualification,
+            $enquiryWorkExp,
+
         );
   
          return response()->json($result);
