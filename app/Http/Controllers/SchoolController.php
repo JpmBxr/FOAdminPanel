@@ -49,7 +49,7 @@ class SchoolController extends Controller
     public function getAllSchool(Request $request)
     {
         $centerId = $request->centerId;
-        $perPage = $request->perPage ? $request->perPage : 15;
+        $perPage = $request->perPage ? $request->perPage : 100;
         $getData = DB::table("lms_school_list")->
             select(['lms_school_id', 'lms_school_name',
             DB::raw("IF(is_lms_school_active = 1, 'Active','Inactive')as is_lms_school_active")])

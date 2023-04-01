@@ -134,7 +134,7 @@ class AssignmentModel extends Model
             ->where('lms_assignment_id', $lms_assignment_id)
             ->update([
 
-                'lms_assignment_status' => 0,
+              //  'lms_assignment_status' => 0,
                 'lms_assignment_upload_status'=>$lms_assignment_upload_status,
                 'lms_assignment_updated_at' => now(),
                 'lms_assignment_updated_by' => $loggedUserId,

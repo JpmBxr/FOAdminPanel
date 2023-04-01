@@ -1,29 +1,30 @@
 <template>
-    <div style="margin: auto; padding: auto; width: 1200px" id="app">
+    <div id="app">
         <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+            fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
         >
-            <v-row class="ml-4 mr-4 pt-4">
-                <v-toolbar-title dark color="primary">
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="text-h5">
-                                <strong>Add Register</strong>
-                            </v-list-item-title>
-                            <v-list-item-subtitle
-                                >{{ $t("label_home")
-                                }}<v-icon>mdi-forward</v-icon>
-                              Add Register
-                                <v-icon>mdi-forward</v-icon>
-                              Add Register</v-list-item-subtitle
-                            >
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-toolbar-title>
-                <v-spacer></v-spacer>
-            </v-row>
+            <v-sheet class="pa-4 mb-4" color="text-white">
+                <v-row class="ml-4 mr-4 pt-4">
+                    <v-toolbar-title dark color="primary">
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-title class="text-h5">
+                                    <strong>Add Register</strong>
+                                </v-list-item-title>
+                                <v-list-item-subtitle
+                                    >{{ $t("label_home")
+                                    }}<v-icon>mdi-forward</v-icon>
+                                    Add Register
+                                    <v-icon>mdi-forward</v-icon>
+                                    Add Register</v-list-item-subtitle
+                                >
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-row>
+            </v-sheet>
             <v-overlay :value="alertMessage == ''" color="primary">
                 <v-progress-circular
                     indeterminate
@@ -169,7 +170,7 @@
                                             ]"
                                         >
                                             <template #label>
-                                                {{ $t("label_child_course") }}
+                                                Course/Class
                                                 <span class="red--text">
                                                     <strong>{{
                                                         $t("label_star")
@@ -486,7 +487,18 @@
                                             :counter="10"
                                             maxlength="10"
                                             @keypress="isDigit"
-                                            :rules="mobileRules"
+                                            :rules="[
+                                                (v) =>
+                                                    !!v ||
+                                                    $t(
+                                                        'label_provide_valid_mobile_number'
+                                                    ),
+                                                (v) =>
+                                                    (v && v.length >= 10) ||
+                                                    $t(
+                                                        'label_mobile_number_10_digits'
+                                                    ),
+                                            ]"
                                         >
                                             <template #label>{{
                                                 $t("label_whatsapp")
@@ -522,7 +534,6 @@
                                             </template>
                                         </v-text-field>
                                     </v-col>
-                                  
                                 </v-row>
 
                                 <!-- New Row Start -->
@@ -587,17 +598,18 @@
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
-                                
+
                                 <v-row dense class="ml-2 mr-2">
-                                    <v-col cols="12" md="1" sm="12" class="pl-4">
-                                <v-avatar color="indigo">
-                                    <img
-                                     
-                                        :src="preview"
-                                    />
-                                  
-                                </v-avatar>
-                                  </v-col>
+                                    <v-col
+                                        cols="12"
+                                        md="1"
+                                        sm="12"
+                                        class="pl-4"
+                                    >
+                                        <v-avatar color="indigo">
+                                            <img :src="preview" />
+                                        </v-avatar>
+                                    </v-col>
                                     <v-col cols="12" md="3">
                                         <v-file-input
                                             v-model="selectedProfilePicture"
@@ -607,7 +619,7 @@
                                             show-size
                                             accept="image/*"
                                             :rules="imageRule"
-                                            @change="checkFile($event)" 
+                                            @change="checkFile($event)"
                                         >
                                             <template
                                                 v-slot:selection="{
@@ -629,7 +641,6 @@
                                             }}</template>
                                         </v-file-input>
                                     </v-col>
-
                                 </v-row>
                             </v-card>
                         </v-form>
@@ -646,11 +657,9 @@
                         >{{
                             isBasicFormDataProcessing == true
                                 ? $t("label_processing")
-                                : 'Register'
+                                : "Register"
                         }}</v-btn
                     >
-
-             
                 </v-stepper-content>
             </v-stepper>
 
@@ -677,7 +686,7 @@ export default {
     props: ["userPermissionDataProps", "enquiryDataProps"],
     data() {
         return {
-            preview:null,
+            preview: null,
             lms_enquiry_class:
                 this.enquiryDataProps != null
                     ? this.enquiryDataProps.lms_enquiry_class
@@ -858,18 +867,16 @@ export default {
         },
         selectedProfilePicture(val) {
             this.selectedProfilePicture = val;
-          
+
             this.imageRule =
                 this.selectedProfilePicture != null
                     ? [
-                   
                           (v) =>
                               !v ||
                               v.size <= 1048576 ||
                               this.$t("label_file_size_criteria_1_mb"),
                       ]
-                    :    $t('label_required') ;
-            
+                    : $t("label_required");
         },
         whatsApp(val) {
             this.whatsApp = val;
@@ -884,6 +891,11 @@ export default {
         },
     },
     created() {
+        if (this.enquiryDataProps == null) {
+            this.$router.push({
+                name: "EnquiryDirectory",
+            });
+        }
         console.log(this.enquiryDataProps);
         // Token Config
         this.authorizationConfig = {
@@ -907,13 +919,58 @@ export default {
     },
     methods: {
         checkFile(file) {
-    let reader = new FileReader()
-    reader.onload = (event) => {
-       this.preview= event.target.result
-        // console.log(event.target.result)
-    }
-    reader.readAsDataURL(file)
-},
+            let reader = new FileReader();
+
+            reader.onload = (event) => {
+                this.preview = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        },
+
+        // Send Whatsapp Message
+        getSendWhatsappMessage(details) {
+            var WAMessage = `
+        ✨ Greetings from Future Orbit ✨
+
+Welcome Dear ${details.name},
+Your registration details as follows,
+ 👉 Student ID:   ${details.studentCode}%0A
+ 👉 Registration ID:   ${details.registrationCode}%0A
+ 👉 Course:  ${details.courseName}%0A
+ 👉 Course Duration:  ${details.courseDuration}%0A%0A
+You can download our App from Play Store and login with following details:%0A
+ 👉  Login User ID:  ${details.mobile}%0A 
+ 👉  Password : ${details.password}%0A
+Regards,%0A
+Future Orbit - Admission Cell%0A%0A
+
+To download our app from Play Store click here👉`;
+
+            this.isSourceDataLoading = true;
+            this.$http
+                .get(`web_send_whatsapp/${details.whatsapp}/` + WAMessage, {
+                    headers: { Authorization: "Bearer " + ls.get("token") },
+                })
+                .then(({ data }) => {
+                    this.isSourceDataLoading = false;
+                    //User Unauthorized
+                    if (
+                        data.error == "Unauthorized" ||
+                        data.permissionError == "Unauthorized"
+                    ) {
+                        this.$store.dispatch("actionUnauthorizedLogout");
+                    } else {
+                        this.sourceData = data;
+                    }
+                })
+                .catch((error) => {
+                    this.isSourceDataLoading = false;
+                    this.snackBarColor = "error";
+                    this.changeSnackBarMessage(
+                        this.$t("label_something_went_wrong")
+                    );
+                });
+        },
         // Get all active child course based on course
         getAllActiveChildCourse() {
             this.subjectDataLoading = true;
@@ -1144,22 +1201,16 @@ export default {
                 };
                 this.isBasicFormDataProcessing = true;
                 let basicFormData = new FormData();
-               
-
-               
 
                 basicFormData.append("centerId", ls.get("loggedUserCenterId"));
                 if (this.enquiryId != "") {
                     basicFormData.append("enquiryId", this.enquiryId);
                 }
                 basicFormData.append("loggedUserId", ls.get("loggedUserId"));
-              
+
                 basicFormData.append("enquirySourceId", this.selectedSourceId);
                 if (this.selectedCourseId != "") {
-                    basicFormData.append(
-                        "courseId",
-                        this.selectedCourseId
-                    );
+                    basicFormData.append("courseId", this.selectedCourseId);
                 }
                 if (this.lms_child_course_id != "") {
                     basicFormData.append(
@@ -1167,16 +1218,16 @@ export default {
                         this.lms_child_course_id
                     );
                 }
-                if(this.selectedProfilePicture != ""){
+                if (this.selectedProfilePicture != "") {
                     basicFormData.append(
                         "selectedProfilePicture",
                         this.selectedProfilePicture
-                    ); 
+                    );
                 }
 
                 basicFormData.append("enquiryFirstName", this.firstName);
                 basicFormData.append("enquiryLastName", this.lastName);
-               
+
                 basicFormData.append(
                     "enquiryContactNumber",
                     this.contactNumber
@@ -1237,7 +1288,6 @@ export default {
                 );
                 basicFormData.append("enquiryWorkExp", this.workExperience);
                 basicFormData.append("enquiryEmail", this.email);
- 
 
                 this.$http
                     .post(
@@ -1247,7 +1297,7 @@ export default {
                     )
                     .then(({ data }) => {
                         this.isBasicFormDataProcessing = false;
-                        //User Unauthorized
+                        //User Unauthorizeddd
                         if (
                             data.error == "Unauthorized" ||
                             data.permissionError == "Unauthorized"
@@ -1256,39 +1306,42 @@ export default {
                         } else {
                             // Server side validation fails
                             if (data.responseData == 1) {
-                                this.snackBarColor = "success";
-                                // this.changeSnackBarMessage(
-                                //     "Student Registered"
-                                                // );
-                                                const result =  Global.showConfirmationAlert(
-                                        `Student Registration Id ${data.registrationCode}
+                                let details = {
+                                    name: this.firstName.toUpperCase(),
+                                    studentCode: data.studentCode,
+                                    registrationCode: data.registrationCode,
+                                    appUrl: data.appUrl,
+                                    mobile: data.phoneNo,
+                                    password: data.password,
+                                    courseName: data.courseName,
+                                    courseDuration: data.courseDuration,
+                                    whatsapp: "91" + data.whatsapp,
+                                };
+                                this.getSendWhatsappMessage(details);
+                                // );
+                                const result = Global.showConfirmationAlert(
+                                    ` Registration ID ${data.registrationCode}
 
-                                        Student  Course Id ${data.studentCode}
+                                        Course ID ${data.studentCode}
                                         `,
-                                        "Student Registered Successfully",
-                                        "success"
-                                    );
-                            if (result.isConfirmed) {
-                             
-                                                    this.$router.push({
-                                                    name: "EnquiryDirectory",
-                                                    });
-                                                
-                                  }
-    
-                              
+                                    "Student Registered Successfully",
+                                    "success"
+                                );
+                                if (result) {
+                                    this.$router.push({
+                                        name: "EnquiryDirectory",
+                                    });
+                                }
                             } else if (data.responseData == 3) {
                                 this.snackBarColor = "error";
                                 this.changeSnackBarMessage(
                                     this.$t("label_email_exists")
                                 );
-                              
                             } else if (data.responseData == 4) {
                                 this.snackBarColor = "error";
                                 this.changeSnackBarMessage(
                                     this.$t("label_mobile_exists")
                                 );
-                            
                             } else if (data.responseData == 2) {
                                 console.log("Error");
                                 this.snackBarColor = "error";
@@ -1305,13 +1358,12 @@ export default {
                             this.$t("label_something_went_wrong")
                         );
                     });
-            }
-            else{
+            } else {
                 Global.showErrorAlert(
-          true,
-          "error",
-          "Please update student Information from Edit Section for Registering"   
-        );
+                    true,
+                    "error",
+                    "Please update student Information from Edit Section for Registering"
+                );
             }
         },
     },

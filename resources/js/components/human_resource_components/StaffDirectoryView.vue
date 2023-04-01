@@ -1,10 +1,9 @@
 <template>
-    <div style="background-color: #d7d8db; height: 100%" id="app">
+      <div id="app">
         <!-- Card Start -->
         <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+        fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
         >
             <v-progress-linear
                 :active="isDataProcessing"
@@ -16,6 +15,7 @@
                 background-color="primary lighten-3"
                 striped
             ></v-progress-linear>
+            <v-sheet class="pa-4 mb-4" color="text-white">
             <v-row class="ml-4 mr-4 pt-4">
                 <v-toolbar-title dark color="primary">
                     <v-list-item two-line>
@@ -49,12 +49,13 @@
                     {{ $t("label_add_staff") }}
                 </v-btn>
             </v-row>
+            </v-sheet>
             <transition name="fade" mode="out-in">
                 <v-data-table
                     dense
                     :headers="tableHeader"
                     :items="dataTableRowNumbering"
-                    item-key="lms_staff_id"
+                    key="lms_staff_id"
                     class="elevation-1"
                     :loading="tableDataLoading"
                     :loading-text="tableLoadingDataText"
@@ -459,6 +460,7 @@ export default {
             }
         },
 
+     
         // Get all Staff from DB
         getAllStaff(e) {
             this.tableDataLoading = true;
@@ -468,6 +470,7 @@ export default {
                 postData = {
                     includeDelete: this.includeDelete,
                     centerId: ls.get("loggedUserCenterId"),
+                    loggedUserId:ls.get("loggedUserId"),
                     perPage:
                         e.itemsPerPage == -1
                             ? this.totalItemsInDB
@@ -478,6 +481,7 @@ export default {
                 postData = {
                     includeDelete: this.includeDelete,
                     centerId: ls.get("loggedUserCenterId"),
+                    loggedUserId:ls.get("loggedUserId"),
                     perPage:
                         e.itemsPerPage == -1
                             ? this.totalItemsInDB

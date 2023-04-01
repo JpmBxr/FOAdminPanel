@@ -1,6 +1,9 @@
 <template>
-    <div style=" margin:auto; padding:auto; width:1200px;" id="app">
-       <v-container fluid style="background-color: #fff"  class="ma-4 pa-0" width="100%">
+    <div  id="app">
+       <v-container  fluid
+      style="background-color: #e4e8e4; max-width: 100% !important"
+      >
+      <v-sheet class="pa-4 mb-4" color="text-white">
            <v-row dense>
                <transition name="fade" mode="out-in">
                    <v-col class="d-flex flex-column ma-4">
@@ -22,7 +25,7 @@
                                </v-toolbar-title>
    
                            </v-row>
-                           <v-container fluid class="py-2 ma-0">
+                           <v-container fluid style="max-width: 100% !important">
                                <v-tabs v-model="tabs" class="d-flex flex-row">
                                    <v-tab>
                                        Playlist
@@ -43,6 +46,7 @@
                    </v-col>
                </transition>
            </v-row>
+        </v-sheet>
        </v-container>
     </div>
    </template>

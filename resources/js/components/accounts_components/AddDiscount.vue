@@ -1,11 +1,13 @@
 <template>
-    <div style="margin: auto; padding: auto; width: 1200px" id="app">
+    <div  id="app">
         <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+              fluid
+      style="background-color: #e4e8e4; max-width: 100% !important"
         >
-            <v-row class="ml-4 mr-4 pt-4">
+        <v-sheet class="pa-4 mb-4" color="text-white">
+            <v-row   
+           class="mb-4 mt-1"
+           dense>
                 <v-toolbar-title dark color="primary">
                     <v-list-item two-line>
                         <v-list-item-content>
@@ -24,6 +26,7 @@
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
             </v-row>
+            </v-sheet>
             <v-overlay :value="alertMessage == ''" color="primary">
                 <v-progress-circular
                     indeterminate
@@ -31,18 +34,7 @@
                     color="primary"
                 ></v-progress-circular>
             </v-overlay>
-            <v-alert
-                class="mx-4"
-                dense
-                v-if="alertMessage != ''"
-                text
-                :type="alertType"
-                elevation="2"
-                dismissible
-                transition="fade-transition"
-                >{{ alertMessage }}</v-alert
-            >
-
+    
             <v-stepper v-model="stepperInfo" vertical>
                 <v-stepper-step :complete="stepperInfo > 1" step="1">{{
                     $t("label_basic_info")
@@ -426,6 +418,7 @@ export default {
         },
     },
     created() {
+
         console.log(this.enquiryDataProps);
         // Token Config
         this.authorizationConfig = {

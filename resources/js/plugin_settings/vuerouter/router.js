@@ -209,7 +209,8 @@ const router = new Router({
                     name: "ViewSubmittedAssignment",
                     meta: {
                         requiresAuth: true
-                    }
+                    },
+                    props: true 
                 },
 
                 // View Submitted Assignment Details
@@ -304,29 +305,6 @@ const router = new Router({
                     props: true
                 },
 
-                // School - Add School
-                {
-                    path: "/home/discounts/view-discounts",
-                    component: require("../../components/accounts_components/DiscountDirectoryView.vue")
-                        .default,
-                    name: "Discounts",
-                    meta: {
-                        requiresAuth: true
-                    },
-                    props: true
-                },
-
-                {
-                    path: "enquiry/add-discount",
-                    component: require("../../components/accounts_components/AddDiscount.vue")
-                        .default,
-                    name: "AddDiscount",
-                    meta: {
-                        requiresAuth: true
-                    },
-                    props: true
-                },
-
 
                 // Exam Schedule - Directory
                 {
@@ -357,6 +335,37 @@ const router = new Router({
                     component: require("../../components/report_components/BookIssueReportView.vue")
                         .default,
                     name: "BookIssueReport",
+                    meta: {
+                        requiresAuth: true
+                    },
+                    props: true
+                },
+                {
+                    path: "report/Enquiry-report-View",
+                    component: require("../../components/report_components/EnquiryReportView.vue")
+                        .default,
+                    name: "EnquiryReportView",
+                    meta: {
+                        requiresAuth: true
+                    },
+                    props: true
+                },
+                {
+                    path: "report/student-registered-report",
+                    component: require("../../components/report_components/StudentRegisteredReport.vue")
+                        .default,
+                    name: "StudentRegisteredReport",
+                    meta: {
+                        requiresAuth: true
+                    },
+                    props: true
+                },
+
+                {
+                    path: "report/Fee-report-View",
+                    component: require("../../components/report_components/FeeReportView.vue")
+                        .default,
+                    name: "FeeReportView",
                     meta: {
                         requiresAuth: true
                     },
@@ -492,6 +501,72 @@ const router = new Router({
                     },
                     props: true
                 },
+
+                // Discount - Discount Directory
+                {
+                    path: "/home/discounts/view-discounts",
+                    component: require("../../components/accounts_components/DiscountDirectoryView.vue")
+                        .default,
+                    name: "Discounts",
+                    meta: {
+                        requiresAuth: true
+                    },
+                    props: true
+                },
+
+                {
+                    path: "/home/discounts/add-discount",
+                    component: require("../../components/accounts_components/AddDiscount.vue")
+                        .default,
+                    name: "AddDiscount",
+                    meta: {
+                        requiresAuth: true
+                    },
+                    props: true
+                },
+
+                {
+                    path: "/home/fee-generate/view-fee",
+                    component: require("../../components/accounts_components/FeeGenerator.vue")
+                        .default,
+                    name: "FeeGenerator",
+                    meta: {
+                        requiresAuth: true
+                    },
+                    props: true
+                },
+
+                {
+                    path: "/home/fee-generate/add-fee-generate",
+                    component: require("../../components/accounts_components/AddFeeGenerator.vue")
+                        .default,
+                    name: "AddFeeGenerator",
+                    meta: {
+                        requiresAuth: true
+                    },
+                    props: true
+                },
+                {
+                    path: "/home/generated-fees/view-generated-fees",
+                    component: require("../../components/accounts_components/GeneratedFees.vue")
+                        .default,
+                    name: "GeneratedFees",
+                    meta: {
+                        requiresAuth: true
+                    },
+                    props: true
+                },
+                {
+                    path: "/home/generated-fees/pay-generated-fees",
+                    component: require("../../components/accounts_components/PayGeneratedFees.vue")
+                        .default,
+                    name: "PayGeneratedFees",
+                    meta: {
+                        requiresAuth: true
+                    },
+                    props: true
+                },
+
                 // Batch Directory
                 {
                     path: "batch/batch-directory",
@@ -600,6 +675,17 @@ const router = new Router({
                     component: require("../../components/library_components/BookList.vue")
                         .default,
                     name: "BookList",
+                    meta: {
+                        requiresAuth: true
+                    },
+                    props: true
+                },
+                // Library - Issue Book
+                {
+                    path: "library/IssueItems",
+                    component: require("../../components/library_components/IssueItems.vue")
+                        .default,
+                    name: "IssueItems",
                     meta: {
                         requiresAuth: true
                     },

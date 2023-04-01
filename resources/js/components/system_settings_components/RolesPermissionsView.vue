@@ -1,11 +1,9 @@
 <template>
-    <div style="background-color: #d7d8db; height: 100%" id="app">
+    <div id="app">
         <!-- Card Start -->
         <v-container
-            style="background-color: #fff;border-radius:5px; display: block;overflow: auto;"
-            class="ma-4 pa-0"
-            width="100%"
-            fluid
+        fluid
+        style="background-color: #e4e8e4; max-width: 100% !important" 
         >
             <v-progress-linear
                 :active="isRoleDataProcessing"
@@ -17,6 +15,7 @@
                 background-color="primary lighten-3"
                 striped
             ></v-progress-linear>
+            <v-sheet class="pa-4 mb-4" >
             <v-row class="ml-4 mr-4 pt-4">
                 <v-toolbar-title dark color="primary">
                     <v-list-item two-line>
@@ -50,6 +49,7 @@
                     Add New Role
                 </v-btn>
             </v-row>
+        </v-sheet>
             <v-card v-if="isAddRoleCardVisible" flat elevation="0">
                 <v-app-bar dark color="grey" flat>
                     <v-toolbar-title color="success" class="title"

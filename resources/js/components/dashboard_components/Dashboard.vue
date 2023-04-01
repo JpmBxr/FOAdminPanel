@@ -1,6 +1,9 @@
 <template>
-  <div style=" margin:auto; padding:auto; width:1200px;" id="app">
-    <v-container style="background-color: #fff" class="ma-4 pa-0" width="100%">
+  <div id="app">
+    <v-container 
+    fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
+    >
       <!-- Card Start -->
       <v-overlay :value="isLoaderActive" color="primary">
         <v-progress-circular
@@ -9,6 +12,8 @@
           color="primary"
         ></v-progress-circular>
       </v-overlay>
+      
+
       <v-row class="ml-4 mr-4 pt-4">
         <v-toolbar-title dark color="primary">
           <v-list-item two-line>
@@ -51,6 +56,7 @@
           Day-End
         </v-btn>
       </v-row>
+
       <v-row class="ml-2 mr-2">
         <v-col cols="12" md="6"
           ><v-card>

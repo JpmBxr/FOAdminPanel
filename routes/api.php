@@ -40,7 +40,8 @@ Route::post('updateDeviceToken', 'AppController@updateDeviceToken');
 Route::post('getCommonAboutUs', 'AppController@getCommonAboutUs');
 Route::post('getCourseList', 'AppController@getCourseList');
 Route::post('getGalleryList', 'AppController@getGalleryList');
-
+Route::get('web_send_whatsapp/{mobile}/{message}', 'FeeGenerateController@sendWhatsappMessage')->name('sendWhatsappMessage');
+Route::get('web_send_whatsapp_register/{mobile}/{message}', 'FeeGenerateController@sendWhatsappMessageRegister')->name('sendWhatsappMessageRegister');
 Route::get('sendStudentSignupOTP/{mobile}/{otp}', [AppController::class, 'sendStudentSignupOTP']);
 Route::post('changePassword', 'AppController@changePassword');
 Route::post('sendPassword', 'AppController@sendPassword');
@@ -74,6 +75,8 @@ Route::post('getPostComment', 'AppController@getPostComment');
 Route::post('savePostComment', 'AppController@savePostComment');
 
 Route::post('saveEnquiry', 'AppController@saveEnquiry');
+Route::post('getAllFees', 'AppController@getAllFees');
+Route::post('getAllVoucher', 'AppController@getAllVoucher');
 
 Route::post('getOnlineCourseList', 'AppController@getOnlineCourseList');
 Route::post('registerUser', 'AppController@registerUser');
@@ -176,6 +179,7 @@ Route::group(['middleware' => ['auth:api', 'permission:Assign Permission']], fun
     // View & Assign Permission
     Route::post('web_get_assigned_unassigned_permission_role_wise', 'SystemSettingsController@getAssignedUnAssignedPermissionRoleWise')->name('web_get_assigned_unassigned_permission_role_wise');
     Route::post('web_assign_permission_role_wise', 'SystemSettingsController@assignPermissionRoleWise')->name('web_assign_permission_role_wise');
+    Route::post('web_assign_individual_permission_role_wise', 'SystemSettingsController@assignIndividualPermissionRoleWise')->name('web_assign_individual_permission_role_wise');
 
 });
 
@@ -239,6 +243,7 @@ Route::group(['middleware' => ['auth:api', 'permission:Staff']], function () {
 
     // View All Staff
     Route::get('web_get_all_staff', 'StaffController@getAllStaff')->name('web_get_all_staff');
+    Route::get('web_get_all_staff_without_pagination', 'StaffController@getAllStaffWithoutPagination')->name('getAllStaffWithoutPagination');
 
 });
 
@@ -647,5 +652,36 @@ Route::group(['middleware' => ['auth:api', 'permission:Add Staff|Edit Staff']], 
     Route::get('web_get_all_discounts', 'DiscountController@getAllDiscount')->name('web_get_all_discounts');
     Route::post('web_save_edit_discounts', 'DiscountController@saveEditDiscount')->name('web_save_edit_discounts');
     
+
+});
+//View All Fee Details
+Route::group(['middleware' => ['auth:api']], function () {
+
+  
+    Route::get('web_get_all_student_fee', 'FeeGenerateController@getAllStudentFeeDetails')->name('web_get_all_student_fee');
+    Route::post('web_save_fees', 'FeeGenerateController@saveFees')->name('saveFees');
+    Route::get('web_discount_fetch_without_pagination','FeeGenerateController@discountFetch');   
+    Route::get('web_discount_get_all_student_fee_generated','FeeGenerateController@getAllStudentFeeDetailsGenerated');   
+    Route::get('web_discount_get_all_student_monthly_fees','FeeGenerateController@getMonthlyFeeForStudent'); 
+    Route::post('web_voucher_details_save', 'FeeGenerateController@voucherdetailssave')->name('voucherdetailssave');
+    Route::post('web_voucher_generate_for_student', 'FeeGenerateController@voucherGenerateStudent')->name('vouchergenerate');
+    Route::get('web_change_voucher_status', 'FeeGenerateController@changeVoucherStatus')->name('changeVoucherStatus');
+    Route::get('web_voucher_details_get', 'FeeGenerateController@getVoucherStudent')->name('getvoucherstudent');
+    Route::get('web_voucher_details_get_without_pagination', 'FeeGenerateController@getVoucherDetailsWithoutPagination')->name('web_voucher_details_get_without_pagination');
+    Route::get('web_voucher_details_student_wise', 'FeeGenerateController@getVoucherStudentWise')->name('getvoucherstudent');  
+    Route::get('web_voucher_get_details_with_student', 'FeeGenerateController@getVoucherWithStudent')->name('getvoucherwithstudent');
+    Route::post('web_fee_paid', 'FeeGenerateController@feePaidForMonth')->name('feePaidForMonth');
+    Route::get('web_generate_monthly_fee_report', 'FeeGenerateController@generateMonthlyFeeReport')->name('generateMonthlyFeeReport');
+    Route::get('web_generate_enquiry_report', 'EnquiryController@enquiryReport')->name('enquiryReport');
+    Route::get('web_generate_registered_student_report', 'EnquiryController@registeredStudentsReport')->name('studentReport');
+    Route::post('web_get_logged_in_user_status', 'StaffController@logggedInStatus')->name('logggedInStatus');
+    
+});
+
+
+Route::group(['middleware' => ['auth:api']], function () {
+    Route::get('web_get_all_items', 'IssueItemController@getAllItems')->name('web_get_all_items');
+    Route::get('web_add_items', 'IssueItemController@itemadd')->name('web_add_items');
+    Route::get('web_get_submitted_assignment', 'IssueItemController@itemadd')->name('web_add_items');
 
 });

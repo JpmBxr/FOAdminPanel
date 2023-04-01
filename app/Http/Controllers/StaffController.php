@@ -21,6 +21,7 @@ class StaffController extends Controller
         $perPage = $request->perPage ? $request->perPage : 50;
         $filterBy = $request->filterBy;
         $centerId = $request->centerId;
+        $loggedUserId = $request->loggedUserId;
         $active = [];
         $includeDelete = $request->includeDelete;
         if ($includeDelete == "false") {
@@ -28,6 +29,10 @@ class StaffController extends Controller
         } else {
             $active = [1, 0];
         }
+        
+        $role=DB::table('lms_user')->select('roles.id','roles.name')->join('roles','roles.id','=','lms_user.role_id')
+        ->where('lms_user.lms_user_id', $loggedUserId)->first();
+
         $result = DB::table('lms_staff')
             ->join('lms_user', 'lms_user.lms_user_id', '=', 'lms_staff.lms_user_id')
             ->join('model_has_roles', 'lms_user.lms_user_id', '=', 'model_has_roles.model_id')
@@ -41,7 +46,11 @@ class StaffController extends Controller
                     ->orWhere('lms_staff.lms_staff_code', 'like', "%$filterBy%")
                     ->orWhere('roles.name', $filterBy);
             })
-
+            ->where(function ($q) use ($role,$loggedUserId) {
+                if($role->name !== 'Admin'){
+                    $q->where('lms_user.lms_user_id','=',  $loggedUserId);
+                }             
+            })
             ->select(
                 'lms_staff.lms_staff_id',
                 'lms_staff.lms_department_id',
@@ -91,6 +100,7 @@ class StaffController extends Controller
                 'lms_staff.lms_staff_email',
                 'lms_staff.lms_staff_profile_image',
                 'lms_user.lms_user_device_token',
+                'lms_user.lms_is_user_logged',
                 DB::raw("IF(lms_staff.lms_staff_is_active = 1, 'Active','Inactive')as lms_staff_is_active"),
                 DB::raw('roles.name as role_name'),
                 'lms_designation.lms_designation_name',
@@ -636,6 +646,8 @@ class StaffController extends Controller
                 'lms_staff.lms_staff_email',
                 'lms_staff.lms_staff_profile_image',
                 'lms_user.lms_user_device_token',
+                'lms_user.password_normal',
+                'lms_user.lms_is_user_logged',
                 DB::raw("IF(lms_staff.lms_staff_is_active = 1, 'Active','Inactive')as lms_staff_is_active"),
                 DB::raw('roles.name as role_name'),
                 DB::raw("DATE_FORMAT(lms_staff.lms_staff_created_at, '%d-%m-%Y')as lms_staff_created_at"),
@@ -687,5 +699,22 @@ class StaffController extends Controller
             'password' => $staffPassword,
         ];
         Mail::to($staffEmail)->send(new StaffDetailsMailable($staffDetails));
+    }
+
+    public function logggedInStatus(Request $request){
+      
+        try{
+        $status=DB::table('lms_user')->where('lms_user_id','=',$request->staffUserId)
+        ->update(['lms_is_user_logged'=>$request->status]);
+        $result_data['responseData'] = 1;
+        return $result_data;
+        
+        }
+        catch(Exception $ex){
+            
+            $result_data['responseData'] = 2;
+            return $result_data;
+        }
+        return $resultData;
     }
 }

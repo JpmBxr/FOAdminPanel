@@ -1,9 +1,8 @@
 <template>
-    <div style="margin: auto; padding: auto; width: 1200px" id="app">
+    <div id="app">
         <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+            fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
         >
             <v-overlay :value="isLoaderActive" color="primary">
                 <v-progress-circular
@@ -12,36 +11,48 @@
                     color="primary"
                 ></v-progress-circular>
             </v-overlay>
-            <v-row class="ml-4 mr-4 pt-4">
-                <v-toolbar-title dark color="primary">
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="text-h5">
-                                <strong>
-                                    {{ this.$t("label_assignment") }}</strong
-                                >
-                            </v-list-item-title>
-                            <v-list-item-subtitle
-                                >Home <v-icon>mdi-forward</v-icon> Academics
-                                <v-icon>mdi-forward</v-icon>
-                                {{ this.$t("label_assignment") }}
-                            </v-list-item-subtitle>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn
-                    v-permission="'Add Assignment'"
-                    v-if="!isAddCardVisible"
-                    :disabled="tableDataLoading"
-                    color="primary"
-                    class="white--text"
-                    @click="isAddCardVisible = !isAddCardVisible"
+            <v-sheet class="pa-4 mb-4" color="text-white">
+                <v-row
+                    justify="space-around"
+                    style="  margin-right: 1px !important;
+                        margin-left: -1px !important;
+                    "
+                    class="mb-4 mt-1"
+                    dense
                 >
-                    Add Assignment
-                    <v-icon right dark> mdi-plus </v-icon>
-                </v-btn>
-            </v-row>
+                    <v-toolbar-title dark color="primary">
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-title class="text-h5">
+                                    <strong>
+                                        {{
+                                            this.$t("label_assignment")
+                                        }}</strong
+                                    >
+                                </v-list-item-title>
+                                <v-list-item-subtitle
+                                    >Home <v-icon>mdi-forward</v-icon> Academics
+                                    <v-icon>mdi-forward</v-icon>
+                                    {{ this.$t("label_assignment") }}
+                                </v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        v-permission="'Add Assignment'"
+                        v-if="!isAddCardVisible"
+                        :disabled="tableDataLoading"
+                        color="primary"
+                        class="white--text mt-6 left"
+                        @click="isAddCardVisible = !isAddCardVisible"
+                    >
+                        Add Assignment
+                        <v-icon right dark> mdi-plus </v-icon>
+                    </v-btn>
+                </v-row>
+            </v-sheet>
+
             <transition name="fade" mode="out-in">
                 <v-card v-if="isAddCardVisible">
                     <v-app-bar dark color="grey" flat>
@@ -303,13 +314,13 @@
                     :loading="tableDataLoading"
                     :loading-text="tableLoadingDataText"
                     :server-items-length="totalItemsInDB"
-                    :items-per-page="50"
+                    :items-per-page="100"
                     :single-expand="singleExpand"
                     :expanded.sync="expanded"
                     show-expand
                     @pagination="getAllActiveAssignment"
                     :footer-props="{
-                        itemsPerPageOptions: [50, 100, 150, 200, -1],
+                        itemsPerPageOptions: [100, 200, 300, -1],
                     }"
                 >
                     <template
@@ -343,6 +354,21 @@
                             color="success"
                             >mdi-arrow-down-circle-outline</v-icon
                         >
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-icon
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    small
+                                    class="mr-2"
+                                    @click="editAssignment(item)"
+                                    color="primary"
+                                    >mdi-eye</v-icon
+                                >
+                            </template>
+                            <span>Submitted Assignment</span>
+                        </v-tooltip>
+                        
                     </template>
                     <template v-slot:expanded-item="{ headers, item }">
                         <td :colspan="headers.length" style="bgcolor: red">
@@ -644,12 +670,12 @@
                         >
 
                         <v-icon
-                            v-if="item.lms_assignment_status == 'Active'"
-                            v-permission="'Delete Assignment'"
+                
+                        v-if="item.lms_assignment_upload_status == 'Created'"
                             small
                             color="error"
-                            @click="disableAssignment(item)"
-                            >mdi-delete</v-icon
+                            @click="changeStatus(item)"
+                            >mdi-check-circle</v-icon
                         >
 
                         <v-icon
@@ -680,6 +706,7 @@
 <script>
 // Secure Local Storage
 import SecureLS from "secure-ls";
+import { Global } from "../../components/helpers/global"
 const ls = new SecureLS({ encodingType: "aes" });
 
 //PDF Export
@@ -778,21 +805,28 @@ export default {
                 {
                     text: "Title",
                     value: "lms_assignment_title",
-                    width: "20%",
+                    width: "10%",
                     sortable: false,
                 },
                 {
                     text: "Subject",
                     value: "lms_subject_name",
-                    width: "20%",
+                    width: "10%",
                     sortable: false,
                 },
                 {
                     text: "Class",
                     value: "lms_child_course_name",
-                    width: "20%",
+                    width: "10%",
                     sortable: false,
                 },
+                {
+                    text: "Batch",
+                    value: "lms_batch_name",
+                    width: "15%",
+                    sortable: false,
+                },
+                
                 {
                     text: "Last Date",
                     value: "lms_assignment_submission_last_date",
@@ -804,21 +838,26 @@ export default {
                     text: this.$t("label_status"),
                     value: "lms_assignment_upload_status",
                     align: "middle",
-                    width: "10%",
+                    width: "5%",
                     sortable: false,
                 },
                 {
                     text: this.$t("label_actions"),
                     value: "actions",
                     sortable: false,
-                    width: "10%",
+                    width: "5%",
                     align: "end",
                 },
+                
+
                 {
                     text: "Description",
                     value: "data-table-expand",
+                    sortable: false,
+                    width: "5%",
                     align: "end",
                 },
+            
             ],
             classId: "",
             classItems: [],
@@ -829,15 +868,15 @@ export default {
 
             // For Excel Download
             excelFields: {
-                Title: "lms_notice_title",
-                Description: "lms_notice_description",
-                Date: "lms_notice_created_at",
-                Role: "role_name",
-                Status: "lms_notice_is_active",
+                Title: "lms_assignment_title",
+                Subject: "lms_subject_name",
+                Class: "lms_child_course_name",
+                LastDate: "lms_assignment_submission_last_date",
+                Status: "lms_assignment_upload_status",
             },
             excelData: [],
             excelFileName:
-                "Notice" + "_" + moment().format("DD/MM/YYYY") + ".xls",
+                "Assignment" + "_" + moment().format("DD/MM/YYYY") + ".xls",
         };
     },
     watch: {
@@ -867,6 +906,7 @@ export default {
     },
 
     created() {
+ 
         // Token Config
         this.authorizationConfig = {
             headers: { Authorization: "Bearer " + ls.get("token") },
@@ -877,6 +917,64 @@ export default {
     },
 
     methods: {
+        async changeStatus(item, $event) {
+            const result = await Global.showConfirmationAlert(
+                "Are you sure, To Confirm Submission of Assignment",
+                
+            
+            );
+            if (result.isConfirmed) {
+                this.isLoaderActive = true;
+                this.$http
+                    .post(
+                        "web_enable_disable_assignment",
+                        {
+                         
+                            lms_assignment_id: item.lms_assignment_id,
+                            lms_assignment_upload_status: 1,
+                            loggedUserId: ls.get("loggedUserId"),
+                        },
+                        this.authorizationConfig
+                    )
+                    .then(({ data }) => {
+                        this.isLoaderActive = false;
+                        //User Unauthorized
+                        if (
+                            data.error == "Unauthorized" ||
+                            data.permissionError == "Unauthorized"
+                        ) {
+                            this.$store.dispatch("actionUnauthorizedLogout");
+                        } else {
+                            console.log(data.responseData);
+                            // School Source Disabled
+                            if (data.responseData == 1) {
+                                this.snackBarColor = "success";
+                                this.changeSnackBarMessage(
+                                    "Assignment Submitted"
+                                );
+                              //  this.dialogAddSchool = false;
+                               
+                            }
+                            this.getAllActiveAssignment(event);
+                           
+                        }
+                    })
+                    .catch((error) => {
+                        this.isLoaderActive = false;
+                        this.snackBarColor = "error";
+                        this.changeSnackBarMessage(
+                            this.$t("label_something_went_wrong")
+                        );
+                    });
+            }
+        },
+        editAssignment(item) {
+         
+            this.$router.push({
+                name: "ViewSubmittedAssignment",
+                params: { assignmentDataProps: item },
+            });
+        },
         deleteAssignment(lms_assignment_document_id) {
             let userDecision = confirm(
                 "Are you sure you want to delete Assignment"
@@ -1570,11 +1668,17 @@ export default {
             const pdfDoc = new jsPDF();
             pdfDoc.autoTable({
                 columns: [
-                    { header: "Topic Code", dataKey: "lms_topic_code" },
-                    { header: "Topic Name", dataKey: "lms_topic_name" },
-                    { header: "Course Name", dataKey: "lms_course_name" },
-                    { header: "Subject Name", dataKey: "lms_subject_name" },
-                    { header: "Status", dataKey: "lms_notice_is_active" },
+                    { header: "Title", dataKey: "lms_assignment_title" },
+                    { header: "Subject", dataKey: "lms_subject_name" },
+                    { header: "Course", dataKey: "lms_child_course_name" },
+                    {
+                        header: "Last Date",
+                        dataKey: "lms_assignment_submission_last_date",
+                    },
+                    {
+                        header: "Status",
+                        dataKey: "lms_assignment_upload_status",
+                    },
                 ],
                 body: this.tableItems,
                 //styles: { fillColor: [255, 0, 0] },
@@ -1582,7 +1686,10 @@ export default {
                 margin: { top: 10 },
             });
             pdfDoc.save(
-                "TopicListAsPDF" + "_" + moment().format("DD/MM/YYYY") + ".pdf"
+                "AssignmentListAsPDF" +
+                    "_" +
+                    moment().format("DD/MM/YYYY") +
+                    ".pdf"
             );
         },
     },

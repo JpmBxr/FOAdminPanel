@@ -58,14 +58,28 @@ class SubjectController extends Controller
     public function getAllSubject(Request $request)
     {
         $centerId = $request->centerId;
-        $perPage = $request->perPage ? $request->perPage : 15;
+        $filterBy=$request->searchText;
+        $perPage = $request->perPage ? $request->perPage : 100;
+        $includeDelete = $request->includeDelete;
+        if ($includeDelete == "false") {
+            $active = [1];
+        } else {
+            $active = [1, 0];
+        }
         $getData = DB::table("lms_subject")->
             leftJoin('lms_course', 'lms_course.lms_course_id', '=', 'lms_subject.lms_course_id')->
             select(['lms_subject_id', 'lms_subject.lms_course_id', 'lms_course_name','lms_subject_code','lms_subject_name',
               DB::raw("IF(lms_subject_is_active = 1, 'Active','Inactive')as lms_subject_is_active")])
             ->
             where('lms_subject.lms_center_id', $centerId)
+            ->where(function ($q) use ($filterBy) {
+                $q->orWhere('lms_subject.lms_subject_code', 'like', "%$filterBy%")
+                ->orWhere('lms_subject.lms_subject_name', 'like', "%$filterBy%")
+                ->orWhere('lms_course.lms_course_name', 'like', "%$filterBy%");
+            })
+            ->whereIn('lms_subject.lms_subject_is_active', $active)
             ->paginate($perPage);
+            
         return $getData;
     }
 

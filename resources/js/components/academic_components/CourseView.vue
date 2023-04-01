@@ -1,6 +1,6 @@
 <template>
     <!-- Card Start -->
-    <v-container fluid style="background-color: #fff" class="ma-0 pa-0">
+    <v-container fluid style="max-width: 100% !important">
         <v-overlay :value="isLoaderActive" color="primary">
             <v-progress-circular
                 indeterminate
@@ -8,227 +8,204 @@
                 color="primary"
             ></v-progress-circular>
         </v-overlay>
-        <v-row dense class="ma-0 pa-0">
-            <transition name="fade" mode="out-in">
-                <v-col
-                    class="d-flex flex-column pa-0 ma-0"
-                    v-if="isAddCardVisible"
-                >
-                    <v-card elevation="0">
-                        <v-app-bar
-                            dark
-                            color="grey"
-                            class="pa-0"
-                            flat
-                            rounded="0"
-                        >
-                            <v-toolbar-title color="success">{{
-                                $t("label_stream_add")
-                            }}</v-toolbar-title>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                                icon
-                                class="ma-2"
-                                outlined
-                                small
+
+        <transition name="fade" mode="out-in">
+            <v-col class="d-flex flex-column pa-0 ma-0" v-if="isAddCardVisible">
+                <v-card elevation="0">
+                    <v-app-bar dark color="grey" class="pa-0" flat rounded="0">
+                        <v-toolbar-title color="success">{{
+                            $t("label_stream_add")
+                        }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn icon class="ma-2" outlined small color="white">
+                            <v-icon
                                 color="white"
+                                @click="isAddCardVisible = !isAddCardVisible"
+                                >mdi-minus</v-icon
                             >
-                                <v-icon
-                                    color="white"
-                                    @click="
-                                        isAddCardVisible = !isAddCardVisible
-                                    "
-                                    >mdi-minus</v-icon
+                        </v-btn>
+                    </v-app-bar>
+
+                    <v-form
+                        ref="saveCourseForm"
+                        v-model="isSaveCourseFormValid"
+                        lazy-validation
+                    >
+                        <v-row dense class="mx-2 mt-4">
+                            <v-col cols="12" xs="12" sm="12" md="6">
+                                <v-text-field
+                                    outlined
+                                    dense
+                                    v-model="courseCode"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
-                            </v-btn>
-                        </v-app-bar>
+                                    <template #label>
+                                        {{ $t("label_course_code") }}
+                                        <span class="red--text">
+                                            <strong>{{
+                                                $t("label_star")
+                                            }}</strong>
+                                        </span>
+                                    </template>
+                                </v-text-field>
+                            </v-col>
 
-                        <v-form
-                            ref="saveCourseForm"
-                            v-model="isSaveCourseFormValid"
-                            lazy-validation
-                        >
-                            <v-row dense class="mx-2 mt-4">
-                                <v-col cols="12" xs="12" sm="12" md="6">
-                                    <v-text-field
-                                        outlined
-                                        dense
-                                        v-model="courseCode"
-                                        :rules="[
-                                            (v) => !!v || $t('label_required'),
-                                        ]"
-                                    >
-                                        <template #label>
-                                            {{ $t("label_course_code") }}
-                                            <span class="red--text">
-                                                <strong>{{
-                                                    $t("label_star")
-                                                }}</strong>
-                                            </span>
-                                        </template>
-                                    </v-text-field>
-                                </v-col>
+                            <v-col cols="12" xs="12" sm="12" md="6">
+                                <v-text-field
+                                    outlined
+                                    dense
+                                    v-model="courseName"
+                                    @keypress="isCharacters"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
+                                >
+                                    <template #label>
+                                        {{ $t("label_course_name") }}
+                                        <span class="red--text">
+                                            <strong>{{
+                                                $t("label_star")
+                                            }}</strong>
+                                        </span>
+                                    </template>
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
 
-                                <v-col cols="12" xs="12" sm="12" md="6">
-                                    <v-text-field
-                                        outlined
-                                        dense
-                                        v-model="courseName"
-                                        @keypress="isCharacters"
-                                        :rules="[
-                                            (v) => !!v || $t('label_required'),
-                                        ]"
-                                    >
-                                        <template #label>
-                                            {{ $t("label_course_name") }}
-                                            <span class="red--text">
-                                                <strong>{{
-                                                    $t("label_star")
-                                                }}</strong>
-                                            </span>
-                                        </template>
-                                    </v-text-field>
-                                </v-col>
-                            </v-row>
+                        <v-row dense class="mx-2">
+                            <v-col cols="12" xs="12" sm="12" md="12">
+                                <v-textarea
+                                    outlined
+                                    dense
+                                    v-model="courseDescription"
+                                >
+                                    <template #label>
+                                        {{ $t("label_course_description") }}
+                                        <span class="red--text"></span>
+                                    </template>
+                                </v-textarea>
+                            </v-col>
+                        </v-row>
+                        <v-row dense class="mx-2">
+                            <v-col cols="12" xs="12" sm="12" md="3">
+                                <v-text-field
+                                    outlined
+                                    dense
+                                    @keypress="isDigitWithDecimal"
+                                    v-model="courseFees"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
+                                >
+                                    <template #label>
+                                        {{ $t("label_course_fees") }}
+                                        <span class="red--text">
+                                            <strong>{{
+                                                $t("label_star")
+                                            }}</strong>
+                                        </span>
+                                    </template>
+                                </v-text-field>
+                            </v-col>
 
-                            <v-row dense class="mx-2">
-                                <v-col cols="12" xs="12" sm="12" md="12">
-                                    <v-textarea
-                                        outlined
-                                        dense
-                                        v-model="courseDescription"
-                                    >
-                                        <template #label>
-                                            {{ $t("label_course_description") }}
-                                            <span class="red--text"></span>
-                                        </template>
-                                    </v-textarea>
-                                </v-col>
-                            </v-row>
-                            <v-row dense class="mx-2">
-                                <v-col cols="12" xs="12" sm="12" md="3">
-                                    <v-text-field
-                                        outlined
-                                        dense
-                                        @keypress="isDigitWithDecimal"
-                                        v-model="courseFees"
-                                        :rules="[
-                                            (v) => !!v || $t('label_required'),
-                                        ]"
-                                    >
-                                        <template #label>
-                                            {{ $t("label_course_fees") }}
-                                            <span class="red--text">
-                                                <strong>{{
-                                                    $t("label_star")
-                                                }}</strong>
-                                            </span>
-                                        </template>
-                                    </v-text-field>
-                                </v-col>
+                            <v-col cols="12" xs="12" sm="12" md="3">
+                                <v-text-field
+                                    outlined
+                                    dense
+                                    @keypress="isDigit"
+                                    v-model="courseDuration"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
+                                >
+                                    <template #label>
+                                        {{ $t("label_course_duration") }}
+                                        <span class="red--text">
+                                            <strong>{{
+                                                $t("label_star")
+                                            }}</strong>
+                                        </span>
+                                    </template>
+                                </v-text-field>
+                            </v-col>
 
-                                <v-col cols="12" xs="12" sm="12" md="3">
-                                    <v-text-field
-                                        outlined
-                                        dense
-                                        @keypress="isDigit"
-                                        v-model="courseDuration"
-                                        :rules="[
-                                            (v) => !!v || $t('label_required'),
-                                        ]"
-                                    >
-                                        <template #label>
-                                            {{ $t("label_course_duration") }}
-                                            <span class="red--text">
-                                                <strong>{{
-                                                    $t("label_star")
-                                                }}</strong>
-                                            </span>
-                                        </template>
-                                    </v-text-field>
-                                </v-col>
-
-                                <v-col cols="12" xs="12" sm="12" md="6">
-                                    <v-file-input
-                                        v-model="selectedCourseImage"
-                                        color="primary"
-                                        outlined
-                                        dense
-                                        show-size
-                                        accept="image/*"
-                                        :rules="imageRule"
-                                    >
-                                        <template
-                                            v-slot:selection="{ index, text }"
-                                        >
-                                            <v-chip
-                                                v-if="index < 2"
-                                                color="primary"
-                                                dark
-                                                label
-                                                small
-                                                >{{ text }}</v-chip
-                                            >
-                                        </template>
-                                        <template #label>{{
-                                            $t("label_course_image")
-                                        }}</template>
-                                    </v-file-input>
-                                </v-col>
-                            </v-row>
-                            <v-divider class="mx-4"></v-divider>
-                            <div dense class="mx-2 text-center mb-2">
-                                <v-btn
-                                    v-permission="'Add Course' | 'Edit Course'"
-                                    class="ma-2 rounded"
-                                    tile
+                            <v-col cols="12" xs="12" sm="12" md="6">
+                                <v-file-input
+                                    v-model="selectedCourseImage"
                                     color="primary"
-                                    :disabled="
-                                        !isSaveCourseFormValid ||
-                                        isSaveCourseFormDataProcessing
-                                    "
-                                    @click="
-                                        isAddCardVisible = !isAddCardVisible
-                                    "
+                                    outlined
+                                    dense
+                                    show-size
+                                    accept="image/*"
+                                    :rules="imageRule"
                                 >
-                                    <v-icon class="mr-2"
-                                        >mdi-content-save</v-icon
+                                    <template
+                                        v-slot:selection="{ index, text }"
                                     >
-                                    {{
-                                        isSaveCourseFormDataProcessing == true
-                                            ? $t("label_processing")
-                                            : $t("label_stream_save")
-                                    }}</v-btn
-                                >
+                                        <v-chip
+                                            v-if="index < 2"
+                                            color="primary"
+                                            dark
+                                            label
+                                            small
+                                            >{{ text }}</v-chip
+                                        >
+                                    </template>
+                                    <template #label>{{
+                                        $t("label_course_image")
+                                    }}</template>
+                                </v-file-input>
+                            </v-col>
+                        </v-row>
+                        <v-divider class="mx-4"></v-divider>
+                        <div dense class="mx-2 text-center mb-2">
+                            <v-btn
+                                v-permission="'Add Course' | 'Edit Course'"
+                                class="ma-2 rounded"
+                                tile
+                                color="primary"
+                                :disabled="
+                                    !isSaveCourseFormValid ||
+                                    isSaveCourseFormDataProcessing
+                                "
+                                @click="isAddCardVisible = !isAddCardVisible"
+                            >
+                                <v-icon class="mr-2">mdi-content-save</v-icon>
+                                {{
+                                    isSaveCourseFormDataProcessing == true
+                                        ? $t("label_processing")
+                                        : $t("label_stream_save")
+                                }}</v-btn
+                            >
 
-                                <v-btn
-                                    v-permission="'Add Course' | 'Edit Course'"
-                                    class="ma-2 rounded"
-                                    tile
-                                    color="error"
-                                    :disabled="
-                                        !isSaveCourseFormValid ||
-                                        isSaveCourseFormDataProcessing
-                                    "
-                                    @click="
-                                        isAddCardVisible = !isAddCardVisible
-                                    "
-                                >
-                                    <v-icon class="mx-2">mdi-cancel</v-icon
-                                    >{{
-                                        isSaveCourseFormDataProcessing == true
-                                            ? $t("label_processing")
-                                            : $t("label_cancel")
-                                    }}</v-btn
-                                >
-                            </div>
-                            <v-divider class="mx-4"></v-divider>
-                        </v-form>
-                    </v-card>
-                </v-col>
-            </transition>
-            <!-- Card End -->
-        </v-row>
+                            <v-btn
+                                v-permission="'Add Course' | 'Edit Course'"
+                                class="ma-2 rounded"
+                                tile
+                                color="error"
+                                :disabled="
+                                    !isSaveCourseFormValid ||
+                                    isSaveCourseFormDataProcessing
+                                "
+                                @click="isAddCardVisible = !isAddCardVisible"
+                            >
+                                <v-icon class="mx-2">mdi-cancel</v-icon
+                                >{{
+                                    isSaveCourseFormDataProcessing == true
+                                        ? $t("label_processing")
+                                        : $t("label_cancel")
+                                }}</v-btn
+                            >
+                        </div>
+                        <v-divider class="mx-4"></v-divider>
+                    </v-form>
+                </v-card>
+            </v-col>
+        </transition>
+        <!-- Card End -->
+
         <transition name="fade" mode="out-in">
             <v-data-table
                 dense
@@ -238,18 +215,20 @@
                 :loading="tableDataLoading"
                 :loading-text="tableLoadingDataText"
                 :server-items-length="totalItemsInDB"
-                :items-per-page="15"
+                :items-per-page="100"
                 @pagination="getAllCourse"
                 :footer-props="{
-                    itemsPerPageOptions: [15, 25, 50, -1],
+                    itemsPerPageOptions: [100, 200, 300, -1],
                 }"
             >
                 <template v-slot:top>
                     <v-toolbar flat>
                         <v-text-field
+                            v-model="searchText"
                             class="mt-4"
                             label="Search"
                             prepend-inner-icon="mdi-magnify"
+                            @input="getAllCourse($event)"
                         ></v-text-field>
                         <v-spacer></v-spacer>
                         <v-spacer></v-spacer>
@@ -761,6 +740,7 @@ export default {
             this.$http
                 .get(`web_get_all_course?page=${e.page}`, {
                     params: {
+                        searchText: this.searchText,
                         includeDelete: this.includeDelete,
                         centerId: ls.get("loggedUserCenterId"),
                         perPage:

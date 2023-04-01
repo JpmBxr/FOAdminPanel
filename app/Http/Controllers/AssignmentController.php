@@ -76,6 +76,7 @@ class AssignmentController extends Controller
         $getData = DB::table("lms_assignment")
             ->Join('lms_subject', 'lms_subject.lms_subject_id', '=', 'lms_assignment.lms_subject_id')
             ->Join('lms_topic', 'lms_topic.lms_topic_id', '=', 'lms_assignment.lms_topic_id')
+            ->Join('lms_batch_details', 'lms_batch_details.lms_batch_id', '=', 'lms_assignment.lms_batch_id')
             ->leftjoin('lms_child_course', 'lms_child_course.lms_child_course_id', '=', 'lms_assignment.lms_child_course_id')
             
             ->select(['lms_assignment.lms_assignment_id',
@@ -91,6 +92,7 @@ class AssignmentController extends Controller
                 'lms_assignment.lms_course_id',
                 'lms_child_course.lms_child_course_name',
                 'lms_child_course.lms_child_course_id',
+                'lms_batch_details.lms_batch_name',
                  DB::raw("IF(lms_assignment_status = 1, 'Active','Inactive')as lms_assignment_status")
               
                 
@@ -223,7 +225,8 @@ public function saveUpdateAssignment(Request $request)
 
             ->where('lms_assignment.lms_assignment_status', 1)
             ->where('lms_submitted_assignment_document.lms_submitted_assignment_upload_status', 1)
-            ->groupBy('lms_submitted_assignment_document.lms_assignment_id')
+            ->where('lms_submitted_assignment_document.lms_assignment_id', $request->assignmentId)
+            
 
             ->paginate($perPage);
         return $getData;
@@ -239,7 +242,6 @@ public function saveUpdateAssignment(Request $request)
 
             ->select([
                 'lms_submitted_assignment_document.lms_submitted_assignment_document_path',
-
             ])
 
             ->where('lms_assignment_id', $assignmentId)
@@ -252,7 +254,7 @@ public function saveUpdateAssignment(Request $request)
     public function evaluateAssignment(Request $request)
     {
        $assignmentId = $request->assignmentId;
-    $studentId = $request->studentId;
+      $studentId = $request->studentId;
 
         $loggedUserId = $request->loggedUserId;
         $result = AssignmentModel::evaluateAssignment($assignmentId,
@@ -277,6 +279,7 @@ public function saveUpdateAssignment(Request $request)
     //Enable Disable Assignment
     public function enableDisableAssignment(Request $request)
     {
+
         $lms_assignment_id = $request->lms_assignment_id;
         $loggedUserId = $request->loggedUserId;
         $lms_assignment_upload_status  = $request->lms_assignment_upload_status;

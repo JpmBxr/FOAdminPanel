@@ -63,6 +63,7 @@ class CourseController extends Controller
                                 unlink(storage_path('app/public/course_images/' . $courseImageNameForEdit));
                             }
                         }
+                        $courseImageNameForEdit = '';
                     }
                     $result = CourseModel::saveUpdateCourse(
                         $centerId,
@@ -85,7 +86,7 @@ class CourseController extends Controller
                 }
             } else {
                 // If course image not selected
-
+                $courseImageName=$courseImageNameForEdit;
                 $result = CourseModel::saveUpdateCourse(
                     $centerId,
                     $loggedUserId,
@@ -108,20 +109,29 @@ class CourseController extends Controller
     public function getAllCourse(Request $request)
     {
         $centerId = $request->centerId;
-        $perPage = $request->perPage ? $request->perPage : 15;
+        $perPage = $request->perPage ? $request->perPage : 100;
         $includeDelete = $request->includeDelete;
+        $filterBy=$request->searchText;
         if ($includeDelete == "false") {
             $active = [1];
         } else {
             $active = [1, 0];
         }
-
+        
         $getData = DB::table("lms_course")->select([
                 'lms_course_id', 'lms_course_code', 'lms_course_name',
                 'lms_course_description', 'lms_course_fees', 'lms_course_duration', 'lms_course_image',
                 DB::raw("IF(lms_course_is_active = 1, 'Active','Inactive')as lms_course_is_active")
             ])
             ->where('lms_center_id', $centerId)
+            ->where(function ($q) use ($filterBy) {
+                $q->orWhere('lms_course.lms_course_name', 'like', "%$filterBy%")
+                    ->orWhere('lms_course.lms_course_duration', 'like', "%$filterBy%")
+                    ->orWhere('lms_course.lms_course_code', 'like', "%$filterBy%")
+                    ->orWhere('lms_course.lms_course_fees', 'like', "%$filterBy%");
+                  
+
+            })
             ->whereIn('lms_course.lms_course_is_active', $active)
             ->paginate($perPage);
         return $getData;
@@ -158,14 +168,31 @@ class CourseController extends Controller
     public function getAllChildCourse(Request $request)
     {
         $centerId = $request->centerId;
-        $perPage = $request->perPage ? $request->perPage : 15;
+        $filterBy=$request->searchText;
+        $perPage = $request->perPage ? $request->perPage : 100;
+        $includeDelete = $request->includeDelete;
+        if ($includeDelete == "false") {
+            $active = [1];
+        } else {
+            $active = [1, 0];
+        }
         $getData = DB::table("lms_child_course")->leftJoin('lms_course', 'lms_course.lms_course_id', '=', 'lms_child_course.lms_course_id')->select([
                 'lms_child_course_id', 'lms_course.lms_course_name', 'lms_course.lms_course_id', 'lms_child_course_code', 'lms_child_course_name',
                 'lms_child_course_description', 'lms_child_course_fees', 'lms_child_course_duration',
                 'lms_child_course_image', 'lms_child_course_is_online',
                 DB::raw("IF(lms_child_course_is_active = 1, 'Active','Inactive')as lms_child_course_is_active")
             ])
+          
             ->where('lms_child_course.lms_center_id', $centerId)
+
+            ->where(function ($q) use ($filterBy) {
+                $q->orWhere('lms_child_course.lms_child_course_code', 'like', "%$filterBy%")
+                ->orWhere('lms_course.lms_course_name', 'like', "%$filterBy%")
+                    ->orWhere('lms_child_course.lms_child_course_name', 'like', "%$filterBy%")
+                    ->orWhere('lms_child_course.lms_child_course_fees', 'like', "%$filterBy%");
+    
+            })
+            ->whereIn('lms_child_course.lms_child_course_is_active', $active)
             ->paginate($perPage);
         return $getData;
     }

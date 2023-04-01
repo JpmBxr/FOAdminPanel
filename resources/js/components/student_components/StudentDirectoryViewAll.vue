@@ -1,6 +1,6 @@
 <template>
   <!-- Card Start -->
-  <v-container fluid class="pa-0">
+  <v-container  style="max-width: 100% !important">
     <v-progress-linear
       :active="isDataProcessing"
       :indeterminate="isDataProcessing"

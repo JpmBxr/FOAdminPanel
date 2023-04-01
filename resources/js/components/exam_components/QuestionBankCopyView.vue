@@ -1,6 +1,10 @@
 <template>
+    <div id="app">
     <!-- Card Start -->
-    <v-container fluid>
+    <v-container 
+    fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
+    >
         <v-progress-linear
             :active="isDataProcessing"
             :indeterminate="isDataProcessing"
@@ -11,12 +15,14 @@
             background-color="primary lighten-3"
             striped
         ></v-progress-linear>
+   
+        <v-sheet class="pa-4 mb-4" >
         <v-breadcrumbs :items="breadCrumbItem">
             <template v-slot:divider>
                 <v-icon>mdi-forward</v-icon>
             </template>
         </v-breadcrumbs>
-
+        </v-sheet>
         <v-row dense>
             <transition name="fade" mode="out-in">
                 <v-col class="d-flex flex-column ml-2">
@@ -43,7 +49,9 @@
                             </v-btn>
                         </v-app-bar>
 
-                        <v-container fluid>
+                        <v-container  fluid
+                            style="background-color: #e4e8e4; max-width: 100% !important"
+        >
                             <div>
                                 <!-- Destination Row Set -->
                                 <v-row dense>
@@ -236,7 +244,9 @@
                             <v-spacer></v-spacer>
                         </v-app-bar>
 
-                        <v-container fluid>
+                        <v-container  fluid
+                          style="background-color: #e4e8e4; max-width: 100% !important"
+        >
                             <v-card class="mx-auto" max-width="100%">
                                 <!-- <v-card-title>
       <v-text-field
@@ -374,11 +384,7 @@
                                     </template>
                                     <template v-slot:top>
                                         <v-toolbar flat>
-                                            <v-toolbar-title>{{
-                                                $t(
-                                                    "label_question_bank_directory"
-                                                )
-                                            }}</v-toolbar-title>
+                                            
                                             <v-spacer></v-spacer>
                                             <v-btn
                                                 icon
@@ -790,6 +796,7 @@
 
         <!-- <h5>Selected: {{ selected }}</h5> -->
     </v-container>
+</div>
 </template>
 
 

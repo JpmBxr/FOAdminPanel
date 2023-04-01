@@ -116,6 +116,7 @@ class EnquiryModel extends Model
                     'lms_student_last_name' => $lms_student_last_name,
                     'lms_student_full_name' => $lms_student_first_name  . ' ' . $lms_student_last_name,
                     'lms_student_mobile_number' => $lms_student_mobile_number,
+                    'lms_student_whatsapp_number' => $lms_enquiry_whatsapp_contact,
                     'lms_student_email' => $lms_enquiry_email,
                     'lms_student_updated_by' => $loggedUserId,
                     'lms_student_updated_at' => now(),
@@ -530,6 +531,7 @@ class EnquiryModel extends Model
                           'lms_student_last_name' => ucfirst($lastName),
                           'lms_student_full_name' => ucfirst($firstName) . ' ' . ucfirst($lastName),
                           'lms_student_mobile_number' => $mobileNumber,
+                          'lms_student_whatsapp_number'=>$whatsAppNumber,
                           'lms_student_created_by' => $loggedUserId,
                           'lms_student_profile_image'=>  $selectedImage
 
@@ -592,20 +594,35 @@ class EnquiryModel extends Model
               } else {
                   // Email exists
                   $result_data['responseData'] = 3;
+                
                   return $result_data;
               }
           } else {
               //Mobile no exist
 
               $result_data['responseData'] = 4;
+              
+
               return $result_data;
           }
 
           DB::commit();
-          // $resultData['result'] = "success";
+       
+//course name and duration Fetch
+  $child=DB::table('lms_child_course')
+  ->select('lms_child_course.lms_child_course_name','lms_child_course.lms_child_course_duration')
+  ->where('lms_child_course.lms_child_course_id',$childCourseId)->first();
+
+
           $result_data['responseData'] = 1;
           $result_data['studentCode'] = $studentCode;
           $result_data['registrationCode'] = $registrationCode;
+          $result_data['appUrl'] = 'https://play.google.com/store/apps/details?id=com.forbit.futureorbit';
+          $result_data['phoneNo'] = $mobileNumber;
+          $result_data['password'] = $rand;
+          $result_data['courseName'] =$child->lms_child_course_name;
+          $result_data['courseDuration'] =$child->lms_child_course_duration;
+          $result_data['whatsapp'] = $whatsAppNumber;
           return $result_data;
       } catch (Exception $ex) {
 

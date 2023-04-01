@@ -1,6 +1,9 @@
 <template>
+  <div id="app">
     <!-- Card Start -->
-    <v-container fluid style="background-color: #fff" class="ma-0 pa-0">
+    <v-container  fluid
+            style="max-width: 100% !important"
+       >
       <v-overlay :value="isLoaderActive" color="primary">
         <v-progress-circular
           indeterminate
@@ -330,6 +333,7 @@
       </transition>
  
     </v-container>
+  </div>
   </template>
   
   

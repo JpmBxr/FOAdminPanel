@@ -1,9 +1,8 @@
 <template>
-    <div style="margin: auto; padding: auto; width: 1200px" id="app">
+    <div  id="app">
         <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+            fluid
+      style="background-color: #e4e8e4; max-width: 100% !important"
         >
             <v-progress-linear
                 :active="isDataProcessing"
@@ -15,7 +14,11 @@
                 background-color="primary lighten-3"
                 striped
             ></v-progress-linear>
-            <v-row class="ml-4 mr-4 pt-4">
+            <v-sheet class="pa-4 mb-4" color="text-white">
+            <v-row  justify="space-around"
+           style="margin-right: 1px !important; margin-left: -1px !important"
+           class="mb-4 mt-1"
+           dense>
                 <v-toolbar-title dark color="primary">
                     <v-list-item two-line>
                         <v-list-item-content>
@@ -25,7 +28,7 @@
                             <v-list-item-subtitle
                                 >{{ $t("label_home")
                                 }}<v-icon>mdi-forward</v-icon>
-                                {{ $t("label_enquiry") }}
+                                Accounts
                                 <v-icon>mdi-forward</v-icon>
                                 Discounts
                             </v-list-item-subtitle>
@@ -45,7 +48,7 @@
                     <v-icon right dark> mdi-plus </v-icon>
                 </v-btn>
             </v-row>
-
+</v-sheet>
             <transition name="fade" mode="out-in">
                 <v-data-table
                     dense
@@ -79,7 +82,7 @@
                         >
                     </template>
                     <template v-slot:top>
-                        <v-toolbar flat class="mt-4">
+                        <v-toolbar flat class="mt-1">
                             <v-select
                                 class="mx-2"
                                 v-model="selectedSource"
@@ -104,7 +107,7 @@
                                 :label="lblSearchStaffCriteria"
                             ></v-text-field>
                             <v-btn
-                                class="mx-2 mb-6"
+                                class="mx-2 mb-2"
                                 dense
                                 rounded
                                 color="primary"
@@ -292,15 +295,10 @@ export default {
                 discount_details: "discount_details",
                 discount_type: "discount_type",
                 status: "status",
-              
-              
             },
             excelData: [],
             excelFileName:
-                "Discounts" +
-                "_" +
-                moment().format("DD/MM/YYYY") +
-                ".xls",
+                "Discounts" + "_" + moment().format("DD/MM/YYYY") + ".xls",
         };
     },
     computed: {
@@ -322,7 +320,6 @@ export default {
         };
 
         // Get all active sources
-       
     },
 
     methods: {
@@ -492,9 +489,6 @@ export default {
                     { header: "discount_details", dataKey: "discount_details" },
                     { header: "discount_type", dataKey: "discount_type" },
                     { header: "status", dataKey: "status" },
-             
-             
-              
                 ],
                 body: this.tableItems,
                 //styles: { fillColor: [255, 0, 0] },
@@ -502,10 +496,7 @@ export default {
                 margin: { top: 10 },
             });
             pdfDoc.save(
-                "Discounts" +
-                    "_" +
-                    moment().format("DD/MM/YYYY") +
-                    ".pdf"
+                "Discounts" + "_" + moment().format("DD/MM/YYYY") + ".pdf"
             );
         },
     },

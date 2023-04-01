@@ -127,7 +127,8 @@ class StaffModel extends Model
                                 'lms_staff_updated_by' => $loggedUserId,
 
                             ]);
-
+                        
+                     
                         DB::table('lms_staff')
                             ->where('lms_staff_id', $staffId)
                             ->where('lms_center_id', $centerId)
@@ -151,11 +152,17 @@ class StaffModel extends Model
 
                             ]);
 
-                        DB::table('model_has_roles')
-                            ->where('model_id', $staffUserId)
+                            DB::table('lms_user')
+                            ->where('lms_user_id',$staffUserId)
                             ->update([
-                                'role_id' => $staffRoleId,
-                            ]);
+                                'lms_user_mobile' => $staffContactNumber,
+                              ]); 
+
+                      //  DB::table('model_has_roles')
+                      //      ->where('model_id', $staffUserId)
+                       //     ->update([
+                       //         'role_id' => $staffRoleId,
+                       //     ]);
                     } else {
                         // Email exists
                         if ($staffProfileImageName != '') {
@@ -166,7 +173,9 @@ class StaffModel extends Model
                         $result_data['responseData'] = 2;
                         return $result_data;
                     }
-                } else {
+                }
+                 else 
+                {
                     //Mobile no exist
                     if ($staffProfileImageName != '') {
                         if (file_exists(storage_path('app/public/user_profile_images/' . $staffProfileImageName))) {
@@ -182,6 +191,7 @@ class StaffModel extends Model
                 $result_data['responseData'] = 6;
                 $result_data['staffEditImageName'] = $staffProfileImageName;
                 return $result_data;
+            
             } catch (Exception $ex) {
 
                 DB::rollback();
@@ -190,7 +200,7 @@ class StaffModel extends Model
                         unlink(storage_path('app/public/user_profile_images/' . $staffProfileImageName));
                     }
                 }
-                $result_data['responseData'] = 7;
+                $result_data['responseData'] = $ex->getMessage();
                 return $result_data;
             }
             //End
@@ -274,12 +284,12 @@ class StaffModel extends Model
                         );
 
                         DB::table('model_has_roles')->insertGetId(
-                            [
-                                'role_id' => $staffRoleId,
-                                'model_id' => $staffCreateUserQuery,
+                           [
+                               'role_id' => $staffRoleId,
+                               'model_id' => $staffCreateUserQuery,
 
-                            ]
-                        );
+                           ]
+                       );
                     } else {
                         // Email exists
                         if ($staffProfileImageName != '') {
@@ -303,10 +313,10 @@ class StaffModel extends Model
                 }
                 DB::commit();
 
-                if ($checkEmailSMSSentQuery[0]->lms_notification_setting_is_mail == "1") {
-                    //send Mail
-                    StaffModel::sendMail($centerId, $staffPassword, $staffContactNumber, $staffEmail);
-                }
+                // if ($checkEmailSMSSentQuery[0]->lms_notification_setting_is_mail == "1") {
+                //     //send Mail
+                //     StaffModel::sendMail($centerId, $staffPassword, $staffContactNumber, $staffEmail);
+                // }
                 // if ($checkEmailSMSSentQuery[0]->lms_notification_setting_is_sms == "1") {
                 //     //send SMS
                 //     StaffModel::sendSMS($centerId, $staffPassword, $staffContactNumber, $checkEmailSMSSentQuery[0]->lms_notification_setting_template, $staffFirstName);
@@ -333,7 +343,7 @@ class StaffModel extends Model
                         unlink(storage_path('app/public/user_profile_images/' . $staffProfileImageName));
                     }
                 }
-                $result_data['responseData'] = 5;
+                $result_data['responseData'] = $ex->getMessage();
                 return $result_data;
             }
 

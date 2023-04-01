@@ -443,8 +443,9 @@ class AppController extends Controller
 
         $roleId = $request->roleId;
         $userId = $request->userId;
+        $batchId = $request->batchId;
         $app_model = new AppModel;
-        return $app_model->getNoticeList($roleId, $userId);
+        return $app_model->getNoticeList($roleId,$userId, $batchId);
     }
 
     public function saveReadNotice(Request $request)
@@ -995,5 +996,19 @@ where lms_exam_end_time < now()');
         return $result;
 
     }
-
+    public function getAllFees(Request $request){
+        $registrationId=$request->registrationId;
+        $studentId = $request->studentId;
+        $app_model = new AppModel;
+        $result = $app_model->getAllFees($registrationId,$studentId);
+        return $result; 
+    }
+    
+    public function getAllVoucher(Request $request){
+        $registrationId=$request->registrationId;
+        $studentId = $request->studentId;
+        $app_model = new AppModel;
+        $result = $app_model->getAllVoucher($registrationId,$studentId);
+        return $result; 
+    }
 }

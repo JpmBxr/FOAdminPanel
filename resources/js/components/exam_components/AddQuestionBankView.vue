@@ -1,11 +1,16 @@
 <template>
     <!-- Card Start -->
-    <v-container fluid>
+    <v-container
+    fluid
+        style="background-color: #e4e8e4; max-width: 100% !important"
+        >
+        <v-sheet class="pa-4 mb-4" >
         <v-breadcrumbs :items="breadCrumbItem">
             <template v-slot:divider>
                 <v-icon>mdi-forward</v-icon>
             </template>
         </v-breadcrumbs>
+    </v-sheet>
         <v-overlay :value="alertMessage == ''" color="primary">
             <v-progress-circular
                 indeterminate

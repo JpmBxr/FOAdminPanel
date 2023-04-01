@@ -1,9 +1,8 @@
 <template>
-    <div style=" margin:auto; padding:auto; width:1200px;" id="app">
+    <div id="app">
         <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+            fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
         >
             <!-- Card Start -->
             <v-overlay :value="isLoaderActive" color="primary">
@@ -13,34 +12,44 @@
                     color="primary"
                 ></v-progress-circular>
             </v-overlay>
-            <v-row class="ml-4 mr-4 pt-4">
-                <v-toolbar-title dark color="primary">
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="text-h5">
-                                <strong>Book List</strong>
-                            </v-list-item-title>
-                            <v-list-item-subtitle
-                                >Home <v-icon>mdi-forward</v-icon> Library
-                                <v-icon>mdi-forward</v-icon> Book
-                                List</v-list-item-subtitle
-                            >
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn
-                    v-permission="'Add Book List'"
-                    v-if="!isAddCardVisible"
-                    :disabled="tableDataLoading"
-                    color="primary"
-                    class="white--text"
-                    @click="isAddCardVisible = !isAddCardVisible"
+            <v-sheet class="pa-4 mb-4" color="text-white">
+                <v-row
+                    justify="space-around"
+                    style="
+                        margin-right: 1px !important;
+                        margin-left: -1px !important;
+                    "
+                    class="mb-4 mt-1"
+                    dense
                 >
-                    Add Book
-                    <v-icon right dark> mdi-plus </v-icon>
-                </v-btn>
-            </v-row>
+                    <v-toolbar-title dark color="primary">
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-title class="text-h5">
+                                    <strong>Book List</strong>
+                                </v-list-item-title>
+                                <v-list-item-subtitle
+                                    >Home <v-icon>mdi-forward</v-icon> Library
+                                    <v-icon>mdi-forward</v-icon> Book
+                                    List</v-list-item-subtitle
+                                >
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        v-permission="'Add Book List'"
+                        v-if="!isAddCardVisible"
+                        :disabled="tableDataLoading"
+                        color="primary"
+                        class="white--text"
+                        @click="isAddCardVisible = !isAddCardVisible"
+                    >
+                        Add Book
+                        <v-icon right dark> mdi-plus </v-icon>
+                    </v-btn>
+                </v-row>
+            </v-sheet>
 
             <transition name="fade" mode="out-in">
                 <v-card class="mx-auto" elevation="0" v-if="isAddCardVisible">
@@ -60,7 +69,9 @@
                                     :disabled="isSourceDataLoading"
                                     item-text="lms_course_name"
                                     item-value="lms_course_id"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         {{ $t("label_course") }}
@@ -84,7 +95,9 @@
                                     outlined
                                     dense
                                     v-model="lms_book_title"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         {{ $t("label_book_title") }}
@@ -104,7 +117,9 @@
                                     outlined
                                     dense
                                     v-model="lms_book_number"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         {{ $t("label_book_number") }}
@@ -121,7 +136,9 @@
                                     outlined
                                     dense
                                     v-model="lms_book_publisher"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         {{ $t("label_book_publisher") }}
@@ -138,7 +155,9 @@
                                     outlined
                                     dense
                                     v-model="lms_book_author"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         {{ $t("label_book_author") }}
@@ -159,7 +178,9 @@
                                     dense
                                     title-case
                                     v-model="lms_book_subject"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         {{ $t("label_book_subject") }}
@@ -176,7 +197,9 @@
                                     outlined
                                     dense
                                     v-model="lms_book_isbn_number"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         {{ $t("label_book_isbn_number") }}
@@ -194,7 +217,9 @@
                                     dense
                                     @keypress="isDigitWithDecimal"
                                     v-model="lms_book_price"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         {{ $t("label_book_price") }}
@@ -215,7 +240,9 @@
                                     dense
                                     @keypress="isDigit"
                                     v-model="lms_book_return_days"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         {{ $t("label_book_return_days") }}
@@ -233,7 +260,9 @@
                                     dense
                                     @keypress="isDigit"
                                     v-model="lms_book_quantity"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         {{ $t("label_book_quantity") }}
@@ -251,7 +280,9 @@
                                     dense
                                     @keypress="isDigit"
                                     v-model="lms_book_current_quantity"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         {{ $t("label_book_current_quantity") }}
@@ -317,7 +348,7 @@
                                 color="primary"
                                 :disabled="
                                     !issaveLibraryFormValid ||
-                                        issaveLibraryFormDataProcessing
+                                    issaveLibraryFormDataProcessing
                                 "
                                 @click="saveLibrary"
                             >
@@ -339,7 +370,7 @@
                                 color="error"
                                 :disabled="
                                     !issaveLibraryFormValid ||
-                                        issaveLibraryFormDataProcessing
+                                    issaveLibraryFormDataProcessing
                                 "
                                 @click="
                                     isAddCardVisible = !isAddCardVisible;
@@ -374,14 +405,14 @@
                         :expanded.sync="expanded"
                         :single-expand="singleExpand"
                         :footer-props="{
-                            itemsPerPageOptions: [100, 200, 300, 500, -1]
+                            itemsPerPageOptions: [100, 200, 300, 500, -1],
                         }"
                     >
                         <template
                             v-slot:item.data-table-expand="{
                                 item,
                                 isExpanded,
-                                expand
+                                expand,
                             }"
                         >
                             <v-icon
@@ -434,7 +465,7 @@
                                             class="mr-2"
                                             v-if="
                                                 item.lms_student_book_is_rteurned ==
-                                                    'Active'
+                                                'Active'
                                             "
                                             v-permission="'Issue Book'"
                                             @click="returnBook(item)"

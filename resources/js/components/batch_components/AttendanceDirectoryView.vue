@@ -1,6 +1,9 @@
 <template>
-  <div style=" margin:auto; padding:auto; width:1200px;" id="app">
-    <v-container style="background-color: #fff" class="ma-4 pa-0" width="100%">
+  <div  id="app">
+    <v-container 
+    fluid
+      style="background-color: #e4e8e4; max-width: 100% !important"
+    >
       <!-- Card Start -->
       <v-overlay :value="isLoaderActive" color="primary">
         <v-progress-circular
@@ -9,7 +12,13 @@
           color="primary"
         ></v-progress-circular>
       </v-overlay>
-      <v-row class="ml-4 mr-4 pt-4">
+      <v-sheet class="pa-4 mb-4" color="text-white">
+      <v-row 
+       justify="space-around"
+        style="margin-right: 1px !important; margin-left: -1px !important"
+        class="mb-4 mt-1"
+        dense
+        >
         <v-toolbar-title dark color="primary">
           <v-list-item two-line>
             <v-list-item-content>
@@ -26,6 +35,7 @@
         </v-toolbar-title>
         <v-spacer></v-spacer>
       </v-row>
+    </v-sheet>
 
       <transition name="fade" mode="out-in">
         <v-card>
@@ -150,6 +160,110 @@
                   <v-icon dark>mdi-file-pdf</v-icon>
                 </v-btn>
               </v-toolbar>
+             
+              <v-row class="mx-4 pt-4">
+              <v-col cols="12" md="3">
+                <v-dialog
+                  ref="dialogStartDate"
+                  v-model="modalStartDate"
+                  :return-value.sync="selectedStartDate"
+                  persistent
+                  width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      class="ml-5"
+                      dense
+                      v-model="selectedStartDate"
+                      prepend-inner-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      :rules="[(v) => !!v || $t('label_required')]"
+                    >
+                      <template #label>
+                        Start Date
+                        <span class="red--text">
+                          <strong>{{ $t("label_star") }}</strong>
+                        </span>
+                      </template>
+                    </v-text-field>
+                  </template>
+                  <v-date-picker v-model="selectedStartDate" scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="modalStartDate = false"
+                      >{{ $t("label_cancel") }}</v-btn
+                    >
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.dialogStartDate.save(selectedStartDate)"
+                      >{{ $t("label_ok") }}</v-btn
+                    >
+                  </v-date-picker>
+                </v-dialog>
+              </v-col>
+
+              <v-col cols="12" md="3">
+                <v-dialog
+                  ref="dialogEndDate"
+                  v-model="modalEndDate"
+                  :return-value.sync="selectedEndDate"
+                  width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      class="ml-5"
+                      dense
+                      v-model="selectedEndDate"
+                      prepend-inner-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      <template #label>End Date</template>
+                    </v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="selectedEndDate"
+                    scrollable
+                
+                  >
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="modalEndDate = false">{{
+                      $t("label_cancel")
+                    }}</v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.dialogEndDate.save(selectedEndDate)"
+                      >{{ $t("label_ok") }}</v-btn
+                    >
+                  </v-date-picker>
+                </v-dialog>
+         
+              </v-col>
+
+              <v-col cols="12" md="3">
+                <v-btn
+                class="ma-0"
+                outlined
+                color="indigo"
+                rounded
+                small
+                @click="
+                      isSearchByExamType = true;
+                      getAllBatch($event);
+                    "
+              >
+                <v-icon class="mr-2" small>mdi-magnify</v-icon> Search Attendance Report
+              </v-btn>
+              </v-col>
+            </v-row>
+
             </template>
 
             <template v-slot:item.actions="{ item }">
@@ -238,6 +352,10 @@ export default {
 
       tableDataLoading: false,
       totalItemsInDB: 0,
+      selectedStartDate: moment().startOf('month').format('YYYY-MM-DD'),
+      selectedEndDate:moment().endOf('month').format("YYYY-MM-DD"),
+      modalStartDate: false,
+      modalEndDate: false,
       tableLoadingDataText: this.$t("label_loading_data"),
       tableItemsBatchWiseStudent: [],
       tableHeaderStudent: [
@@ -295,16 +413,22 @@ export default {
         {
           text: "Start Date",
           value: "lms_batch_start_date_edit",
-          width: "20%",
+          width: "15%",
           sortable: false,
         },
         {
           text: "End Date",
           value: "lms_batch_end_date_edit",
-          width: "20%",
+          width: "15%",
           sortable: false,
         },
-
+        {
+          text: "Total Attendance",
+          value: "totalAttendance",
+          width: "15%",
+          sortable: false,
+          align: "center"
+        },
         {
           text: this.$t("label_status"),
           value: "lms_batch_is_active",
@@ -330,14 +454,17 @@ export default {
 
       // For Excel Download
       excelFields: {
-        Subscription: "lms_batch_name",
-        Duration: "lms_exam_card_payment_month_duration",
-        "Course Name": "lms_course_name",
-        Status: "lms_batch_is_active",
+        batch_code: "lms_batch_code",
+        lms_batch_name: "lms_batch_name",
+        lms_course_name: "lms_course_name",
+        lms_batch_start_date_edit: "lms_batch_start_date_edit",
+        lms_batch_end_date_edit: "lms_batch_end_date_edit",
+        Total_Attendance: "totalAttendance",
+        Status: "lms_batch_is_active"
       },
       excelData: [],
       excelFileName:
-        "Subscription" + "_" + moment().format("DD/MM/YYYY") + ".xls",
+        "AttendanceReport" + "_" + moment().format("DD/MM/YYYY") + ".xls",
     };
   },
   watch: {
@@ -426,6 +553,8 @@ export default {
           params: {
             includeDelete: this.includeDelete,
             centerId: ls.get("loggedUserCenterId"),
+            startDate:this.selectedStartDate,
+            endDate:this.selectedEndDate,
             perPage:
               e.itemsPerPage == -1 ? this.totalItemsInDB : e.itemsPerPage,
           },
@@ -461,12 +590,28 @@ export default {
       const pdfDoc = new jsPDF();
       pdfDoc.autoTable({
         columns: [
-          { header: "Subscription", dataKey: "lms_batch_name" },
+          { header: "batch_code", dataKey: "lms_batch_code" },
           {
-            header: "Duration",
-            dataKey: "lms_exam_card_payment_month_duration",
+            header: "lms_batch_name",
+            dataKey: "lms_batch_name",
           },
           { header: "Course Name", dataKey: "lms_course_name" },
+          {
+            header: "lms_course_name",
+            dataKey: "lms_course_name",
+          },
+          {
+            header: "lms_batch_start_date_edit",
+            dataKey: "lms_batch_start_date_edit",
+          },
+          {
+            header: "lms_batch_end_date_edit",
+            dataKey: "lms_batch_end_date_edit",
+          },
+          {
+            header: "Total_Attendance",
+            dataKey: "totalAttendance",
+          },
           {
             header: "Status",
             dataKey: "lms_batch_is_active",
@@ -477,13 +622,16 @@ export default {
         // columnStyles: { 0: { halign: 'center', fillColor: [0, 255, 0] } },
         margin: { top: 10 },
       });
-      pdfDoc.save("Batch" + "_" + moment().format("DD/MM/YYYY") + ".pdf");
+      pdfDoc.save("Attendance" + "_" + moment().format("DD/MM/YYYY") + ".pdf");
     },
 
     viewAttendance(item) {
       this.$router.push({
         name: "AttendanceView",
-        params: { attendanceDataProps: item },
+        params: { attendanceDataProps: item ,
+        startDate:this.selectedStartDate,
+        endDate:this.selectedEndDate
+        },
       });
     },
   },

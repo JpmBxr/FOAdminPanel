@@ -16,6 +16,7 @@
                 background-color="primary lighten-3"
                 striped
             ></v-progress-linear>
+            <v-sheet class="pa-4 mb-4" color="text-white">
             <v-row class="ml-4 mr-4 pt-4">
                 <v-toolbar-title dark color="primary">
                     <v-list-item two-line>
@@ -44,6 +45,7 @@
                     Back to Exam Report
                 </v-btn>
             </v-row>
+            </v-sheet>
             <transition name="fade" mode="out-in">
                 <v-data-table
                     max-width="100%"

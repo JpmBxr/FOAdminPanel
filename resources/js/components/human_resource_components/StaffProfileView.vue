@@ -1,16 +1,17 @@
 <template>
-    <div style="background-color: #d7d8db; height: 100%" id="app">
+    <div id="app">
         <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+        fluid
+        style="background-color: #e4e8e4; max-width: 100% !important"
+        
         >
+        <v-sheet class="pa-4 mb-4" >
             <v-breadcrumbs :items="breadCrumbItem">
                 <template v-slot:divider>
                     <v-icon>mdi-forward</v-icon>
                 </template>
             </v-breadcrumbs>
-
+        </v-sheet>
             <v-card max-width="100%" class="mx-auto">
                 <v-app-bar dark color="primary">
                     <v-app-bar-nav-icon></v-app-bar-nav-icon>
@@ -22,7 +23,11 @@
                         <v-icon>mdi-dots-vertical</v-icon>
                     </v-btn>
                 </v-app-bar>
-                <v-container>
+                <v-container
+                fluid
+                 style="background-color: #e4e8e4; max-width: 100% !important"
+      
+                >
                     <v-row justify="center" dense="">
                         <v-col cols="12" md="4">
                             <v-skeleton-loader
@@ -55,7 +60,11 @@
                                         </template>
                                         <v-avatar
                                             size="100"
-                                            style="position:absolute;bottom:0px;left: 50%;  margin-left: -50px;"
+                                            style="                                               position: absolute;
+                                                bottom: 0px;
+                                                left: 50%;
+                                                margin-left: -50px;
+                                            "
                                         >
                                             <v-img
                                                 height="100"
@@ -252,7 +261,7 @@
                                                 <v-col
                                                     class="hidden-xs-only"
                                                     sm="5"
-                                                    md="4"
+                                                    md="3"
                                                 >
                                                     <strong
                                                         >{{ $t("label_role") }}
@@ -260,7 +269,63 @@
                                                     </strong>
                                                     {{ staffDetails.role_name }}
                                                 </v-col>
+                                                <v-col cols="4" sm="2" md="1">
+                                                    <v-avatar
+                                                        size="36px"
+                                                        color="primary"
+                                                    >
+                                                        <v-icon dark
+                                                            >mdi-lock-reset</v-icon
+                                                        >
+                                                    </v-avatar>
+                                                </v-col>
+                                                <v-col
+                                                    class="hidden-xs-only"
+                                                    sm="5"
+                                                    md="3"
+                                                >
+                                                    <v-text-field
+                                                        readonly
+                                                        v-model="
+                                                            staffDetails.password_normal
+                                                        "
+                                                        :append-icon="
+                                                            isPasswordVisible
+                                                                ? 'mdi-eye'
+                                                                : 'mdi-eye-off'
+                                                        "
+                                                        :type="
+                                                            isPasswordVisible
+                                                                ? 'text'
+                                                                : 'password'
+                                                        "
+                                                        @click:append="
+                                                            isPasswordVisible =
+                                                                !isPasswordVisible
+                                                        "
+                                                    >
+                                                    <strong>Password : </strong>
+                                                    </v-text-field>
+
+                                                    
+                                                </v-col>
                                             </v-row>
+                                            <v-row align="center" justify="start" class="mb-2">
+                                        <v-switch
+                                            class="mx-2"
+                                            inset
+                                            :label="
+                                                staffDetails.lms_is_user_logged
+                                                    ? 'User Logged In'
+                                                    : 'User Logged Out'
+                                            "
+                                            v-model="
+                                                 staffDetails.lms_is_user_logged
+                                            "
+                                            @change="loggedInStaffStatus(staffDetails.lms_is_user_logged, staffDetails.lms_user_id)"
+                                        >
+                                        </v-switch>
+                                    </v-row>
                                         </v-expansion-panel-header>
 
                                         <v-expansion-panel-content>
@@ -745,7 +810,7 @@
                                                     <v-list-item-avatar>
                                                         <v-icon
                                                             :class="[
-                                                                item.iconClass
+                                                                item.iconClass,
                                                             ]"
                                                             v-text="item.icon"
                                                         ></v-icon>
@@ -768,7 +833,7 @@
                                                                 color="success lighten-1"
                                                                 v-show="
                                                                     item.downloadLink !=
-                                                                        false
+                                                                    false
                                                                 "
                                                                 @click="
                                                                     downloadDocument(
@@ -813,20 +878,21 @@ const ls = new SecureLS({ encodingType: "aes" });
 export default {
     data() {
         return {
+            isPasswordVisible: false,
             // For Breadcrumb
             breadCrumbItem: [
                 {
                     text: this.$t("label_home"),
-                    disabled: false
+                    disabled: false,
                 },
                 {
                     text: this.$t("label_human_resource"),
-                    disabled: false
+                    disabled: false,
                 },
                 {
                     text: this.$t("label_staff_details"),
-                    disabled: false
-                }
+                    disabled: false,
+                },
             ],
             staffUserId: "",
             isDataLoading: false,
@@ -847,14 +913,14 @@ export default {
             isAadharCardDownloading: false,
             isPanCardDownloading: false,
             isVoterCardDownloading: false,
-            downloadImageUrl: ""
+            downloadImageUrl: "",
         };
     },
     created() {
         this.staffUserId = this.$route.params.staffUserId;
         // Token Config
         this.authorizationConfig = {
-            headers: { Authorization: "Bearer " + ls.get("token") }
+            headers: { Authorization: "Bearer " + ls.get("token") },
         };
         this.getStaffDetailsIdWise();
     },
@@ -878,6 +944,7 @@ export default {
                     ) {
                         this.$store.dispatch("actionUnauthorizedLogout");
                     } else {
+                       
                         this.staffDetails = data[0];
                         this.userProfileImage =
                             this.staffDetails.lms_staff_profile_image != null &&
@@ -909,7 +976,7 @@ export default {
                                         .lms_staff_joining_letter_path != ""
                                         ? this.staffDetails
                                               .lms_staff_joining_letter_path
-                                        : false
+                                        : false,
                             },
                             {
                                 type: "r",
@@ -931,7 +998,7 @@ export default {
                                         ""
                                         ? this.staffDetails
                                               .lms_staff_resume_path
-                                        : false
+                                        : false,
                             },
                             {
                                 type: "re",
@@ -955,7 +1022,7 @@ export default {
                                         .lms_staff_resignation_letter_path != ""
                                         ? this.staffDetails
                                               .lms_staff_resignation_letter_path
-                                        : false
+                                        : false,
                             },
                             {
                                 type: "p",
@@ -973,7 +1040,7 @@ export default {
                                         null &&
                                     this.staffDetails.lms_staff_pan_path != ""
                                         ? this.staffDetails.lms_staff_pan_path
-                                        : false
+                                        : false,
                             },
                             {
                                 type: "a",
@@ -995,7 +1062,7 @@ export default {
                                         ""
                                         ? this.staffDetails
                                               .lms_staff_aadhar_path
-                                        : false
+                                        : false,
                             },
                             {
                                 type: "v",
@@ -1017,12 +1084,12 @@ export default {
                                         .lms_staff_voter_card_path != ""
                                         ? this.staffDetails
                                               .lms_staff_voter_card_path
-                                        : false
-                            }
+                                        : false,
+                            },
                         ];
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.isDataLoading = false;
                     this.isSnackBarVisible = true;
                     this.snackBarColor = "error";
@@ -1031,6 +1098,58 @@ export default {
                     );
                 });
         },
+              // Enable  Disable Logged In User Status
+              loggedInStaffStatus(item,user, $event) {
+                 // console.log("sadsd",user)
+         
+                this.isDataProcessing = true;
+                this.$http
+                    .post(
+                        "web_get_logged_in_user_status",
+                        {
+                        
+                            status:
+                                item != '1' ? 0 : 1,
+                            staffUserId: user
+                        },
+                        this.authorizationConfig
+                    )
+                    .then(({ data }) => {
+                        this.isDataProcessing = false;
+                        //User Unauthorized
+                        if (
+                            data.error == "Unauthorized" ||
+                            data.permissionError == "Unauthorized"
+                        ) {
+                            this.$store.dispatch("actionUnauthorizedLogout");
+                        } else {
+                            // Staff Status changed
+                            if (data.responseData == 1) {
+                                this.snackBarColor = "success";
+                                this.changeSnackBarMessage(
+                                  "Successfully Changed Login Status"
+                                );
+                           
+                            }
+                            // Staff Status changed failed
+                            else if (data.responseData == 2) {
+                                this.snackBarColor = "error";
+                                this.changeSnackBarMessage(
+                                    this.$t("label_something_went_wrong")
+                                );
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        this.isDataProcessing = false;
+                        this.snackBarColor = "error";
+                        this.changeSnackBarMessage(
+                            this.$t("label_something_went_wrong")
+                        );
+                    });
+            
+        },
+
         // Change Snack bar message
         changeSnackBarMessage(data) {
             this.isSnackBarVisible = true;
@@ -1079,9 +1198,9 @@ export default {
 
                 method: "GET",
                 responseType: "blob",
-                headers: { Authorization: "Bearer " + ls.get("token") }
+                headers: { Authorization: "Bearer " + ls.get("token") },
             })
-                .then(response => {
+                .then((response) => {
                     if (typeOfImage == "a") {
                         this.isAadharCardDownloading = false;
                     }
@@ -1144,7 +1263,7 @@ export default {
                     document.body.appendChild(fileLink);
                     fileLink.click();
                 })
-                .catch(error => {
+                .catch((error) => {
                     if (typeOfImage == "a") {
                         this.isAadharCardDownloading = false;
                     }
@@ -1169,8 +1288,8 @@ export default {
                         this.$t("label_something_went_wrong")
                     );
                 });
-        }
-    }
+        },
+    },
 };
 </script>
 <style scoped>

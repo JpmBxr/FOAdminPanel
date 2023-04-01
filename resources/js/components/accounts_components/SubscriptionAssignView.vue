@@ -417,11 +417,11 @@ export default {
     },
 
     created() {
-        // if (this.subscriptionDataProps == null) {
-        //     this.$router.push({
-        //         name: "Subscription"
-        //     });
-        // }
+        if (this.subscriptionDataProps == null) {
+            this.$router.push({
+                name: "Subscription"
+            });
+        }
         // Token Config
         this.authorizationConfig = {
             headers: { Authorization: "Bearer " + ls.get("token") }

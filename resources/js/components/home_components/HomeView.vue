@@ -126,8 +126,6 @@
                                 </v-list-item-content>
                             </v-list-item>
 
-                        
-
                             <v-list-item
                                 v-permission="
                                     'Add Information Source' |
@@ -432,6 +430,28 @@
                                     >
                                 </v-list-item-content>
                             </v-list-item>
+
+                            <v-list-item
+                                to="/home/fee-generate/view-fee"
+                                class="text-decoration-none mb-1"
+                                ><v-list-item-action> </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title
+                                        >Generate Fees</v-list-item-title
+                                    >
+                                </v-list-item-content>
+                            </v-list-item>
+
+                            <v-list-item
+                                to="/home/generated-fees/view-generated-fees"
+                                class="text-decoration-none mb-1"
+                                ><v-list-item-action> </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title
+                                        >Fee Collection</v-list-item-title
+                                    >
+                                </v-list-item-content>
+                            </v-list-item>
                         </v-list-group></template
                     >
                     <!-- Acciounts End -->
@@ -498,6 +518,39 @@
                                     >
                                 </v-list-item-content>
                             </template>
+                            <v-list-item
+                                to="/home/report/enquiry-report-View"
+                                class="text-decoration-none mb-1"
+                                ><v-list-item-action> </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title
+                                        >Enquiry Report</v-list-item-title
+                                    >
+                                </v-list-item-content>
+                            </v-list-item>
+
+                            <v-list-item
+                                to="/home/report/student-registered-report"
+                                class="text-decoration-none mb-1"
+                                ><v-list-item-action> </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title
+                                        >Student Registered
+                                        Report</v-list-item-title
+                                    >
+                                </v-list-item-content>
+                            </v-list-item>
+
+                            <v-list-item
+                                to="/home/report/Fee-report-View"
+                                class="text-decoration-none mb-1"
+                                ><v-list-item-action> </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title
+                                        >Fee Report</v-list-item-title
+                                    >
+                                </v-list-item-content>
+                            </v-list-item>
 
                             <v-list-item
                                 v-permission="'Exam Report'"
@@ -568,13 +621,12 @@
                             </v-list-item>
 
                             <v-list-item
-                                v-permission="'Issue Book'"
-                                to="/home/library/IssueBook"
+                                to="/home/library/IssueItems"
                                 class="text-decoration-none mb-1"
                                 ><v-list-item-action> </v-list-item-action>
                                 <v-list-item-content>
                                     <v-list-item-title
-                                        >Issue Book</v-list-item-title
+                                        >Issue Items</v-list-item-title
                                     >
                                 </v-list-item-content>
                             </v-list-item>
@@ -1025,7 +1077,7 @@
             >{{ snackBarMessage }}</v-snackbar
         >
 
-        <v-footer padless default class="text-center">
+        <v-footer padless default class="text-center mt-6">
             <v-col class="text-center text-primary" cols="12">
                 Powered by <strong>Future Orbit</strong>
             </v-col>

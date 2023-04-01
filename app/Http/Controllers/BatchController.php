@@ -68,9 +68,10 @@ class BatchController extends Controller
     public function getAllBatch(Request $request)
     {
         $active = [];
+        $filterBy=$request->searchText;
         $centerId = $request->centerId;
         $includeDelete = $request->includeDelete;
-        $perPage = $request->perPage ? $request->perPage : 15;
+        $perPage = $request->perPage ? $request->perPage : 100;
         if ($includeDelete == "false") {
             $active = [1];
         } else {
@@ -85,6 +86,11 @@ class BatchController extends Controller
             DB::raw("IF(lms_batch_is_active = 1, 'Active','Inactive')as lms_batch_is_active"),
         ])
             ->where('lms_batch_details.lms_center_id', $centerId)
+            ->where(function ($q) use ($filterBy) {
+                $q->orWhere('lms_batch_details.lms_batch_code', 'like', "%$filterBy%")
+                  ->orWhere('lms_batch_details.lms_batch_name', 'like', "%$filterBy%")
+                  ->orWhere('lms_course.lms_course_name', 'like', "%$filterBy%");
+          })
             ->whereIn('lms_batch_details.lms_batch_is_active', $active)
             ->orderBy('lms_batch_details.lms_batch_id', 'desc')
 
@@ -123,7 +129,7 @@ class BatchController extends Controller
         $perPage = $request->perPage ? $request->perPage : 15;
 
         $getData = DB::table("lms_student_course_mapping")
-            ->leftJoin('lms_student', 'lms_student_course_mapping.lms_student_id', '=', 'lms_student.lms_student_id')
+            ->Join('lms_student', 'lms_student_course_mapping.lms_student_id', '=', 'lms_student.lms_student_id')
             ->select([
                 'lms_student_full_name', 'lms_registration_id', 'lms_student_code', 'lms_registration_code', 'lms_student_profile_image', 'lms_batch_id',
                 DB::raw('DATE_FORMAT(lms_student_course_mapping.lms_batch_mapping_date, "%d-%m-%Y") as lms_batch_mapping_date', "%d-%m-%Y"),
@@ -276,26 +282,68 @@ class BatchController extends Controller
 
     //Attendance Report Start
     //Get all Batch
+    // public function getAllBatchAttendance(Request $request)
+    // {
+    //     $active = [];
+    //     $centerId = $request->centerId;
+    //     $includeDelete = $request->includeDelete;
+    //     $perPage = $request->perPage ? $request->perPage : 15;
+    //     if ($includeDelete == "false") {
+    //         $active = [1];
+    //     } else {
+    //         $active = [1, 0];
+    //     }
+    //     $getData = DB::table("lms_batch_details")->leftJoin('lms_course', 'lms_course.lms_course_id', '=', 'lms_batch_details.lms_course_id')->select([
+    //         'lms_batch_id', 'lms_batch_code', 'lms_batch_name', 'lms_course.lms_course_name', 'lms_child_course_id',
+    //         'lms_course.lms_course_id', 'lms_batch_details.lms_batch_start_date', 'lms_batch_details.lms_batch_end_date',
+    //         DB::raw('DATE_FORMAT(lms_batch_details.lms_batch_start_date, "%d-%m-%Y") as lms_batch_start_date_edit', "%d-%m-%Y"),
+    //         DB::raw('DATE_FORMAT(lms_batch_details.lms_batch_end_date, "%d-%m-%Y") as lms_batch_end_date_edit', "%d-%m-%Y"),
+    //         DB::raw("IF(lms_batch_is_active = 1, 'Active','Inactive')as lms_batch_is_active"),
+    //     ])
+    //         ->where('lms_batch_details.lms_center_id', $centerId)
+    //         ->whereIn('lms_batch_details.lms_batch_is_active', $active)
+    //         ->orderBy('lms_batch_details.lms_batch_id', 'desc')
+
+    //         ->paginate($perPage);
+    //     return $getData;
+    // }
+
     public function getAllBatchAttendance(Request $request)
     {
         $active = [];
         $centerId = $request->centerId;
+        $startdate = $request->startDate;
+        $enddate = $request->endDate;
         $includeDelete = $request->includeDelete;
-        $perPage = $request->perPage ? $request->perPage : 15;
+        $perPage = $request->perPage ? $request->perPage : 50;
         if ($includeDelete == "false") {
             $active = [1];
         } else {
             $active = [1, 0];
         }
-        $getData = DB::table("lms_batch_details")->leftJoin('lms_course', 'lms_course.lms_course_id', '=', 'lms_batch_details.lms_course_id')->select([
-            'lms_batch_id', 'lms_batch_code', 'lms_batch_name', 'lms_course.lms_course_name', 'lms_child_course_id',
+        $getData = DB::table("lms_batch_details")
+        ->join('lms_attendance','lms_attendance.lms_batch_id','=','lms_batch_details.lms_batch_id')
+        ->leftJoin('lms_course', 'lms_course.lms_course_id', '=', 'lms_batch_details.lms_course_id')->select([
+            'lms_batch_details.lms_batch_id', 'lms_batch_details.lms_batch_code', 'lms_batch_name', 'lms_course.lms_course_name', 'lms_batch_details.lms_child_course_id',
             'lms_course.lms_course_id', 'lms_batch_details.lms_batch_start_date', 'lms_batch_details.lms_batch_end_date',
             DB::raw('DATE_FORMAT(lms_batch_details.lms_batch_start_date, "%d-%m-%Y") as lms_batch_start_date_edit', "%d-%m-%Y"),
             DB::raw('DATE_FORMAT(lms_batch_details.lms_batch_end_date, "%d-%m-%Y") as lms_batch_end_date_edit', "%d-%m-%Y"),
             DB::raw("IF(lms_batch_is_active = 1, 'Active','Inactive')as lms_batch_is_active"),
+            DB::raw(" COUNT(distinct lms_attendance.lms_batch_id,lms_attendance.lms_attendance_date) AS totalAttendance"),
         ])
             ->where('lms_batch_details.lms_center_id', $centerId)
             ->whereIn('lms_batch_details.lms_batch_is_active', $active)
+            ->where(function ($q) use ($startdate, $enddate) {
+                if ($startdate != null) {
+                    $q
+                        ->where('lms_attendance.lms_attendance_date', '>=', $startdate);
+                }
+                if ($enddate != null) {
+                    $q
+                        ->where('lms_attendance.lms_attendance_date', '<=', $enddate);
+                }
+            })
+            ->groupBy('lms_attendance.lms_batch_id')
             ->orderBy('lms_batch_details.lms_batch_id', 'desc')
 
             ->paginate($perPage);
@@ -340,7 +388,9 @@ class BatchController extends Controller
     public function getAttendanceDates(Request $request)
     {
         $batchId = $request->batchId;
-        $perPage = $request->perPage ? $request->perPage : 15;
+        $perPage = $request->perPage ? $request->perPage : 50;
+        $startdate = $request->startDate;
+        $enddate = $request->endDate;
         $getData = DB::table("lms_attendance")
             ->leftJoin('lms_batch_details', 'lms_attendance.lms_batch_id', '=', 'lms_batch_details.lms_batch_id')
             ->leftJoin('lms_batch_slot', 'lms_batch_slot.lms_batch_slot_id', '=', 'lms_attendance.lms_batch_slot_id')
@@ -360,13 +410,54 @@ class BatchController extends Controller
                 DB::raw('DATE_FORMAT(lms_batch_details.lms_batch_start_date, "%d-%m-%Y") as lms_batch_start_date', "%d-%m-%Y"),
                 DB::raw('DATE_FORMAT(lms_batch_details.lms_batch_end_date, "%d-%m-%Y") as lms_batch_end_date', "%d-%m-%Y"),
             ])->where('lms_attendance.lms_batch_id', $batchId)
-
+            ->where(function ($q) use ($startdate, $enddate) {
+                if ($startdate != null) {
+                    $q
+                        ->where('lms_attendance.lms_attendance_date', '>=', $startdate);
+                }
+                if ($enddate != null) {
+                    $q
+                        ->where('lms_attendance.lms_attendance_date', '<=', $enddate);
+                }
+            })
             ->groupBy('lms_attendance.lms_batch_slot_id', 'lms_attendance.lms_attendance_date')
             ->orderBy('lms_attendance.lms_attendance_date', 'desc')
 
             ->paginate($perPage);
         return $getData;
     }
+
+    // public function getAttendanceDates(Request $request)
+    // {
+    //     $batchId = $request->batchId;
+    //     $perPage = $request->perPage ? $request->perPage : 15;
+    //     $getData = DB::table("lms_attendance")
+    //         ->leftJoin('lms_batch_details', 'lms_attendance.lms_batch_id', '=', 'lms_batch_details.lms_batch_id')
+    //         ->leftJoin('lms_batch_slot', 'lms_batch_slot.lms_batch_slot_id', '=', 'lms_attendance.lms_batch_slot_id')
+    //         ->leftJoin('lms_subject', 'lms_subject.lms_subject_id', '=', 'lms_batch_slot.lms_subject_id')
+    //         ->select([
+
+    //             DB::raw('DATE_FORMAT(lms_attendance.lms_attendance_date, "%d-%m-%Y") as lms_attendance_date', "%d-%m-%Y"),
+    //             'lms_batch_details.lms_batch_code',
+    //             'lms_batch_details.lms_batch_name',
+    //             'lms_attendance.lms_batch_id',
+    //             'lms_attendance.lms_batch_slot_day_text',
+    //             'lms_subject.lms_subject_name',
+    //             'lms_batch_slot_start_time',
+    //             'lms_batch_slot_end_time',
+    //             'lms_attendance.lms_batch_slot_id',
+    //             DB::raw('concat(lms_attendance.lms_batch_slot_id,"-",lms_attendance.lms_attendance_date) as lms_batch_slot_id_misc'),
+    //             DB::raw('DATE_FORMAT(lms_batch_details.lms_batch_start_date, "%d-%m-%Y") as lms_batch_start_date', "%d-%m-%Y"),
+    //             DB::raw('DATE_FORMAT(lms_batch_details.lms_batch_end_date, "%d-%m-%Y") as lms_batch_end_date', "%d-%m-%Y"),
+    //         ])->where('lms_attendance.lms_batch_id', $batchId)
+
+    //         ->groupBy('lms_attendance.lms_batch_slot_id', 'lms_attendance.lms_attendance_date')
+    //         ->orderBy('lms_attendance.lms_attendance_date', 'desc')
+
+    //         ->paginate($perPage);
+    //     return $getData;
+    // }
+
 
     public function getAttendanceDateWise(Request $request)
     {

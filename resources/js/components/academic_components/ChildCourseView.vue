@@ -1,6 +1,6 @@
 <template>
     <!-- Card Start -->
-    <v-container fluid style="background-color: #fff" class="ma-0 pa-0">
+    <v-container fluid style="max-width: 100% !important">
         <v-overlay :value="isLoaderActive" color="primary">
             <v-progress-circular
                 indeterminate
@@ -251,15 +251,15 @@
                 dense
                 :headers="tableHeader"
                 :items="dataTableRowNumbering"
-                item-key="lms_course_id"
+                item-key="lms_child_course_id"
                 class="elevation-0 ma-0 pa-0"
                 :loading="tableDataLoading"
                 :loading-text="tableLoadingDataText"
                 :server-items-length="totalItemsInDB"
-                :items-per-page="15"
+                :items-per-page="100"
                 @pagination="getAllChildCourse"
                 :footer-props="{
-                    itemsPerPageOptions: [15, 25, 50, -1],
+                    itemsPerPageOptions: [100, 200, 300, - 1],
                 }"
             >
                 <template v-slot:no-data>
@@ -278,9 +278,11 @@
                 <template v-slot:top>
                     <v-toolbar flat>
                         <v-text-field
+                            v-model="searchText"
                             class="mt-4"
                             label="Search"
                             prepend-inner-icon="mdi-magnify"
+                            @input="getAllChildCourse($event)"
                         ></v-text-field>
                         <v-spacer></v-spacer>
                         <v-spacer></v-spacer>
@@ -289,7 +291,7 @@
                             v-if="!tableDataLoading"
                             inset
                             v-model="includeDelete"
-                            @change="getAllCourse"
+                            @change="getAllChildCourse"
                         ></v-switch>
 
                         <v-btn
@@ -414,6 +416,7 @@ export default {
                     text: "Offline",
                 },
             ],
+            includeDelete: false,
             selectedCourseId: null,
             iscourseItemsLoading: false,
             courseItems: [],
@@ -625,7 +628,7 @@ export default {
             this.childCourseDescription = item.lms_child_course_description;
             this.childCourseFees = item.lms_child_course_fees;
             this.childCourseDuration = item.lms_child_course_duration;
-            this.courseImageNameForEdit = item.lms_course_image;
+            this.courseImageNameForEdit = item.lms_child_course_image;
         },
         // Disable Course status
         disableCourse(item, $event) {
@@ -760,10 +763,13 @@ export default {
                     postData.append("isSaveEditClicked", 0);
                     postData.append("centerId", ls.get("loggedUserCenterId"));
                     postData.append("loggedUserId", ls.get("loggedUserId"));
+                    
+                    if (this.courseImageNameForEdit != "") {
                     postData.append(
                         "courseImageNameForEdit",
                         this.courseImageNameForEdit
                     );
+                    }
                     postData.append("childCourseId", this.editChildCourseId);
                 }
                 this.$http
@@ -865,6 +871,8 @@ export default {
                 .get(`web_get_all_child_course?page=${e.page}`, {
                     params: {
                         centerId: ls.get("loggedUserCenterId"),
+                        searchText: this.searchText,
+                        includeDelete: this.includeDelete,
                         perPage:
                             e.itemsPerPage == -1
                                 ? this.totalItemsInDB

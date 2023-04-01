@@ -1,7 +1,11 @@
 
 <template>
+  <div id="app">
   <!-- Card Start -->
-  <v-container fluid>
+  <v-container 
+  fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
+  >
     <v-progress-linear
       :active="isDataProcessing"
       :indeterminate="isDataProcessing"
@@ -12,12 +16,13 @@
       background-color="primary lighten-3"
       striped
     ></v-progress-linear>
+    <v-sheet class="pa-4 mb-4" >
     <v-breadcrumbs :items="breadCrumbItem">
       <template v-slot:divider>
         <v-icon>mdi-forward</v-icon>
       </template>
     </v-breadcrumbs>
-
+  </v-sheet>
     <v-row dense>
       <transition name="fade" mode="out-in">
         <v-col class="d-flex flex-column ml-2">
@@ -572,6 +577,7 @@
       </v-card>
     </v-dialog>
   </v-container>
+</div>
 </template>
 
 

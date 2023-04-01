@@ -1,10 +1,8 @@
 <template>
-    <div style=" margin:auto; padding:auto; width:1200px;" id="app">
+    <div id="app">
         <v-container
             fluid
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+            style="background-color: #e4e8e4; max-width: 100% !important"
         >
             <v-overlay :value="isLoaderActive" color="primary">
                 <v-progress-circular
@@ -13,37 +11,49 @@
                     color="primary"
                 ></v-progress-circular>
             </v-overlay>
-            <v-row class="ml-4 mr-4 pt-4">
-                <v-toolbar-title dark color="primary">
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="text-h5">
-                                <strong>{{
-                                    $t("label_information_source")
-                                }}</strong>
-                            </v-list-item-title>
-                            <v-list-item-subtitle
-                                >Home <v-icon>mdi-forward</v-icon> Enquiry
-                                <v-icon>mdi-forward</v-icon>
-                                {{
-                                    $t("label_information_source")
-                                }}</v-list-item-subtitle
-                            >
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn
-                    v-permission="'Add Information Source'"
-                    :disabled="tableDataLoading"
-                    class="ma-2"
-                    color="primary"
-                    @click="isAddCardVisible = !isAddCardVisible"
+            <v-sheet class="pa-4 mb-4" color="text-white">
+                <v-row
+                    justify="space-around"
+                    style="
+                        margin-right: 1px !important;
+                        margin-left: -1px !important;
+                    "
+                    class="mb-4 mt-1"
+                    dense
                 >
-                    <v-icon class="mr-2" color="white">mdi-source-fork</v-icon>
-                    Add Source
-                </v-btn>
-            </v-row>
+                    <v-toolbar-title dark color="primary">
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-title class="text-h5">
+                                    <strong>{{
+                                        $t("label_information_source")
+                                    }}</strong>
+                                </v-list-item-title>
+                                <v-list-item-subtitle
+                                    >Home <v-icon>mdi-forward</v-icon> Enquiry
+                                    <v-icon>mdi-forward</v-icon>
+                                    {{
+                                        $t("label_information_source")
+                                    }}</v-list-item-subtitle
+                                >
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        v-permission="'Add Information Source'"
+                        :disabled="tableDataLoading"
+                        class="ma-2"
+                        color="primary"
+                        @click="isAddCardVisible = !isAddCardVisible"
+                    >
+                        <v-icon class="mr-2" color="white"
+                            >mdi-source-fork</v-icon
+                        >
+                        Add Source
+                    </v-btn>
+                </v-row>
+            </v-sheet>
             <transition name="fade" mode="out-in">
                 <v-card v-if="isAddCardVisible">
                     <v-app-bar dark color="primary">
@@ -70,7 +80,7 @@
                                         v-model="informationSourceName"
                                         @keypress="isCharacters"
                                         :rules="[
-                                            v => !!v || $t('label_required')
+                                            (v) => !!v || $t('label_required'),
                                         ]"
                                     >
                                         <template #label>
@@ -99,7 +109,7 @@
                                         color="primary"
                                         :disabled="
                                             !isSaveInformationSourceFormValid ||
-                                                isSaveInformationSourceFormDataProcessing
+                                            isSaveInformationSourceFormDataProcessing
                                         "
                                         @click="saveInformationSource"
                                         >{{
@@ -125,24 +135,22 @@
                     :loading="tableDataLoading"
                     :loading-text="tableLoadingDataText"
                     :server-items-length="totalItemsInDB"
-                    :items-per-page="15"
+                    :items-per-page="100"
                     @pagination="getAllInformationSource"
                     :footer-props="{
-                        itemsPerPageOptions: [5, 10, 15]
+                        itemsPerPageOptions: [100, 200, 300, -1],
                     }"
                 >
                     <template v-slot:no-data>
                         <p
                             class="font-weight-black bold title"
-                            style="color:red"
+                            style="color: red"
                         >
                             {{ $t("label_no_data_found") }}
                         </p>
                     </template>
                     <template
-                        v-slot:item.is_lms_information_source_active="{
-                            item
-                        }"
+                        v-slot:item.is_lms_information_source_active="{ item }"
                     >
                         <v-chip
                             x-small
@@ -199,18 +207,18 @@
                         <v-icon
                             v-if="
                                 item.is_lms_information_source_active ==
-                                    'Active'
+                                'Active'
                             "
                             v-permission="'Delete Information Source'"
                             small
                             color="error"
                             @click="disableInformationSource(item)"
-                            >mdi-delete</v-icon
+                            >mdi-check-circle</v-icon
                         >
                         <v-icon
                             v-if="
                                 item.is_lms_information_source_active ==
-                                    'Inactive'
+                                'Inactive'
                             "
                             v-permission="'Delete Information Source'"
                             small
@@ -241,6 +249,7 @@
 // Secure Local Storage
 import SecureLS from "secure-ls";
 const ls = new SecureLS({ encodingType: "aes" });
+import { Global } from "../../components/helpers/global";
 
 //PDF Export
 import jsPDF from "jspdf";
@@ -278,7 +287,7 @@ export default {
                     text: this.$t("label_information_source_name"),
                     value: "lms_information_source_name",
                     width: "55%",
-                    sortable: false
+                    sortable: false,
                 },
 
                 {
@@ -286,15 +295,15 @@ export default {
                     value: "is_lms_information_source_active",
                     align: "end",
                     width: "15%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: this.$t("label_actions"),
                     value: "actions",
                     sortable: false,
                     width: "20%",
-                    align: "end"
-                }
+                    align: "end",
+                },
             ],
             tableItems: [],
             isSaveEditClicked: 1,
@@ -307,14 +316,14 @@ export default {
             // For Excel Download
             excelFields: {
                 "Information Source": "lms_information_source_name",
-                Status: "is_lms_information_source_active"
+                Status: "is_lms_information_source_active",
             },
             excelData: [],
             excelFileName:
                 "InformationSourceListAsExcel" +
                 "_" +
                 moment().format("DD/MM/YYYY") +
-                ".xls"
+                ".xls",
         };
     },
 
@@ -323,9 +332,9 @@ export default {
         dataTableRowNumbering() {
             return this.tableItems.map((items, index) => ({
                 ...items,
-                index: index + 1
+                index: index + 1,
             }));
-        }
+        },
 
         //End
     },
@@ -333,7 +342,7 @@ export default {
     created() {
         // Token Config
         this.authorizationConfig = {
-            headers: { Authorization: "Bearer " + ls.get("token") }
+            headers: { Authorization: "Bearer " + ls.get("token") },
         };
     },
 
@@ -352,12 +361,19 @@ export default {
             this.isSaveEditClicked = 0;
             this.informationSourceName = item.lms_information_source_name;
         },
+
         // Disable Information Source
-        disableInformationSource(item, $event) {
-            let userDecision = confirm(
-                this.$t("label_are_you_sure_change_status_infomation_source")
+        async disableInformationSource(item, $event) {
+            // let userDecision = confirm(
+            //     this.$t("label_are_you_sure_change_status_infomation_source")
+            // );
+
+            const result = await Global.showConfirmationAlert(
+                "Are you sure, you want to change Infomation Source status?",
+                "You can make active anytime!",
+                "warning"
             );
-            if (userDecision) {
+            if (result.isConfirmed) {
                 this.isLoaderActive = true;
                 this.$http
                     .post(
@@ -370,7 +386,7 @@ export default {
                                 "Active"
                                     ? 0
                                     : 1,
-                            loggedUserId: ls.get("loggedUserId")
+                            loggedUserId: ls.get("loggedUserId"),
                         },
                         this.authorizationConfig
                     )
@@ -402,7 +418,7 @@ export default {
                             }
                         }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.isLoaderActive = false;
                         this.snackBarColor = "error";
                         this.changeSnackBarMessage(
@@ -411,6 +427,7 @@ export default {
                     });
             }
         },
+
         // To ensure Information Source name is character and space only
         isCharacters(evt) {
             var regex = new RegExp("^[a-zA-Z ]+$");
@@ -515,7 +532,7 @@ export default {
                             }
                         }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.isSaveInformationSourceFormDataProcessing = false;
                         this.snackBarColor = "error";
                         this.changeSnackBarMessage(
@@ -533,9 +550,9 @@ export default {
                 .get(`web_get_all_information_source?page=${e.page}`, {
                     params: {
                         centerId: ls.get("loggedUserCenterId"),
-                        perPage: e.itemsPerPage
+                        perPage: e.itemsPerPage,
                     },
-                    headers: { Authorization: "Bearer " + ls.get("token") }
+                    headers: { Authorization: "Bearer " + ls.get("token") },
                 })
                 .then(({ data }) => {
                     this.tableDataLoading = false;
@@ -551,7 +568,7 @@ export default {
                         this.excelData = data.data;
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.tableDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
@@ -571,17 +588,17 @@ export default {
                 columns: [
                     {
                         header: "Information Source Name",
-                        dataKey: "lms_information_source_name"
+                        dataKey: "lms_information_source_name",
                     },
                     {
                         header: "Status",
-                        dataKey: "is_lms_information_source_active"
-                    }
+                        dataKey: "is_lms_information_source_active",
+                    },
                 ],
                 body: this.tableItems,
                 //styles: { fillColor: [255, 0, 0] },
                 // columnStyles: { 0: { halign: 'center', fillColor: [0, 255, 0] } },
-                margin: { top: 10 }
+                margin: { top: 10 },
             });
             pdfDoc.save(
                 "InformationSourceListAsPDF" +
@@ -589,8 +606,8 @@ export default {
                     moment().format("DD/MM/YYYY") +
                     ".pdf"
             );
-        }
-    }
+        },
+    },
 };
 </script>
 

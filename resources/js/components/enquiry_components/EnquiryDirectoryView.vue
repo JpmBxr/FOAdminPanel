@@ -1,9 +1,8 @@
 <template>
-    <div style="margin: auto; padding: auto; width: 1200px" id="app">
+    <div id="app">
         <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+            fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
         >
             <v-progress-linear
                 :active="isDataProcessing"
@@ -15,43 +14,45 @@
                 background-color="primary lighten-3"
                 striped
             ></v-progress-linear>
-            <v-row class="ml-4 mr-4 pt-4">
-                <v-toolbar-title dark color="primary">
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="text-h5">
-                                <strong>{{
-                                    $t("label_enquiry_directory")
-                                }}</strong>
-                            </v-list-item-title>
-                            <v-list-item-subtitle
-                                >{{ $t("label_home")
-                                }}<v-icon>mdi-forward</v-icon>
-                                {{ $t("label_enquiry") }}
-                                <v-icon>mdi-forward</v-icon>
-                                {{
-                                    $t("label_enquiry_directory")
-                                }}</v-list-item-subtitle
-                            >
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn
-                    v-permission:all="'Add Enquiry'"
-                    v-if="!isAddCardVisible"
-                    :disabled="tableDataLoading"
-                    color="primary"
-                    class="white--text"
-                    @click="addEnquiry"
-                >
-                    {{ $t("label_add_enquiry") }}
-                    <v-icon right dark> mdi-plus </v-icon>
-                </v-btn>
-            </v-row>
-
+            <v-sheet class="pa-4 mb-4" color="text-white">
+                <v-row class="ml-4 mr-4 pt-4">
+                    <v-toolbar-title dark color="primary">
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-title class="text-h5">
+                                    <strong>{{
+                                        $t("label_enquiry_directory")
+                                    }}</strong>
+                                </v-list-item-title>
+                                <v-list-item-subtitle
+                                    >{{ $t("label_home")
+                                    }}<v-icon>mdi-forward</v-icon>
+                                    {{ $t("label_enquiry") }}
+                                    <v-icon>mdi-forward</v-icon>
+                                    {{
+                                        $t("label_enquiry_directory")
+                                    }}</v-list-item-subtitle
+                                >
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        v-permission:all="'Add Enquiry'"
+                        v-if="!isAddCardVisible"
+                        :disabled="tableDataLoading"
+                        color="primary"
+                        class="white--text"
+                        @click="addEnquiry"
+                    >
+                        {{ $t("label_add_enquiry") }}
+                        <v-icon right dark> mdi-plus </v-icon>
+                    </v-btn>
+                </v-row>
+            </v-sheet>
             <transition name="fade" mode="out-in">
                 <v-data-table
+                    max-width="100%"
                     dense
                     :headers="tableHeader"
                     :items="dataTableRowNumbering"
@@ -60,10 +61,10 @@
                     :loading="tableDataLoading"
                     :loading-text="tableLoadingDataText"
                     :server-items-length="totalItemsInDB"
-                    :items-per-page="25"
+                    :items-per-page="100"
                     @pagination="getAllEnquiry"
                     :footer-props="{
-                        itemsPerPageOptions: [25, 50, 100, 200, -1],
+                        itemsPerPageOptions: [100, 200, 300, -1],
                     }"
                 >
                     <template v-slot:no-data>
@@ -82,15 +83,15 @@
                             >{{ item.lms_enquiry_status }}</v-chip
                         >
                     </template>
+
                     <template v-slot:top>
-                        <v-toolbar flat class="mt-4">
+                        <v-toolbar flat class="pt-4">
                             <v-select
                                 class="mx-2"
                                 v-model="selectedSource"
                                 :disabled="isSourceDataLoading"
                                 :items="sourceData"
                                 dense
-                                outlined
                                 :label="lblSelectSource"
                                 item-text="lms_information_source_name"
                                 item-value="lms_information_source_name"
@@ -102,7 +103,6 @@
 
                             <v-text-field
                                 class="mx-2"
-                                outlined
                                 dense
                                 v-model="staffSearchCriteria"
                                 :label="lblSearchStaffCriteria"
@@ -254,6 +254,7 @@ export default {
             sourceData: [],
             isSearchBySource: false,
             authorizationConfig: "",
+            isAddCardVisible: "",
 
             // Snack Bar
 
@@ -268,7 +269,13 @@ export default {
             tableLoadingDataText: this.$t("label_loading_data"),
 
             tableHeader: [
-                { text: "#", value: "index", width: "5%", sortable: false },
+                {
+                    text: "#",
+                    value: "index",
+                    width: "5%",
+                    sortable: false,
+                    align: "start",
+                },
                 {
                     text: this.$t("label_code"),
                     value: "lms_enquiry_code",
@@ -284,7 +291,7 @@ export default {
                 {
                     text: this.$t("label_name"),
                     value: "lms_enquiry_full_name",
-                    width: "10%",
+                    width: "20%",
                     sortable: false,
                 },
                 {
@@ -293,20 +300,9 @@ export default {
                     width: "5%",
                     sortable: false,
                 },
+
                 {
-                    text: "Section",
-                    value: "lms_enquiry_section",
-                    width: "5%",
-                    sortable: false,
-                },
-                {
-                    text: "Roll No.",
-                    value: "lms_roll_no",
-                    width: "5%",
-                    sortable: false,
-                },
-                {
-                    text: "Course",
+                    text: "Course/Class",
                     value: "lms_child_course_name",
                     width: "5%",
                     sortable: false,
@@ -336,7 +332,7 @@ export default {
                     value: "actions",
                     sortable: false,
                     width: "25%",
-                    align: "middle",
+                    align: "end",
                 },
             ],
             tableItems: [],

@@ -1,9 +1,8 @@
 <template>
-    <div style=" margin:auto; padding:auto; width:1200px;" id="app">
+    <div id="app">
         <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+            fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
         >
             <v-overlay :value="isLoaderActive" color="primary">
                 <v-progress-circular
@@ -12,36 +11,49 @@
                     color="primary"
                 ></v-progress-circular>
             </v-overlay>
-            <v-row class="ml-4 mr-4 pt-4">
-                <v-toolbar-title dark color="primary">
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="text-h5">
-                                <strong>
-                                    {{ this.$t("label_notification") }}</strong
-                                >
-                            </v-list-item-title>
-                            <v-list-item-subtitle
-                                >Home <v-icon>mdi-forward</v-icon> Communication
-                                <v-icon>mdi-forward</v-icon>
-                                {{ this.$t("label_notification") }}
-                            </v-list-item-subtitle>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn
-                    v-permission="'Add Notification'"
-                    v-if="!isAddCardVisible"
-                    :disabled="tableDataLoading"
-                    color="primary"
-                    class="white--text"
-                    @click="isAddCardVisible = !isAddCardVisible"
+            <v-sheet class="pa-4 mb-4" color="text-white">
+                <v-row
+                    justify="space-around"
+                    style="
+                        margin-right: 1px !important;
+                        margin-left: -1px !important;
+                    "
+                    class="mb-4 mt-1"
+                    dense
                 >
-                    Add Notification
-                    <v-icon right dark> mdi-plus </v-icon>
-                </v-btn>
-            </v-row>
+                    <v-toolbar-title dark color="primary">
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-title class="text-h5">
+                                    <strong>
+                                        {{
+                                            this.$t("label_notification")
+                                        }}</strong
+                                    >
+                                </v-list-item-title>
+                                <v-list-item-subtitle
+                                    >Home
+                                    <v-icon>mdi-forward</v-icon> Communication
+                                    <v-icon>mdi-forward</v-icon>
+                                    {{ this.$t("label_notification") }}
+                                </v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        v-permission="'Add Notification'"
+                        v-if="!isAddCardVisible"
+                        :disabled="tableDataLoading"
+                        color="primary"
+                        class="white--text"
+                        @click="isAddCardVisible = !isAddCardVisible"
+                    >
+                        Add Notification
+                        <v-icon right dark> mdi-plus </v-icon>
+                    </v-btn>
+                </v-row>
+            </v-sheet>
             <transition name="fade" mode="out-in">
                 <v-card v-if="isAddCardVisible">
                     <v-app-bar dark color="grey" flat>
@@ -60,7 +72,9 @@
                                     outlined
                                     dense
                                     v-model="title"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         Title
@@ -82,9 +96,11 @@
                                     :items="[
                                         'Batch',
                                         'Staff',
-                                        'External Student'
+                                        'External Student',
                                     ]"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                     @change="getStaffExternalStudent()"
                                 >
                                     <template #label>
@@ -101,7 +117,7 @@
                                 <v-select
                                     v-if="
                                         receiverType == 'Staff' ||
-                                            receiverType == 'External Student'
+                                        receiverType == 'External Student'
                                     "
                                     outlined
                                     dense
@@ -111,7 +127,9 @@
                                     :disabled="isSourceDataLoading"
                                     item-text="lms_full_name"
                                     item-value="lms_user_id"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         Receiver
@@ -132,7 +150,9 @@
                                     :disabled="isSourceDataLoading"
                                     item-text="lms_batch_name"
                                     item-value="lms_batch_id"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                     @change="getBatchStudent()"
                                 >
                                     <template #label>
@@ -153,7 +173,9 @@
                                     dense
                                     v-model="notificationHasImage"
                                     :items="['Yes', 'No']"
-                                    :rules="[v => !!v || $t('label_required')]"
+                                    :rules="[
+                                        (v) => !!v || $t('label_required'),
+                                    ]"
                                 >
                                     <template #label>
                                         Image Required
@@ -183,10 +205,7 @@
                                     :rules="imageRule"
                                 >
                                     <template
-                                        v-slot:selection="{
-                                            index,
-                                            text
-                                        }"
+                                        v-slot:selection="{ index, text }"
                                     >
                                         <v-chip
                                             v-if="index < 2"
@@ -207,7 +226,7 @@
                                     </template>
                                 </v-file-input>
                             </v-col>
-                            <v-col cols="12" sm="6" md="4">
+                            <v-col cols="12" sm="12" md="4" class="pl-2 pr-4">
                                 <v-menu
                                     v-model="menu2"
                                     :close-on-content-click="false"
@@ -216,17 +235,14 @@
                                     offset-y
                                     min-width="auto"
                                 >
-                                    <template
-                                        v-slot:activator="{
-                                            on,
-                                            attrs
-                                        }"
-                                    >
+                                    <template v-slot:activator="{ on, attrs }">
                                         <v-text-field
                                             v-model="notificatioDate"
                                             label="Notification Date"
                                             prepend-icon="mdi-calendar"
                                             readonly
+                                            outlined
+                                            dense
                                             v-bind="attrs"
                                             v-on="on"
                                         ></v-text-field>
@@ -246,7 +262,7 @@
                                         v-model="body"
                                         :editor-toolbar="customToolbar"
                                         :rules="[
-                                            v => !!v || $t('label_required')
+                                            (v) => !!v || $t('label_required'),
                                         ]"
                                     >
                                         ></vue-editor
@@ -262,7 +278,7 @@
                                 color="primary"
                                 :disabled="
                                     !isSaveNotificationFormValid ||
-                                        isSaveFormDataProcessing
+                                    isSaveFormDataProcessing
                                 "
                                 @click="saveNotification"
                                 >{{
@@ -278,7 +294,7 @@
                                 color="error"
                                 :disabled="
                                     !isSaveNotificationFormValid ||
-                                        isSaveFormDataProcessing
+                                    isSaveFormDataProcessing
                                 "
                                 @click="
                                     isAddCardVisible = !isAddCardVisible;
@@ -310,15 +326,10 @@
                     show-expand
                     @pagination="getAllNotification"
                     :footer-props="{
-                        itemsPerPageOptions: [50, 100, 150, 200, -1]
+                        itemsPerPageOptions: [50, 100, 150, 200, -1],
                     }"
                 >
-                    <template
-                        v-slot:expanded-item="{
-                            headers,
-                            item
-                        }"
-                    >
+                    <template v-slot:expanded-item="{ headers, item }">
                         <td :colspan="headers.length">
                             <v-col cols="12" md="2">
                                 <v-avatar
@@ -343,7 +354,7 @@
                             <v-col cols="12" md="9">
                                 <div
                                     v-html="item.notification_body"
-                                    style="align-content: center;"
+                                    style="align-content: center"
                                 ></div
                             ></v-col>
                         </td>
@@ -357,11 +368,7 @@
                         </p>
                     </template>
 
-                    <template
-                        v-slot:item.notification_image="{
-                            item
-                        }"
-                    >
+                    <template v-slot:item.notification_image="{ item }">
                         <v-avatar
                             v-if="item.notification_has_image == 1"
                             rounded
@@ -434,7 +441,7 @@ import "katex/dist/katex.min.css";
 
 export default {
     components: {
-        VueEditor
+        VueEditor,
     },
     props: ["userPermissionDataProps"],
 
@@ -451,7 +458,7 @@ export default {
                 [{ indent: "-1" }, { indent: "+1" }],
                 [{ direction: "rtl" }],
 
-                [{ color: [] }, { background: [] }]
+                [{ color: [] }, { background: [] }],
             ],
 
             // Save Notification
@@ -497,26 +504,26 @@ export default {
                     value: "index",
                     width: "5%",
                     sortable: false,
-                    groupable: true
+                    groupable: true,
                 },
                 {
                     text: "Image",
                     value: "notification_image",
                     width: "20%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: "Title",
                     value: "notification_title",
                     width: "50%",
-                    sortable: false
+                    sortable: false,
                 },
 
                 {
                     text: "Notification Date",
                     value: "notification_to_be_send_date",
                     width: "15%",
-                    sortable: false
+                    sortable: false,
                 },
 
                 {
@@ -524,16 +531,16 @@ export default {
                     value: "actions",
                     sortable: false,
                     width: "10%",
-                    align: "middle"
+                    align: "middle",
                 },
                 {
                     text: "Description",
                     width: "10%",
                     value: "data-table-expand",
-                    align: "end"
-                }
+                    align: "end",
+                },
             ],
-            tableItems: []
+            tableItems: [],
         };
     },
     watch: {
@@ -543,29 +550,29 @@ export default {
             this.imageRule =
                 this.selectedNotificationImage != null
                     ? [
-                          v =>
+                          (v) =>
                               !v ||
                               v.size <= 1048576 ||
-                              this.$t("label_file_size_criteria_1_mb")
+                              this.$t("label_file_size_criteria_1_mb"),
                       ]
                     : [];
-        }
+        },
     },
     computed: {
         // For numbering the Data Table Rows
         dataTableRowNumbering() {
             return this.tableItems.map((items, index) => ({
                 ...items,
-                index: index + 1
+                index: index + 1,
             }));
-        }
+        },
         //End
     },
 
     created() {
         // Token Config
         this.authorizationConfig = {
-            headers: { Authorization: "Bearer " + ls.get("token") }
+            headers: { Authorization: "Bearer " + ls.get("token") },
         };
         // get batch
         this.getBatch();
@@ -600,7 +607,7 @@ export default {
                         this.batchItems = data;
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.isSourceDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
@@ -615,9 +622,9 @@ export default {
                 .get(`web_get_get_all_student_batch_wise`, {
                     params: {
                         centerId: ls.get("loggedUserCenterId"),
-                        lms_batch_id: this.batchId
+                        lms_batch_id: this.batchId,
                     },
-                    headers: { Authorization: "Bearer " + ls.get("token") }
+                    headers: { Authorization: "Bearer " + ls.get("token") },
                 })
                 .then(({ data }) => {
                     this.isSourceDataLoading = false;
@@ -634,7 +641,7 @@ export default {
                         }
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.isSourceDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
@@ -648,7 +655,7 @@ export default {
                 this.isSourceDataLoading = true;
                 this.$http
                     .get(`web_get_all_staff_without_pagination`, {
-                        headers: { Authorization: "Bearer " + ls.get("token") }
+                        headers: { Authorization: "Bearer " + ls.get("token") },
                     })
                     .then(({ data }) => {
                         this.isSourceDataLoading = false;
@@ -667,7 +674,7 @@ export default {
                             }
                         }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.isSourceDataLoading = false;
                         this.snackBarColor = "error";
                         this.changeSnackBarMessage(
@@ -681,8 +688,8 @@ export default {
                         `web_get_all_students_not_in_batch_without_pagination`,
                         {
                             headers: {
-                                Authorization: "Bearer " + ls.get("token")
-                            }
+                                Authorization: "Bearer " + ls.get("token"),
+                            },
                         }
                     )
                     .then(({ data }) => {
@@ -702,7 +709,7 @@ export default {
                             }
                         }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.isSourceDataLoading = false;
                         this.snackBarColor = "error";
                         this.changeSnackBarMessage(
@@ -731,7 +738,7 @@ export default {
                         {
                             centerId: ls.get("loggedUserCenterId"),
                             notification_id: item.notification_id,
-                            loggedUserId: ls.get("loggedUserId")
+                            loggedUserId: ls.get("loggedUserId"),
                         },
                         this.authorizationConfig
                     )
@@ -761,7 +768,7 @@ export default {
                             }
                         }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.isLoaderActive = false;
                         this.snackBarColor = "error";
                         this.changeSnackBarMessage(
@@ -841,7 +848,7 @@ export default {
                             }
                         }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.isSaveFormDataProcessing = false;
                         this.snackBarColor = "error";
                         this.changeSnackBarMessage(
@@ -862,9 +869,9 @@ export default {
                         perPage:
                             e.itemsPerPage == -1
                                 ? this.totalItemsInDB
-                                : e.itemsPerPage
+                                : e.itemsPerPage,
                     },
-                    headers: { Authorization: "Bearer " + ls.get("token") }
+                    headers: { Authorization: "Bearer " + ls.get("token") },
                 })
                 .then(({ data }) => {
                     this.tableDataLoading = false;
@@ -879,15 +886,15 @@ export default {
                         this.totalItemsInDB = data.total;
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.tableDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
                         this.$t("label_something_went_wrong")
                     );
                 });
-        }
-    }
+        },
+    },
 };
 </script>
 

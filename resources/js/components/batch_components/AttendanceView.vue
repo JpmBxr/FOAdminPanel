@@ -1,9 +1,8 @@
 <template>
-    <div style="background-color: #d7d8db; height: 100%" id="app">
+    <div id="app">
         <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+        fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
         >
             <!-- Card Start -->
             <v-overlay :value="isLoaderActive" color="primary">
@@ -13,6 +12,7 @@
                     color="primary"
                 ></v-progress-circular>
             </v-overlay>
+            <v-sheet class="pa-4 mb-4" color="text-white">
             <v-row class="ml-4 mr-4 pt-4">
                 <v-toolbar-title dark color="primary">
                     <v-list-item two-line>
@@ -36,6 +36,7 @@
                     Back to Attendance Report
                 </v-btn>
             </v-row>
+        </v-sheet>
 
             <transition name="fade" mode="out-in">
                 <v-card>
@@ -226,7 +227,7 @@ import VueMask from "v-mask";
 Vue.use(VueMask);
 
 export default {
-    props: ["userPermissionDataProps", "attendanceDataProps"],
+    props: ["userPermissionDataProps", "attendanceDataProps","startDate","endDate"],
 
     data() {
         return {
@@ -310,6 +311,7 @@ export default {
                     sortable: false,
                     align: "center"
                 },
+                
                 {
                     text: "Status",
                     value: "AttendanceStatus",
@@ -483,7 +485,8 @@ export default {
                 .get(`web_get_all_attendance_dates?page=${e.page}`, {
                     params: {
                         batchId: this.attendanceDataProps.lms_batch_id,
-
+                        startDate:this.startDate,
+                        endDate:this.endDate,
                         perPage:
                             e.itemsPerPage == -1
                                 ? this.totalItemsInDB

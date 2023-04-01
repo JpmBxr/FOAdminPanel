@@ -1,6 +1,6 @@
 <template>
     <!-- Card Start -->
-    <v-container fluid style="background-color: #fff" class="ma-0 pa-0">
+    <v-container fluid style="max-width: 100% !important">
         <v-overlay :value="isLoaderActive" color="primary">
             <v-progress-circular
                 indeterminate
@@ -208,10 +208,10 @@
                 :loading="tableDataLoading"
                 :loading-text="tableLoadingDataText"
                 :server-items-length="totalItemsInDB"
-                :items-per-page="50"
+                :items-per-page="100"
                 @pagination="getAllTopic"
                 :footer-props="{
-                    itemsPerPageOptions: [50, 100, 150, 200, -1],
+                    itemsPerPageOptions: [100, 200, 300, -1],
                 }"
             >
                 <template v-slot:no-data>
@@ -242,6 +242,8 @@
                             class="pt-4 mx-1"
                             v-if="!tableDataLoading"
                             inset
+                            v-model="includeDelete"
+                            @change="getAllTopic"
                         ></v-switch>
 
                         <v-btn
@@ -385,7 +387,7 @@ export default {
                 {
                     text: this.$t("label_topic_code"),
                     value: "lms_topic_code",
-                    width: "10%",
+                    width: "20%",
                     sortable: false,
                 },
                 {
@@ -397,13 +399,13 @@ export default {
                 {
                     text: "Stream",
                     value: "lms_course_name",
-                    width: "20%",
+                    width: "15%",
                     sortable: false,
                 },
                 {
                     text: "Class",
                     value: "lms_child_course_name",
-                    width: "20%",
+                    width: "15%",
                     sortable: false,
                 },
                 {
@@ -444,7 +446,7 @@ export default {
             subjectItems: [],
             // For Add Department card
             isAddCardVisible: false,
-            includeDelete: "",
+            includeDelete: false,
 
             // For Excel Download
             excelFields: {
@@ -824,6 +826,7 @@ export default {
                     params: {
                         centerId: ls.get("loggedUserCenterId"),
                         searchText: this.searchText,
+                        includeDelete: this.includeDelete,
                         perPage:
                             e.itemsPerPage == -1
                                 ? this.totalItemsInDB

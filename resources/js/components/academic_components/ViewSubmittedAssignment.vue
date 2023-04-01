@@ -1,9 +1,8 @@
 <template>
-    <div style="background-color: #d7d8db; height:100%" id="app">
+    <div  id="app">
         <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+            fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
         >
             <!-- Card Start -->
             <v-overlay :value="isLoaderActive" color="primary">
@@ -13,6 +12,7 @@
                     color="primary"
                 ></v-progress-circular>
             </v-overlay>
+            <v-sheet class="pa-4 mb-4" color="text-white">
             <v-row class="ml-4 mr-4 pt-4">
                 <v-toolbar-title dark color="primary">
                     <v-list-item two-line>
@@ -29,8 +29,16 @@
                     </v-list-item>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
+                <v-btn
+                        color="primary"
+                        class="white--text"
+                       @click="showUserPage(null); "
+                    >
+                     Back
+                    <v-icon right dark> mdi-arrow-left </v-icon>
+              </v-btn>
             </v-row>
-
+            </v-sheet>
             <transition name="fade" mode="out-in">
                 <v-card>
                     <v-data-table
@@ -74,14 +82,34 @@
                                 }}</v-chip
                             >
                         </template>
+                        <template
+                                 v-slot:item.lms_submitted_assignment_document_path="{
+                                item
+                            }"
+                        >
+                            <v-btn
+                                                            icon
+                                                            @click="
+                                                                downloadAssignment(
+                                                                    item.lms_submitted_assignment_document_path
+                                                                )
+                                                            "
+                                                        >
+                                                            <v-icon
+                                                                color="success lighten-1"
+                                                                >mdi-download-circle</v-icon
+                                                            >
+                                                        </v-btn>
+                        </template>
 
                         <template v-slot:item.actions="{ item }">
                             <v-icon
-                            
-                                v-permission="'Edit Subject'"
-                                @click="viewAssignment(item)"
-                                >mdi-eye-outline</v-icon
-                            >
+                            v-if="item.lms_submitted_assignment_evaluation_status == 'Not Evaluated'"
+                            small
+                            color="error"
+                            @click="changeStatus(item)"
+                            >mdi-check-circle</v-icon
+                        >
                         </template>
                     </v-data-table>
                 </v-card>
@@ -104,6 +132,7 @@
 import SecureLS from "secure-ls";
 const ls = new SecureLS({ encodingType: "aes" });
 import DatetimePicker from "vuetify-datetime-picker";
+import { Global } from "../../components/helpers/global"
 //PDF Export
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -115,10 +144,11 @@ import VueMask from "v-mask";
 Vue.use(VueMask);
 
 export default {
-    props: ["userPermissionDataProps"],
+    props: ["userPermissionDataProps","assignmentDataProps"],
 
     data() {
         return {
+           
             isLoaderActive: false,
 
             authorizationConfig: "",
@@ -147,7 +177,7 @@ export default {
                 {
                     text: "Subject",
                     value: "lms_subject_name",
-                    width: "25%",
+                    width: "15%",
                     sortable: false
                 },
                 {
@@ -168,6 +198,7 @@ export default {
                     width: "10%",
                     sortable: false
                 },
+             
 
                 {
                     text: this.$t("label_status"),
@@ -177,11 +208,18 @@ export default {
                     sortable: false
                 },
                 {
+                    text: "Document",
+                    value: "lms_submitted_assignment_document_path",
+                    width: "10%",
+                    sortable: false
+                },
+                {
                     text: this.$t("label_actions"),
                     value: "actions",
                     sortable: false,
                     width: "20%",
                     align: "end"
+                    //yaha pe switch  hoga enable disable ka
                 }
             ]
         };
@@ -200,17 +238,105 @@ export default {
     },
 
     created() {
+  
         // Token Config
         this.authorizationConfig = {
             headers: { Authorization: "Bearer " + ls.get("token") }
         };
+
+      
     },
 
     methods: {
+             // Disable School Source
+             async changeStatus(item, $event) {
+            const result = await Global.showConfirmationAlert(
+                "Are you sure, to Confirm Evaluation of Assignment?",
+                
+            
+            );
+            if (result.isConfirmed) {
+                this.isLoaderActive = true;
+                this.$http
+                    .post(
+                        "web_evaluate_assignment",
+                        {
+                            centerId: ls.get("loggedUserCenterId"),
+                            assignmentId: item.lms_assignment_id,
+                            studentId: item.lms_student_id,
+                            loggedUserId: ls.get("loggedUserId"),
+                        },
+                        this.authorizationConfig
+                    )
+                    .then(({ data }) => {
+                        this.isLoaderActive = false;
+                        //User Unauthorized
+                        if (
+                            data.error == "Unauthorized" ||
+                            data.permissionError == "Unauthorized"
+                        ) {
+                            this.$store.dispatch("actionUnauthorizedLogout");
+                        } else {
+                            console.log(data.responseData);
+                            // School Source Disabled
+                            if (data.responseData == 1) {
+                                this.snackBarColor = "success";
+                                this.changeSnackBarMessage(
+                                    "Assignment Evaluated"
+                                );
+                              //  this.dialogAddSchool = false;
+                               
+                            }
+                            this.getAllAssignmentSubmittedByStudent(event);
+                           
+                        }
+                    })
+                    .catch((error) => {
+                        this.isLoaderActive = false;
+                        this.snackBarColor = "error";
+                        this.changeSnackBarMessage(
+                            this.$t("label_something_went_wrong")
+                        );
+                    });
+            }
+        },
+        showUserPage() {
+      this.$router.push({
+        name: "AssignmentView", 
+      });
+    },
+        downloadAssignment(imageUrl) {
+            console.log(imageUrl);
+            this.isLoaderActive = true;
+            this.downloadImageUrl = process.env.MIX_ASSIGNMENT_URL + imageUrl;
+            axios({
+                url: this.downloadImageUrl,
+                method: "GET",
+                responseType: "blob",
+                headers: {
+                    Authorization: "Bearer " + ls.get("token"),
+                },
+            })
+                .then((response) => {
+                    var fileURL = window.URL.createObjectURL(
+                        new Blob([response.data])
+                    );
+                    var fileLink = document.createElement("a");
+                    fileLink.href = fileURL;
+                    fileLink.setAttribute("download", imageUrl);
+
+                    document.body.appendChild(fileLink);
+                    fileLink.click();
+                    this.isLoaderActive = false;
+                })
+                .catch((error) => {
+                    this.isLoaderActive = true;
+                });
+        },
         // Get all Subject from DB
         getAllAssignmentSubmittedByStudent(e) {
+        //  console.log("Assigenment id is",this.assignmentDataProps.lms_assignment_id);
             this.tableDataLoading = true;
-
             this.$http
 
                 .get(`web_get_get_all_submitted_assignment?page=${e.page}`, {
@@ -218,11 +344,13 @@ export default {
                         perPage:
                             e.itemsPerPage == -1
                                 ? this.totalItemsInDB
-                                : e.itemsPerPage
+                                : e.itemsPerPage,
+                        assignmentId:this.assignmentDataProps.lms_assignment_id
                     },
                     headers: { Authorization: "Bearer " + ls.get("token") }
                 })
                 .then(({ data }) => {
+                    
                     this.tableDataLoading = false;
                     //User Unauthorized
                     if (
@@ -256,12 +384,12 @@ export default {
             else return "error";
         },
 
-        viewAssignment(item) {
-            this.$router.push({
-                name: "SubmittedAssignmentDetails",
-                params: { assignmentDataProps: item }
-            });
-        }
+    //    viewAssignment(item) {
+    //         this.$router.push({
+    //             name: "SubmittedAssignmentDetails",
+    //             params: { assignmentDataProps: item }
+    //         });
+    //      }
     }
 };
 </script>

@@ -1,6 +1,9 @@
 <template>
     <!-- Card Start -->
-    <v-container fluid class="pa-0">
+    <v-container
+        fluid
+        style="max-width: 100% !important;"
+    >
         <v-progress-linear
             :active="isDataProcessing"
             :indeterminate="isDataProcessing"
@@ -23,19 +26,15 @@
                 :items-per-page="100"
                 @pagination="getAllStudents"
                 :footer-props="{
-                    itemsPerPageOptions: [100, 200, 300, -1]
+                    itemsPerPageOptions: [100, 200, 300, -1],
                 }"
             >
                 <template v-slot:no-data>
-                    <p class="font-weight-black bold title" style="color:red">
+                    <p class="font-weight-black bold title" style="color: red">
                         {{ $t("label_no_data_found") }}
                     </p>
                 </template>
-                <template
-                    v-slot:item.lms_student_registration_type="{
-                        item
-                    }"
-                >
+                <template v-slot:item.lms_student_registration_type="{ item }">
                     <v-chip
                         x-small
                         :color="
@@ -175,45 +174,45 @@ export default {
                     text: this.$t("label_code"),
                     value: "lms_registration_code",
                     width: "10%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: this.$t("label_date"),
                     value: "lms_student_course_mapping_created_at",
                     width: "10%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: this.$t("label_name"),
                     value: "lms_student_full_name",
                     width: "25%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: this.$t("label_course"),
                     value: "lms_child_course_name",
                     width: "20%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: this.$t("label_mobile"),
                     value: "lms_student_mobile_number",
                     width: "10%",
-                    sortable: false
+                    sortable: false,
                 },
 
                 {
                     text: this.$t("label_batch_name"),
                     value: "lms_batch_code",
                     width: "10%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: this.$t("label_status"),
                     value: "lms_student_registration_type",
                     align: "end",
                     width: "5%",
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     text: this.$t("label_actions"),
@@ -221,8 +220,8 @@ export default {
                     sortable: false,
                     width: "5%",
                     align: "end",
-                    visible: "false"
-                }
+                    visible: "false",
+                },
             ],
             tableItems: [],
             isDataProcessing: false,
@@ -235,14 +234,14 @@ export default {
                 Date: "lms_student_course_mapping_created_at",
                 Name: "lms_student_full_name",
                 Mobile: "lms_student_mobile_number",
-                StudetId: "lms_student_code"
+                StudetId: "lms_student_code",
             },
             excelData: [],
             excelFileName:
                 "StudentListAsExcel" +
                 "_" +
                 moment().format("DD/MM/YYYY") +
-                ".xls"
+                ".xls",
         };
     },
     computed: {
@@ -250,9 +249,9 @@ export default {
         dataTableRowNumbering() {
             return this.tableItems.map((items, index) => ({
                 ...items,
-                index: index + 1
+                index: index + 1,
             }));
-        }
+        },
 
         //End
     },
@@ -260,7 +259,7 @@ export default {
     created() {
         // Token Config
         this.authorizationConfig = {
-            headers: { Authorization: "Bearer " + ls.get("token") }
+            headers: { Authorization: "Bearer " + ls.get("token") },
         };
 
         // Get all active sources
@@ -321,9 +320,9 @@ export default {
             this.$http
                 .get(`web_get_all_active_sources_without_pagination`, {
                     params: {
-                        centerId: ls.get("loggedUserCenterId")
+                        centerId: ls.get("loggedUserCenterId"),
                     },
-                    headers: { Authorization: "Bearer " + ls.get("token") }
+                    headers: { Authorization: "Bearer " + ls.get("token") },
                 })
                 .then(({ data }) => {
                     this.isSourceDataLoading = false;
@@ -337,7 +336,7 @@ export default {
                         this.sourceData = data;
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.isSourceDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
@@ -354,7 +353,7 @@ export default {
         viewStudentDetails(item) {
             this.$router.push({
                 name: "StudentDetails",
-                params: { studentDetailsDataProps: item }
+                params: { studentDetailsDataProps: item },
             });
         },
         // Get all Students from DB
@@ -369,7 +368,7 @@ export default {
                         e.itemsPerPage == -1
                             ? this.totalItemsInDB
                             : e.itemsPerPage,
-                    filterBy: this.selectedSource
+                    filterBy: this.selectedSource,
                 };
             } else {
                 postData = {
@@ -378,14 +377,14 @@ export default {
                         e.itemsPerPage == -1
                             ? this.totalItemsInDB
                             : e.itemsPerPage,
-                    filterBy: this.studentSearchCriteria
+                    filterBy: this.studentSearchCriteria,
                 };
             }
 
             this.$http
                 .get(`web_get_all_students_batch?page=${e.page}`, {
                     params: postData,
-                    headers: { Authorization: "Bearer " + ls.get("token") }
+                    headers: { Authorization: "Bearer " + ls.get("token") },
                 })
                 .then(({ data }) => {
                     this.tableDataLoading = false;
@@ -401,7 +400,7 @@ export default {
                         this.excelData = data.data;
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.tableDataLoading = false;
                     this.snackBarColor = "error";
                     this.changeSnackBarMessage(
@@ -424,23 +423,23 @@ export default {
                 columns: [
                     {
                         header: "Registration",
-                        dataKey: "lms_registration_code"
+                        dataKey: "lms_registration_code",
                     },
                     { header: "Name", dataKey: "lms_student_full_name" },
                     {
                         header: "Date",
-                        dataKey: "lms_student_course_mapping_created_at"
+                        dataKey: "lms_student_course_mapping_created_at",
                     },
                     {
                         header: "Mobile Number",
-                        dataKey: "lms_student_mobile_number"
+                        dataKey: "lms_student_mobile_number",
                     },
-                    { header: "Status", dataKey: "lms_student_is_active" }
+                    { header: "Status", dataKey: "lms_student_is_active" },
                 ],
                 body: this.tableItems,
                 //styles: { fillColor: [255, 0, 0] },
                 // columnStyles: { 0: { halign: 'center', fillColor: [0, 255, 0] } },
-                margin: { top: 10 }
+                margin: { top: 10 },
             });
             pdfDoc.save(
                 "StudentListAsPDF" +
@@ -448,8 +447,8 @@ export default {
                     moment().format("DD/MM/YYYY") +
                     ".pdf"
             );
-        }
-    }
+        },
+    },
 };
 </script>
 

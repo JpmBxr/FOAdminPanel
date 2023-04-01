@@ -200,11 +200,11 @@ class CourseModel extends Model
                 ->get();
             if ($getQuery->count() > 0) {
                 // Course Code Exists
-                if ($courseImageName != '') {
-                    if (file_exists(storage_path('app/public/course_images/' . $courseImageName))) {
-                        unlink(storage_path('app/public/course_images/' . $courseImageName));
-                    }
-                }
+            //    if ($courseImageName != '') {
+              //      if (file_exists(storage_path('app/public/course_images/' . $courseImageName))) {
+              //          unlink(storage_path('app/public/course_images/' . $courseImageName));
+              //      }
+             //   }
                 $result_data['responseData'] = "1";
             } else {
                 $updateQuery = DB::table('lms_child_course')
@@ -217,7 +217,7 @@ class CourseModel extends Model
                         'lms_child_course_description' => $childCourseDescription,
                         'lms_child_course_fees' => $childCourseFees,
                         'lms_child_course_duration' => $childCourseDuration,
-                        'lms_child_course_image' => $courseImageNameForEdit,
+                        'lms_child_course_image' => $courseImageName,
                         'lms_child_course_updated_at' => now(),
                         'lms_child_course_updated_by' => $loggedUserId,
                         'lms_child_course_is_online' => $lms_child_course_is_online,

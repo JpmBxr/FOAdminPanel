@@ -1,6 +1,10 @@
 <template>
+  <div id="app">
   <!-- Card Start -->
-  <v-container>
+  <v-container
+        fluid
+        style="background-color: #e4e8e4; max-width: 100% !important"
+        >
     <v-progress-linear
       :active="isDepartmentDataProcessing"
       :indeterminate="isDepartmentDataProcessing"
@@ -11,16 +15,21 @@
       background-color="primary lighten-3"
        striped
     ></v-progress-linear>
+    <v-sheet class="pa-4 mb-4" >
     <v-breadcrumbs :items="breadCrumbItem">
       <template v-slot:divider>
         <v-icon>mdi-forward</v-icon>
       </template>
     </v-breadcrumbs>
-    <v-row dense>
+    </v-sheet>
+    
+    <v-row 
+    
+     dense>
       <transition name="fade" mode="out-in">
         <v-col class="d-flex flex-column ml-2">
           <!-- Card Start -->
-          <v-card>
+          <v-card >
             <v-app-bar dark color="primary">
               <v-toolbar-title color="success">{{ $t('label_department') }}</v-toolbar-title>
               <v-spacer></v-spacer>
@@ -37,7 +46,11 @@
               </v-btn>
             </v-app-bar>
 
-            <v-container>
+            <v-container
+            fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
+        
+            >
               <v-card class="mx-auto" max-width="100%">
                 <v-data-table
                   dense
@@ -70,7 +83,6 @@
                   </template>
                   <template v-slot:top>
                     <v-toolbar flat>
-                      <v-toolbar-title>{{$t('label_department')}}</v-toolbar-title>
                       <v-spacer></v-spacer>
                       <v-btn icon small color="teal" v-if="!tableDataLoading">
                         <download-excel
@@ -179,6 +191,7 @@
       vertical="vertical"
     >{{ snackBarMessage }}</v-snackbar>
   </v-container>
+  </div>
 </template>
 <script>
 // Secure Local Storage

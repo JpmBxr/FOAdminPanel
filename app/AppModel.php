@@ -1728,16 +1728,17 @@ where lms_student_id=$studentId and result.lms_exam_schedule_id=$examScheduleId 
     }
 
     // To get notice
-    public function getNoticeList($roleId, $userId)
+    public function getNoticeList($roleId, $userId,$batchId)
     {
         $getQuery = DB::table("lms_notice")
 
-            ->leftJoin("lms_notice_read_notification", function ($join) use ($userId, $roleId) {
+            ->leftJoin("lms_notice_read_notification", function ($join) use ($userId, $roleId,$batchId) {
                 $join->on("lms_notice.lms_notice_id", "=", "lms_notice_read_notification.lms_notice_id")
                     ->where("lms_notice_read_notification.lms_user_id", "=", $userId);
 
             })
             ->whereRaw('FIND_IN_SET("' . $roleId . '",lms_notice.role_id)')
+            ->where('lms_notice.lms_batch_id','=',$batchId)
             ->where('lms_notice.lms_notice_is_active', '=', 1)
             ->select("lms_notice.lms_notice_id", "lms_notice.lms_notice_title",
                 "lms_notice.lms_notice_description", "lms_notice.lms_notice_type",
@@ -2186,10 +2187,10 @@ where lms_student_id=$studentId and result.lms_exam_schedule_id=$examScheduleId 
         $getQuery = DB::table('lms_batch_slot')
             ->leftJoin('lms_subject', 'lms_subject.lms_subject_id', '=', 'lms_batch_slot.lms_subject_id')
             ->where('lms_batch_slot.lms_batch_slot_is_active', '=', 1)
-            ->where('lms_batch_slot.lms_center_id', '=', $this->centerId)
+           // ->where('lms_batch_slot.lms_center_id', '=', $this->centerId)
             ->where('lms_batch_slot.lms_batch_id', '=', $batchId)
             ->where('lms_batch_slot.lms_batch_slot_day_text', '=', $slotDay)
-            ->where('lms_batch_slot.lms_user_id', '=', $userId)
+             ->where('lms_batch_slot.lms_user_id', '=', $userId)
 
             ->select([
                 'lms_batch_slot.lms_batch_slot_id',
@@ -2875,5 +2876,59 @@ and lms_youtube_video_playlist.playlist_status=1
        ->paginate();
   
         return $getQuery;
+      }
+
+      public function getAllFees($registrationId,$studentId){
+        $result = DB::table('lms_monthly_fee_generate')
+        ->select(
+            'lms_student.lms_user_id',
+            'lms_student.lms_student_id',
+            'lms_monthly_fee_generate.fee_id',
+            'lms_monthly_fee_generate.lms_student_reg_id',
+            'lms_monthly_fee_generate.lms_final_monthly_amount',
+            'lms_discount.description',
+            'lms_monthly_fee_generate.is_paid',
+            'lms_monthly_fee_generate.lms_fee_description',
+            'lms_fees_generate.lms_total_fee_discount',
+            'lms_fees_generate.lms_actual_fee',
+            'lms_student_course_mapping.lms_registration_id',
+            'lms_monthly_fee_generate.lms_receipt_no',
+            DB::raw("date_format(lms_monthly_fee_generate.lms_fees_date,'%b-%y') as lms_fees_date")
+        )
+        ->join('lms_fees_generate', 'lms_fees_generate.lms_student_id', '=', 'lms_monthly_fee_generate.lms_student_id')
+        ->join('lms_discount', 'lms_discount.lms_discount_id', '=', 'lms_fees_generate.lms_discount_id')
+        ->join('lms_student', 'lms_student.lms_student_id', '=', 'lms_monthly_fee_generate.lms_student_id')
+        ->join('lms_student_course_mapping', 'lms_student_course_mapping.lms_student_id', '=', 'lms_monthly_fee_generate.lms_student_id')
+        ->where('lms_monthly_fee_generate.lms_student_id', $studentId)
+        ->where('lms_student_course_mapping.lms_registration_id', $registrationId)
+    
+        ->get();
+
+    return $result;
+      }
+
+      public function getAllVoucher($registrationId,$studentId){
+        $result = DB::table('lms_issued_voucher')
+        ->select(
+            'lms_issued_voucher.issue_voucher_id',
+            'lms_issued_voucher.issue_voucher_number', 
+            'lms_issued_voucher.voucher_amount',
+            'lms_voucher_details.voucher_description',
+            'lms_issued_voucher.voucher_issue_status',
+            DB::raw("date_format(lms_issued_voucher.valid_from,'%b-%y') as valid_from"),
+            DB::raw("date_format(lms_issued_voucher.valid_to,'%b-%y') as valid_to"),
+            DB::raw("
+            (case when lms_issued_voucher.voucher_issue_status  = '3' then 'Expired'
+            when       lms_issued_voucher.voucher_issue_status  = '1' then 'Issued'
+            when       lms_issued_voucher.voucher_issue_status  = '2' then 'Redeemed'
+            ELSE 'Default' end) as 'voucher_issue_status'"),
+        )
+        ->join('lms_voucher_details', 'lms_voucher_details.voucher_id', '=', 'lms_issued_voucher.voucher_id')
+        ->join('lms_student_course_mapping', 'lms_student_course_mapping.lms_student_id', '=', 'lms_issued_voucher.student_id')
+        ->where('lms_issued_voucher.student_id','=', $studentId)
+        ->where('lms_student_course_mapping.lms_registration_id','=', $registrationId)
+        ->get();
+
+    return $result;
       }
 }

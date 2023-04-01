@@ -56,8 +56,14 @@ class TopicController extends Controller
     public function getAllTopic(Request $request)
     {
         $centerId = $request->centerId;
-        $perPage = $request->perPage ? $request->perPage : 50;
+        $perPage = $request->perPage ? $request->perPage : 100;
         $filterBy=$request->searchText;  
+        $includeDelete = $request->includeDelete;
+        if ($includeDelete == "false") {
+            $active = [1];
+        } else {
+            $active = [1, 0];
+        }
         $getData = DB::table("lms_topic")->
             leftJoin('lms_subject', 'lms_subject.lms_subject_id', '=', 'lms_topic.lms_subject_id')->
             leftJoin('lms_course', 'lms_course.lms_course_id', '=', 'lms_topic.lms_course_id')->
@@ -81,6 +87,7 @@ class TopicController extends Controller
                   
 
             })
+            ->whereIn('lms_topic.lms_topic_is_active', $active)
             ->orderBy('lms_topic.lms_topic_created_at','DESC')
             ->paginate($perPage);
         return $getData;

@@ -1,17 +1,9 @@
 <template>
     <div style=" margin:auto; padding:auto; width:1200px;" id="app">
-        <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
-        >
+        <v-container style="background-color: #fff" class="ma-4 pa-0" width="100%">
             <!-- Card Start -->
             <v-overlay :value="isLoaderActive" color="primary">
-                <v-progress-circular
-                    indeterminate
-                    size="64"
-                    color="primary"
-                ></v-progress-circular>
+                <v-progress-circular indeterminate size="64" color="primary"></v-progress-circular>
             </v-overlay>
             <!-- Details Start -->
             <v-card>
@@ -41,37 +33,25 @@
                             <v-card class="mx-auto" color="grey lighten-4 ma-4">
                                 <v-row class="ml-2">
                                     <v-col cols="12" md="2">
-                                        <v-list-item-avatar
-                                            color="grey darken-3"
-                                            rounded
-                                            size="100"
-                                        >
-                                            <img
-                                         
-                                                :src="
-                                                    buildCoverImages(
-                                                        buildProfileImage
-                                                    )
-                                                "
-                                                :lazy-src="
-                                                    buildCoverImages(
-                                                        buildProfileImage
-                                                    )
-                                                "
-                                            />
-                                
+                                        <v-list-item-avatar color="grey darken-3" rounded size="100">
+                                            <img :src="
+                                                buildCoverImages(
+                                                    buildProfileImage
+                                                )
+                                            " :lazy-src="
+    buildCoverImages(
+        buildProfileImage
+    )
+" />
+
                                         </v-list-item-avatar>
                                     </v-col>
                                     <v-col cols="12" md="10">
                                         <v-row dense>
                                             <v-col cols="12" md="12">
-                                                <span
-                                                    class="text-h4 font-weight-black text-uppercase"
-                                                    >{{
-                                                        lms_student_full_name
-                                                    }}</span
-                                                ></v-col
-                                            >
+                                                <span class="text-h4 font-weight-black text-uppercase">{{
+                                                    lms_student_full_name
+                                                }}</span></v-col>
                                         </v-row>
                                         <v-row dense>
                                             <v-col cols="12">
@@ -90,39 +70,20 @@
 
                                 <v-sheet color="transparent"> </v-sheet>
                             </v-card>
-                            <v-form
-                                ref="holdingFormUpdateStudent"
-                                v-model="isUpdateStudentHoldingFormValid"
-                                lazy-validation
-                            >
+                            <v-form ref="holdingFormUpdateStudent" v-model="isUpdateStudentHoldingFormValid"
+                                lazy-validation>
                                 <v-list-item class="grow">
-                                    <v-list-item-avatar
-                                        color="grey darken-3"
-                                        v-if="false"
-                                    >
-                                        <v-img
-                                            class="elevation-6"
-                                            alt=""
-                                            src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
-                                        ></v-img>
+                                    <v-list-item-avatar color="grey darken-3" v-if="false">
+                                        <v-img class="elevation-6" alt=""
+                                            src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"></v-img>
                                     </v-list-item-avatar>
-                                    <v-row
-                                        align="center"
-                                        justify="end"
-                                        class="mt-2"
-                                    >
+                                    <v-row align="center" justify="end" class="mt-2">
                                         <v-col cols="12" md="6" class="mt-2">
-                                            <v-text-field
-                                                regular
-                                                dense
-                                                v-model="firstName"
-                                                @keypress="isCharacters"
-                                                :rules="[
-                                                    v =>
-                                                        !!v ||
-                                                        $t('label_required')
-                                                ]"
-                                            >
+                                            <v-text-field regular dense v-model="firstName" @keypress="isCharacters" :rules="[
+                                                v =>
+                                                    !!v ||
+                                                    $t('label_required')
+                                            ]">
                                                 <template #label>
                                                     {{ $t("label_first_name") }}
                                                     <span class="red--text">
@@ -134,17 +95,11 @@
                                             </v-text-field>
                                         </v-col>
                                         <v-col cols="12" md="6" class="mt-2">
-                                            <v-text-field
-                                                regular
-                                                dense
-                                                v-model="lastName"
-                                                @keypress="isCharacters"
-                                                :rules="[
-                                                    v =>
-                                                        !!v ||
-                                                        $t('label_required')
-                                                ]"
-                                            >
+                                            <v-text-field regular dense v-model="lastName" @keypress="isCharacters" :rules="[
+                                                v =>
+                                                    !!v ||
+                                                    $t('label_required')
+                                            ]">
                                                 <template #label>
                                                     {{ $t("label_last_name") }}
                                                     <span class="red--text">
@@ -160,24 +115,14 @@
 
                                 <v-row dense class="mx-2">
                                     <v-col cols="12" md="6">
-                                        <v-text-field
-                                            regular
-                                            dense
-                                            v-model="fatherName"
-                                            @keypress="isCharactersWithSpace"
-                                        >
+                                        <v-text-field regular dense v-model="fatherName" @keypress="isCharactersWithSpace">
                                             <template #label>{{
                                                 $t("label_father_name")
                                             }}</template>
                                         </v-text-field>
                                     </v-col>
                                     <v-col cols="12" md="6">
-                                        <v-text-field
-                                            regular
-                                            dense
-                                            v-model="motherName"
-                                            @keypress="isCharactersWithSpace"
-                                        >
+                                        <v-text-field regular dense v-model="motherName" @keypress="isCharactersWithSpace">
                                             <template #label>{{
                                                 $t("label_mother_name")
                                             }}</template>
@@ -187,15 +132,9 @@
 
                                 <v-row dense class="mx-2">
                                     <v-col cols="12" md="4">
-                                        <v-select
-                                            regular
-                                            dense
-                                            v-model="selectedGender"
-                                            :items="genderItems"
-                                            :rules="[
-                                                v => !!v || $t('label_required')
-                                            ]"
-                                        >
+                                        <v-select regular dense v-model="selectedGender" :items="genderItems" :rules="[
+                                            v => !!v || $t('label_required')
+                                        ]">
                                             <template #label>
                                                 {{ $t("label_gender") }}
                                                 <span class="red--text">
@@ -207,12 +146,7 @@
                                         </v-select>
                                     </v-col>
                                     <v-col cols="12" md="4">
-                                        <v-select
-                                            regular
-                                            dense
-                                            v-model="selectedMaritalStatus"
-                                            :items="maritalStatusItems"
-                                        >
+                                        <v-select regular dense v-model="selectedMaritalStatus" :items="maritalStatusItems">
                                             <template #label>{{
                                                 $t("label_marital_status")
                                             }}</template>
@@ -220,30 +154,16 @@
                                     </v-col>
 
                                     <v-col cols="12" md="4">
-                                        <v-dialog
-                                            ref="dialogDOB"
-                                            v-model="modalDOB"
-                                            :return-value.sync="selectedDOB"
-                                            persistent
-                                            width="290px"
-                                        >
-                                            <template
-                                                v-slot:activator="{ on, attrs }"
-                                            >
-                                                <v-text-field
-                                                    regular
-                                                    dense
-                                                    v-model="selectedDOB"
-                                                    prepend-inner-icon="mdi-calendar"
-                                                    readonly
-                                                    v-bind="attrs"
-                                                    v-on="on"
+                                        <v-dialog ref="dialogDOB" v-model="modalDOB" :return-value.sync="selectedDOB"
+                                            persistent width="290px">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field regular dense v-model="selectedDOB"
+                                                    prepend-inner-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"
                                                     :rules="[
                                                         v =>
                                                             !!v ||
                                                             $t('label_required')
-                                                    ]"
-                                                >
+                                                    ]">
                                                     <template #label>
                                                         {{ $t("label_dob") }}
                                                         <span class="red--text">
@@ -254,29 +174,16 @@
                                                     </template>
                                                 </v-text-field>
                                             </template>
-                                            <v-date-picker
-                                                v-model="selectedDOB"
-                                                scrollable
-                                            >
+                                            <v-date-picker v-model="selectedDOB" scrollable>
                                                 <v-spacer></v-spacer>
-                                                <v-btn
-                                                    text
-                                                    color="primary"
-                                                    @click="modalDOB = false"
-                                                    >{{
-                                                        $t("label_cancel")
-                                                    }}</v-btn
-                                                >
-                                                <v-btn
-                                                    text
-                                                    color="primary"
-                                                    @click="
-                                                        $refs.dialogDOB.save(
-                                                            selectedDOB
-                                                        )
-                                                    "
-                                                    >{{ $t("label_ok") }}</v-btn
-                                                >
+                                                <v-btn text color="primary" @click="modalDOB = false">{{
+                                                    $t("label_cancel")
+                                                }}</v-btn>
+                                                <v-btn text color="primary" @click="
+                                                    $refs.dialogDOB.save(
+                                                        selectedDOB
+                                                    )
+                                                ">{{ $t("label_ok") }}</v-btn>
                                             </v-date-picker>
                                         </v-dialog>
                                     </v-col>
@@ -284,14 +191,8 @@
 
                                 <v-row dense class="mx-2">
                                     <v-col cols="12" md="4">
-                                        <v-text-field
-                                            regular
-                                            dense
-                                            v-model="contactNumber"
-                                            maxlength="10"
-                                            :counter="10"
-                                            @keypress="isDigit"
-                                            :rules="[
+                                        <v-text-field regular dense v-model="contactNumber" maxlength="10" :counter="10"
+                                            @keypress="isDigit" :rules="[
                                                 v =>
                                                     !!v ||
                                                     $t(
@@ -302,8 +203,7 @@
                                                     $t(
                                                         'label_mobile_number_10_digits'
                                                     )
-                                            ]"
-                                        >
+                                            ]">
                                             <template #label>
                                                 {{ $t("label_contact_number") }}
                                                 <span class="red--text">
@@ -315,39 +215,26 @@
                                         </v-text-field>
                                     </v-col>
                                     <v-col cols="12" md="4">
-                                        <v-text-field
-                                            regular
-                                            dense
-                                            v-model="whatsAppNumber"
-                                            :counter="10"
-                                            maxlength="10"
-                                            @keypress="isDigit"
-                                            :rules="mobileRules"
-                                        >
+                                        <v-text-field regular dense v-model="whatsAppNumber" :counter="10" maxlength="10"
+                                            @keypress="isDigit" :rules="mobileRules">
                                             <template #label>{{
                                                 $t("label_whatsapp")
                                             }}</template>
                                         </v-text-field>
                                     </v-col>
                                     <v-col cols="12" md="4">
-                                        <v-text-field
-                                            regular
-                                            dense
-                                            v-model="email"
-                                            type="email"
-                                            :rules="[
-                                                v =>
-                                                    !!v || $t('label_required'),
-                                                v =>
-                                                    !v ||
-                                                    /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
-                                                        v
-                                                    ) ||
-                                                    $t(
-                                                        'label_provide_valid_email'
-                                                    )
-                                            ]"
-                                        >
+                                        <v-text-field regular dense v-model="email" type="email" :rules="[
+                                            v =>
+                                                !!v || $t('label_required'),
+                                            v =>
+                                                !v ||
+                                                /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
+                                                    v
+                                                ) ||
+                                                $t(
+                                                    'label_provide_valid_email'
+                                                )
+                                        ]">
                                             <template #label>
                                                 {{ $t("label_email") }}
                                                 <span class="red--text">
@@ -359,29 +246,14 @@
                                         </v-text-field>
                                     </v-col>
                                     <v-col cols="12" md="3" v-if="false">
-                                        <v-file-input
-                                            v-model="selectedProfilePicture"
-                                            color="primary"
-                                            regular
-                                            dense
-                                            show-size
-                                            accept="image/*"
-                                            :rules="imageRule"
-                                        >
-                                            <template
-                                                v-slot:selection="{
-                                                    index,
-                                                    text
-                                                }"
-                                            >
-                                                <v-chip
-                                                    v-if="index < 2"
-                                                    color="primary"
-                                                    dark
-                                                    label
-                                                    small
-                                                    >{{ text }}</v-chip
-                                                >
+                                        <v-file-input v-model="selectedProfilePicture" color="primary" regular dense
+                                            show-size accept="image/*" :rules="imageRule">
+                                            <template v-slot:selection="{
+                                                index,
+                                                text
+                                            }">
+                                                <v-chip v-if="index < 2" color="primary" dark label small>{{ text
+                                                }}</v-chip>
                                             </template>
                                             <template #label>{{
                                                 $t("label_profile_image")
@@ -393,22 +265,14 @@
                                 <!-- New Row Start -->
                                 <v-row dense class="mx-2">
                                     <v-col cols="12" md="6">
-                                        <v-text-field
-                                            regular
-                                            dense
-                                            v-model="currentAddress"
-                                        >
+                                        <v-text-field regular dense v-model="currentAddress">
                                             <template #label>{{
                                                 $t("label_current_address")
                                             }}</template>
                                         </v-text-field>
                                     </v-col>
                                     <v-col cols="12" md="6">
-                                        <v-text-field
-                                            regular
-                                            dense
-                                            v-model="permanentAddress"
-                                        >
+                                        <v-text-field regular dense v-model="permanentAddress">
                                             <template #label>{{
                                                 $t("label_permanent_address")
                                             }}</template>
@@ -419,26 +283,41 @@
                                 <!-- New Row Start -->
                                 <v-row dense class="mx-2">
                                     <v-col cols="12" md="3">
-                                        <v-text-field
-                                            regular
-                                            dense
-                                            v-model="qualification"
-                                        >
+                                        <v-text-field  v-model="qualification">
                                             <template #label>{{
                                                 $t("label_qualification")
                                             }}</template>
                                         </v-text-field>
                                     </v-col>
                                     <v-col cols="12" md="3">
-                                        <v-text-field
-                                            regular
-                                            dense
-                                            v-model="workExperience"
-                                        >
+                                        <v-text-field  v-model="workExperience">
                                             <template #label>{{
                                                 $t("label_work_experience")
                                             }}</template>
                                         </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="3">
+                                        <v-text-field  readonly v-model="password_normal"
+                                            :append-icon="isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+                                            :type="isPasswordVisible ? 'text' : 'password'"
+                                            @click:append="isPasswordVisible = !isPasswordVisible">
+                                            <template #label>
+                                                Password
+                                            </template>
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="2" class="mx-10">
+                                        <v-switch  
+                                            
+                                            regular 
+                                            dense 
+                                            inset :label="
+                                            lms_is_user_logged
+                                                ? 'User Logged In'
+                                                : 'User Logged Out'
+                                        " v-model="lms_is_user_logged
+                                        " @change="loggedInStudentStatus(lms_is_user_logged)">
+                                        </v-switch>
                                     </v-col>
                                 </v-row>
                             </v-form>
@@ -446,35 +325,25 @@
                             <v-card-actions>
                                 <v-list-item class="grow">
                                     <v-row align="center" justify="start">
-                                        <v-switch
-                                            class="mx-2"
-                                            inset
-                                            :label="
-                                                lms_user_can_change_profile_image
-                                                    ? 'Profile Image Unlocked'
-                                                    : 'Profile Image Locked'
-                                            "
-                                            v-model="
-                                                lms_user_can_change_profile_image
-                                            "
-                                        >
+                                        <v-switch class="mx-2" inset :label="
+                                            lms_user_can_change_profile_image
+                                                ? 'Profile Image Unlocked'
+                                                : 'Profile Image Locked'
+                                        " v-model="
+    lms_user_can_change_profile_image
+">
                                         </v-switch>
                                     </v-row>
                                     <v-row align="center" justify="end">
-                                        <v-btn
-                                            color="primary"
-                                            :disabled="
-                                                !isUpdateStudentHoldingFormValid ||
-                                                    isStudentUpdateFormDataProcessing
-                                            "
-                                            @click="updateStudentDetails()"
-                                            >{{
-                                                isStudentUpdateFormDataProcessing ==
-                                                true
-                                                    ? $t("label_processing")
-                                                    : "Update Details"
-                                            }}</v-btn
-                                        >
+                                        <v-btn color="primary" :disabled="
+                                            !isUpdateStudentHoldingFormValid ||
+                                            isStudentUpdateFormDataProcessing
+                                        " @click="updateStudentDetails()">{{
+    isStudentUpdateFormDataProcessing ==
+    true
+    ? $t("label_processing")
+    : "Update Details"
+}}</v-btn>
                                     </v-row>
                                 </v-list-item>
                             </v-card-actions>
@@ -485,17 +354,10 @@
                         <v-card flat>
                             <v-card-text class="py-0">
                                 <v-timeline align-top dense>
-                                    <v-timeline-item
-                                        fill-dot
-                                        dark
-                                        color="orange"
-                                        large
-                                    >
+                                    <v-timeline-item fill-dot dark color="orange" large>
                                         <template v-slot:icon>
-                                            <span class="white--text text-h6"
-                                                >CR</span
-                                            > </template
-                                        ><v-row class="pt-1 white--black">
+                                            <span class="white--text text-h6">CR</span> </template><v-row
+                                            class="pt-1 white--black">
                                             <v-col cols="3">
                                                 <strong>Stream: </strong>
                                                 <strong>{{
@@ -515,19 +377,11 @@
                                                     lms_student_course_mapping_created_at
                                                 }}</strong>
                                             </v-col>
-                                        </v-row></v-timeline-item
-                                    >
-                                    <v-timeline-item
-                                        fill-dot
-                                        dark
-                                        color="cyan"
-                                        large
-                                    >
+                                        </v-row></v-timeline-item>
+                                    <v-timeline-item fill-dot dark color="cyan" large>
                                         <template v-slot:icon>
-                                            <span class="white--text text-h6"
-                                                >BT</span
-                                            > </template
-                                        ><v-row class="pt-1 white--black">
+                                            <span class="white--text text-h6">BT</span> </template><v-row
+                                            class="pt-1 white--black">
                                             <v-col cols="3">
                                                 <strong>Batch: </strong>
                                                 <strong>{{
@@ -547,15 +401,14 @@
                                                     lms_batch_mapping_date
                                                 }}</strong>
                                             </v-col>
-                                        </v-row></v-timeline-item
-                                    >
+                                        </v-row></v-timeline-item>
                                 </v-timeline>
                             </v-card-text>
                         </v-card>
                     </v-tab-item>
 
-                    <v-tab-item Exam
-                        ><StudentExamDetails :studentId="lms_student_id" />
+                    <v-tab-item Exam>
+                        <StudentExamDetails :studentId="lms_student_id" />
                     </v-tab-item>
                     <v-tab-item CourseWare>
                         <v-card flat>
@@ -565,43 +418,25 @@
 
                     <v-tab-item Attendance @click="getAttendanceDateWise">
                         <div class="text-center ma-4">
-                            <span class="mx-4"
-                                ><strong>
+                            <span class="mx-4"><strong>
                                     Name: {{ lms_student_full_name }}
-                                </strong></span
-                            >
-                            <span class="mx-4"
-                                ><strong>
+                                </strong></span>
+                            <span class="mx-4"><strong>
                                     Code: {{ lms_student_code }}
-                                </strong></span
-                            >
+                                </strong></span>
                         </div>
-                        <v-data-table
-                            dense
-                            :headers="tableHeaderStudent"
-                            :items="dataTableRowNumberingStudent"
-                            item-key="lms_attendance_Id"
-                            class="elevation-0 mt-4"
-                            :loading-text="tableLoadingDataText"
-                        >
+                        <v-data-table dense :headers="tableHeaderStudent" :items="dataTableRowNumberingStudent"
+                            item-key="lms_attendance_Id" class="elevation-0 mt-4" :loading-text="tableLoadingDataText">
                             <template v-slot:no-data>
-                                <p
-                                    class="font-weight-black bold title"
-                                    style="color: red"
-                                >
+                                <p class="font-weight-black bold title" style="color: red">
                                     No Student Found
                                 </p>
                             </template>
 
                             <template v-slot:item.AttendanceStatus="{ item }">
-                                <v-chip
-                                    x-small
-                                    :color="
-                                        getStatusColor(item.AttendanceStatus)
-                                    "
-                                    dark
-                                    >{{ item.AttendanceStatus }}</v-chip
-                                >
+                                <v-chip x-small :color="
+                                    getStatusColor(item.AttendanceStatus)
+                                " dark>{{ item.AttendanceStatus }}</v-chip>
                             </template>
                         </v-data-table>
                     </v-tab-item>
@@ -633,8 +468,9 @@ export default {
 
     data() {
         return {
+            isPasswordVisible: false,
             url: process.env.MIX_PROFILE_URL,
-            
+
             authorizationConfig: "",
             testProp: "Test",
             isLoaderActive: false,
@@ -654,7 +490,9 @@ export default {
             items: ["Basic Info", "Course", "Exam", "Courseware", "Attendance"],
             text: "",
             genderItems: ["Male", "Female", "Transgender"],
-        
+            lms_is_user_logged: this.studentDetailsDataProps != null
+                ? this.studentDetailsDataProps.lms_is_user_logged
+                : "",
             selectedDOB:
                 this.studentDetailsDataProps != null
                     ? this.studentDetailsDataProps.lms_enquiry_date_of_birth
@@ -709,6 +547,9 @@ export default {
                 this.studentDetailsDataProps != null
                     ? this.studentDetailsDataProps.lms_enquiry_qualification
                     : "",
+            password_normal: this.studentDetailsDataProps != null
+                ? this.studentDetailsDataProps.password_normal
+                : "",
             workExperience:
                 this.studentDetailsDataProps != null
                     ? this.studentDetailsDataProps.lms_enquiry_work_experience
@@ -724,7 +565,7 @@ export default {
             lms_student_course_mapping_created_at:
                 this.studentDetailsDataProps != null
                     ? this.studentDetailsDataProps
-                          .lms_student_course_mapping_created_at
+                        .lms_student_course_mapping_created_at
                     : "",
             lms_course_name:
                 this.studentDetailsDataProps != null
@@ -753,7 +594,7 @@ export default {
             lms_user_can_change_profile_image:
                 this.studentDetailsDataProps != null
                     ? this.studentDetailsDataProps
-                          .lms_user_can_change_profile_image
+                        .lms_user_can_change_profile_image
                     : false,
             lms_registration_code:
                 this.studentDetailsDataProps != null
@@ -763,19 +604,19 @@ export default {
                 this.studentDetailsDataProps != null
                     ? this.studentDetailsDataProps.lms_student_code
                     : "NA",
-                  lms_student_id:
-                  this.studentDetailsDataProps != null
+            lms_student_id:
+                this.studentDetailsDataProps != null
                     ? this.studentDetailsDataProps.lms_student_id
                     : "",
 
-             buildProfileImage :
-             this.studentDetailsDataProps.lms_student_profile_image!=null
-             ? this.studentDetailsDataProps.lms_student_profile_image:'',
-             
+            buildProfileImage:
+                this.studentDetailsDataProps.lms_student_profile_image != null
+                    ? this.studentDetailsDataProps.lms_student_profile_image : '',
 
-             profileImagesUrl:"",
-             altprofileImagesUrl:"",
-            
+
+            profileImagesUrl: "",
+            altprofileImagesUrl: "",
+
             tableItemsBatchWiseStudent: [],
             tableLoadingDataText: this.$t("label_loading_attendance_data"),
             tableHeaderStudent: [
@@ -836,6 +677,11 @@ export default {
         }
     },
     created() {
+        if (this.studentDetailsDataProps == null) {
+            this.$router.push({
+                name: "StudentDirectory",
+            });
+        }
         // Token Config
         this.authorizationConfig = {
             headers: { Authorization: "Bearer " + ls.get("token") }
@@ -852,6 +698,62 @@ export default {
         getStatusColor(is_course_active) {
             if (is_course_active == "Present") return "success";
             else return "error";
+        },
+        // Enable  Disable Logged In User Status
+        loggedInStudentStatus(lms_is_user_logged, $event) {
+            // console.log("sadsd",user)
+
+            this.isDataProcessing = true;
+            this.$http
+                .post(
+                    "web_get_logged_in_user_status",
+                    {
+
+                        status:
+                            lms_is_user_logged != '1' ? 0 : 1,
+                        staffUserId: this.lms_user_id
+                    },
+                    this.authorizationConfig
+                )
+                .then(({ data }) => {
+                    this.isDataProcessing = false;
+                    //User Unauthorized
+                    if (
+                        data.error == "Unauthorized" ||
+                        data.permissionError == "Unauthorized"
+                    ) {
+                        this.$store.dispatch("actionUnauthorizedLogout");
+                    } else {
+                        // Staff Status changed
+                        if (data.responseData == 1) {
+                            this.snackBarColor = "success";
+                            this.changeSnackBarMessage(
+                                "Successfully Changed Login Status"
+                            );
+
+                        }
+                        // Staff Status changed failed
+                        else if (data.responseData == 2) {
+                            this.snackBarColor = "error";
+                            this.changeSnackBarMessage(
+                                this.$t("label_something_went_wrong")
+                            );
+                        }
+                    }
+                })
+                .catch(error => {
+                    this.isDataProcessing = false;
+                    this.snackBarColor = "error";
+                    this.changeSnackBarMessage(
+                        this.$t("label_something_went_wrong")
+                    );
+                });
+
+        },
+        // Change Snack bar message
+        changeSnackBarMessage(data) {
+            this.isSnackBarVisible = true;
+            this.snackBarMessage = data;
         },
         //Get student attendance details
         getAttendanceDateWise() {
@@ -990,11 +892,11 @@ export default {
                 }
             }
         },
-     //#region [buildCoverImages]
-          buildCoverImages(images) {
-           
-            return images !='' 
-                ? this.profileImagesUrl+images
+        //#region [buildCoverImages]
+        buildCoverImages(images) {
+
+            return images != ''
+                ? this.profileImagesUrl + images
                 : this.altprofileImagesUrl;
         },
         //#endregion
@@ -1071,11 +973,12 @@ export default {
     background-color: blue;
 }
 
-.work-experiences > div {
+.work-experiences>div {
     margin: 2px 0;
     padding-bottom: 2px;
 }
-.work-experiences > div:not(:last-child) {
+
+.work-experiences>div:not(:last-child) {
     border-bottom: 0px solid rgb(206, 212, 218);
 }
 </style>

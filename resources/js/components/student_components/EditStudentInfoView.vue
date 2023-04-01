@@ -754,6 +754,11 @@ export default {
         }
     },
     created() {
+    //     if (this.enquiryDataProps == null) {
+    //       this.$router.push({
+    //           name: "StudentDirectory",
+    //       });
+    //   }
         console.log(this.studentDataProps);
         // Token Config
         this.authorizationConfig = {

@@ -1,31 +1,32 @@
 <template>
-    <div style="margin: auto; padding: auto; width: 1200px" id="app">
+    <div id="app">
         <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+            fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
         >
-            <v-row class="ml-4 mr-4 pt-4">
-                <v-toolbar-title dark color="primary">
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="text-h5">
-                                <strong>{{label_add_enquiry}}</strong>
-                            </v-list-item-title>
-                            <v-list-item-subtitle
-                                >{{ $t("label_home")
-                                }}<v-icon>mdi-forward</v-icon>
-                                {{ $t("label_enquiry") }}
-                                <v-icon>mdi-forward</v-icon>
-                                {{
-                                   label_add_enquiry
-                                }}</v-list-item-subtitle
-                            >
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-toolbar-title>
-                <v-spacer></v-spacer>
-            </v-row>
+            <v-sheet class="pa-4 mb-4" color="text-white">
+                <v-row class="ml-4 mr-4 pt-4">
+                    <v-toolbar-title dark color="primary">
+                        <v-list-item two-line>
+                            <v-list-item-content>
+                                <v-list-item-title class="text-h5">
+                                    <strong>{{ label_add_enquiry }}</strong>
+                                </v-list-item-title>
+                                <v-list-item-subtitle
+                                    >{{ $t("label_home")
+                                    }}<v-icon>mdi-forward</v-icon>
+                                    {{ $t("label_enquiry") }}
+                                    <v-icon>mdi-forward</v-icon>
+                                    {{
+                                        label_add_enquiry
+                                    }}</v-list-item-subtitle
+                                >
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-row>
+            </v-sheet>
             <v-overlay :value="alertMessage == ''" color="primary">
                 <v-progress-circular
                     indeterminate
@@ -171,7 +172,7 @@
                                             ]"
                                         >
                                             <template #label>
-                                                {{ $t("label_child_course") }}
+                                                Course/Class
                                                 <span class="red--text">
                                                     <strong>{{
                                                         $t("label_star")
@@ -524,7 +525,7 @@
                                             </template>
                                         </v-text-field>
                                     </v-col>
-                                 <v-col cols="12" md="3" v-if="false">
+                                    <v-col cols="12" md="3" v-if="false">
                                         <v-file-input
                                             v-model="selectedProfilePicture"
                                             color="primary"
@@ -553,7 +554,7 @@
                                                 $t("label_profile_image")
                                             }}</template>
                                         </v-file-input>
-                                    </v-col> 
+                                    </v-col>
                                 </v-row>
 
                                 <!-- New Row Start -->
@@ -636,8 +637,6 @@
                                 : $t("label_save")
                         }}</v-btn
                     >
-
-           
                 </v-stepper-content>
             </v-stepper>
 
@@ -820,10 +819,8 @@ export default {
                 this.enquiryDataProps != null
                     ? this.enquiryDataProps.lms_user_id
                     : "",
-           label_add_enquiry:
-                this.enquiryDataProps != null
-                    ? "Edit Enquiry"
-                    : "Add Enquiry",
+            label_add_enquiry:
+                this.enquiryDataProps != null ? "Edit Enquiry" : "Add Enquiry",
             isEnquiryBasicEdit: this.enquiryDataProps != null ? 1 : 0,
             whatsAppMobileRules: [],
             isUploadDocumentFormValid: true,
@@ -870,6 +867,11 @@ export default {
         },
     },
     created() {
+        //     if (this.enquiryDataProps == null) {
+        //       this.$router.push({
+        //           name: "EnquiryDirectory",
+        //       });
+        //   }
         console.log(this.enquiryDataProps);
         // Token Config
         this.authorizationConfig = {
@@ -1113,7 +1115,6 @@ export default {
         //Save basic info
         saveBasicInfo() {
             if (this.$refs.holdingFormBasic.validate()) {
-               
                 // Save/Edit Basic Info
                 this.authorizationConfig = {
                     headers: {
@@ -1263,22 +1264,20 @@ export default {
 
                             // Enquiry Saved
                             else if (data.responseData == 4) {
-                             
                                 this.snackBarColor = "success";
                                 this.changeSnackBarMessage(
-                                    this.$t("label_enquiry_details_saved")
+                                    "Enquiry Details Saved"
                                 );
                                 this.isEnquiryBasicEdit = 1;
                                 this.enquiryId = data.enquiryId;
                                 this.enquiryUserId = data.enquiryUserId;
                                 this.enquiryCode = data.enquiryCode;
 
-
-                                setTimeout(()=>{
+                                setTimeout(() => {
                                     this.$router.push({
-                                      name: "EnquiryDirectory",
-                                      });
-                                  },2000)
+                                        name: "EnquiryDirectory",
+                                    });
+                                }, 3000);
                                 // this.stepperInfo = 2;
                             }
                             // Enquiry save failed
@@ -1294,12 +1293,12 @@ export default {
                                 this.changeSnackBarMessage(
                                     this.$t("label_enquiry_details_updated")
                                 );
-                               
-                                setTimeout(()=>{
+
+                                setTimeout(() => {
                                     this.$router.push({
-                                      name: "EnquiryDirectory",
-                                      });
-                                  },2000)
+                                        name: "EnquiryDirectory",
+                                    });
+                                }, 2000);
                                 // this.stepperInfo = 2;
                             } else if (data.responseData == 7) {
                                 this.snackBarColor = "error";
@@ -1308,7 +1307,6 @@ export default {
                                 );
                             }
                         }
-                      
                     })
                     .catch((error) => {
                         this.isBasicFormDataProcessing = false;

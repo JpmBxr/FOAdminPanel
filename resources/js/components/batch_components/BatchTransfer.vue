@@ -1,6 +1,9 @@
 <template>
-  <div style="background-color: #d7d8db; height: 100%" id="app">
-    <v-container style="background-color: #fff" class="ma-4 pa-0" width="100%">
+  <div  id="app">
+    <v-container 
+           fluid
+            style="background-color: #e4e8e4; max-width: 100% !important"
+    >
       <!-- Card Start -->
       <v-overlay :value="isLoaderActive" color="primary">
         <v-progress-circular
@@ -9,6 +12,7 @@
           color="primary"
         ></v-progress-circular>
       </v-overlay>
+      <v-sheet class="pa-4 mb-4" color="text-white">
       <v-row class="ml-4 mr-4 pt-4">
         <v-toolbar-title dark color="primary">
           <v-list-item two-line>
@@ -36,7 +40,7 @@
           <v-icon right dark> mdi-plus </v-icon>
         </v-btn>
       </v-row>
-
+</v-sheet>
       <transition name="fade" mode="out-in">
         <v-col v-if="isAddCardVisible">
           <v-card class="mx-auto">

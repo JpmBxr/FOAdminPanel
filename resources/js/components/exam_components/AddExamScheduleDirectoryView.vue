@@ -1,6 +1,11 @@
 <template>
+  
   <!-- Card Start -->
-  <v-container fluid style="background-color: #fff" class="ma-0 pa-0">
+  <v-container 
+  fluid
+        style=" max-width: 100% !important"
+        
+  >
     <v-progress-linear
       :active="isDataProcessing"
       :indeterminate="isDataProcessing"
@@ -45,7 +50,7 @@
         </template>
         <template v-slot:top>
           <v-toolbar flat>
-            <v-row dense class="mx-2">
+            <v-row dense class="mx-2 mt-8">
               <v-col cols="12" md="5">
                 <v-select
                   v-model="selectedExamType"
@@ -318,6 +323,7 @@
     </v-dialog>
     <!-- View Exam Schedule Doalig End -->
   </v-container>
+
 </template>
 <script>
 // Secure Local Storage

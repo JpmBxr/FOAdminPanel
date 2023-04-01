@@ -1,16 +1,16 @@
 <template>
-    <div style=" margin:auto; padding: auto; width:1200px;" id="app">
+    <div id="app">
         <v-container
-            fluid
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+        fluid
+            style=" max-width: 100% !important"
+       
         >
-            <v-row dense>
+        <v-sheet class="pa-4 mb-4" color="text-white">
+            <v-row  dense>
                 <transition name="fade" mode="out-in">
                     <v-col class="d-flex flex-column ma-4">
                         <!-- Card Start -->
-                        <v-card elevation="0">
+                        <v-card width="100%" class="max-aoto" elevation="0">
                             <v-row class="mx-4 my-1">
                                 <v-toolbar-title dark color="primary">
                                     <v-list-item
@@ -53,7 +53,9 @@
                                     {{ $t("label_add_exam_schedule") }}
                                 </v-btn>
                             </v-row>
-                            <v-container fluid class="py-2 ma-0">
+                            <v-container 
+                                    fluid
+                                    style="max-width: 100% !important">
                                 <v-tabs v-model="tabs" class="d-flex flex-row">
                                     <v-tab> Live </v-tab>
 
@@ -80,6 +82,7 @@
                     </v-col>
                 </transition>
             </v-row>
+        </v-sheet>
         </v-container>
     </div>
 </template>

@@ -1,11 +1,11 @@
 <template>
-    <div style="background-color: #d7d8db; height: 100%" id="app">
+    <div id="app">
         <!-- Card Start -->
         <v-container
-            style="background-color: #fff"
-            class="ma-4 pa-0"
-            width="100%"
+        fluid
+        style="background-color: #e4e8e4; max-width: 100% !important"
         >
+        <v-sheet class="pa-4 mb-4" >
             <v-row class="ml-4 mr-4 pt-4">
                 <v-toolbar-title dark color="primary">
                     <v-list-item two-line>
@@ -37,7 +37,7 @@
                     Add New Prefix
                 </v-btn>
             </v-row>
-
+        </v-sheet>
             <transition name="fade" mode="out-in">
                 <v-card v-if="isAddCardVisible">
                     <v-app-bar dark color="grey" flat>
