@@ -167,23 +167,38 @@ class BatchController extends Controller
     //Get All Active Faculties without pagination
     public function getActiveFaculties(Request $request)
     {
-        $centerId = $request->centerId;
-
-        $getQuery = DB::table("lms_staff")->select(['lms_user_id', 'lms_staff_full_name'])
+      
+        $slotId=$request->slotId;
+        $slotDay=$request->lmsBatchSlotDay;
+         if($slotId!=null && $slotDay != null){
+                 $getQuery = DB::select('
+        SELECT * FROM lms_staff
+        where lms_staff_is_active=1 and role_id=3 
+        and lms_user_id not in (SELECT lms_batch_slot.lms_user_id FROM lms_batch_slot where slot_id=? and lms_batch_slot_day=?)',[$slotId,$slotDay]);
+        return $getQuery;
+         }
+         else{
+            $getQuery = DB::table("lms_staff")->select(['lms_user_id', 'lms_staff_full_name'])
             ->where('lms_staff_is_active', 1)
-            ->where('lms_center_id', $centerId)
             ->get();
         return $getQuery;
+
+         }
+   
+   
     }
     //Get All Active Slot Details without pagination
     public function getAllSlotDetailsByBatch(Request $request)
     {
         $centerId = $request->centerId;
         $lms_batch_id = $request->lms_batch_id;
-        $getQuery = DB::table("lms_batch_slot")->select([
+        $getQuery = DB::table("lms_batch_slot")
+        ->join('lms_time_slot_table','lms_time_slot_table.slot_id','lms_batch_slot.slot_id')
+        ->select([
             'lms_batch_slot_id', 'lms_batch_slot_start_time',
 
-            'lms_batch_slot_end_time', 'lms_batch_slot_day', 'lms_subject_id', 'lms_user_id'
+            'lms_batch_slot_end_time', 'lms_batch_slot_day', 'lms_subject_id', 'lms_user_id',
+            'lms_time_slot_table.slot_id', 'lms_time_slot_table.slot_name'
         ])
             ->where('lms_batch_slot_is_active', 1)
             ->where('lms_batch_id', $lms_batch_id)
@@ -509,4 +524,6 @@ class BatchController extends Controller
 
         return $getQuery;
     }
+
+ 
 }

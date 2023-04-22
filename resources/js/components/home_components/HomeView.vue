@@ -298,8 +298,29 @@
                                         v-text="labelTopic"
                                     ></v-list-item-title>
                                 </v-list-item-content>
-                            </v-list-item> </v-list-group
-                    ></template>
+                            </v-list-item> 
+                            
+                            <v-list-item
+                             
+                              
+                             to="/home/academics/routine"
+                             class="text-decoration-none mb-1"
+                             exact-active-class="primary"
+                             color="white"
+                             ><v-list-item-action> </v-list-item-action>
+                             <v-list-item-content>
+                                 <v-list-item-title
+                                     v-text="labelRoutine"
+                                 ></v-list-item-title>
+                             </v-list-item-content>
+                         </v-list-item>    
+                            
+                            
+                            </v-list-group
+                    >
+                
+                  
+                </template>
                     <!-- Academics End -->
 
                     <!-- Video Start -->
@@ -1144,6 +1165,7 @@ export default {
             labelChildCourse: this.$t("label_child_course"),
             labelSubject: this.$t("label_subject"),
             labelTopic: this.$t("label_topic"),
+            labelRoutine: "Batch Routine",
 
             // Form Data processing
             userPermissionData: null,

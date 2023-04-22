@@ -683,5 +683,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('web_get_all_items', 'IssueItemController@getAllItems')->name('web_get_all_items');
     Route::get('web_add_items', 'IssueItemController@itemadd')->name('web_add_items');
     Route::get('web_get_submitted_assignment', 'IssueItemController@itemadd')->name('web_add_items');
-
+    Route::get('web_get_current_day_routine', 'GenerateRoutineController@weekday')->name('web_get_current_day_routine');
+    Route::get('web_get_current_weekend_routine', 'GenerateRoutineController@weekend1')->name('web_get_current_weekend_routine');
+    Route::get('web_get_slot_time', 'GenerateRoutineController@getAllSlot')->name('getAllSlot');
+    Route::get('web_get_individual_slot_time', 'GenerateRoutineController@getIndividualSlot')->name('getIndividualSlot');
 });

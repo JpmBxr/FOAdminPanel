@@ -38,7 +38,6 @@ class PrefixModel extends Model
                     'lms_is_prefix_assigned'=>1,
                     'lms_prefix_updated_at'=>now(),
                     'lms_prefix_updated_by' => $loggedUserId,
-
                 ]);
         });
 

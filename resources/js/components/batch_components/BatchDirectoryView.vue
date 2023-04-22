@@ -15,8 +15,7 @@
             <v-sheet class="pa-4 mb-4" color="text-white">
                 <v-row
                     justify="space-around"
-                    style="
-                        margin-right: 1px !important;
+                    style="margin-right: 1px !important;
                         margin-left: -1px !important;
                     "
                     class="mb-4 mt-1"
@@ -178,6 +177,7 @@
                                         </v-datetime-picker>
                                     </template>
                                 </v-col>
+
                                 <v-col
                                     cols="12"
                                     xs="12"
@@ -198,6 +198,7 @@
                                         </v-datetime-picker>
                                     </template>
                                 </v-col>
+
                                 <v-col
                                     cols="12"
                                     xs="12"
@@ -225,6 +226,7 @@
                                     </v-text-field>
                                 </v-col>
                             </v-row>
+
                             <v-app-bar
                                 color="grey"
                                 elevation="0"
@@ -252,11 +254,32 @@
                                 class="work-experiences mx-auto mt-4"
                                 cols="12"
                             >
+                            <v-col cols="12" md="2">
+                                    <v-select
+                                        dense
+                                        label="Slot"
+                                        v-model="slot.slot_id"
+                                        :items="SlotItems"
+                                        :disabled="isSourceDataLoading"
+                                        item-text="slot_name"
+                                        item-value="slot_id"
+                                        @change="getAllSlotTime(slot.slot_id)"
+                                        :rules="[
+                                            (v) => !!v || $t('label_required'),
+                                        ]"
+                                    >
+                                    </v-select>
+                                </v-col>
+
                                 <v-col cols="12" md="2">
                                     <v-text-field
                                         v-mask="`##:##`"
                                         dense
                                         v-model="slot.lms_batch_slot_start_time"
+                                        :items="SlotTimeItems"
+                                        item-text="slot_start_time"
+                                        item-value="slot_id"
+                                        readonly
                                         :rules="[
                                             (v) => !!v || $t('label_required'),
                                         ]"
@@ -271,11 +294,16 @@
                                         </template>
                                     </v-text-field>
                                 </v-col>
+
                                 <v-col cols="12" md="2">
                                     <v-text-field
                                         v-mask="`##:##`"
                                         dense
                                         v-model="slot.lms_batch_slot_end_time"
+                                        :items="SlotTimeItems"
+                                        item-text="slot_end_time"
+                                        item-value="slot_id"
+                                        readonly
                                         :rules="[
                                             (v) => !!v || $t('label_required'),
                                         ]"
@@ -290,6 +318,7 @@
                                         </template>
                                     </v-text-field>
                                 </v-col>
+
                                 <v-col cols="12" md="2">
                                     <v-select
                                         dense
@@ -299,13 +328,15 @@
                                         :disabled="isSourceDataLoading"
                                         item-text="day"
                                         item-value="lms_batch_slot_day"
+                                        @change="getAllActiveFaculties(slot.lms_batch_slot_day,slot.slot_id)"
                                         :rules="[
                                             (v) => !!v || $t('label_required'),
                                         ]"
                                     >
                                     </v-select>
                                 </v-col>
-                                <v-col cols="12" md="3">
+
+                                <v-col cols="12" md="2">
                                     <v-select
                                         dense
                                         label="Subject"
@@ -320,6 +351,7 @@
                                     >
                                     </v-select>
                                 </v-col>
+
                                 <v-col cols="12" md="2">
                                     <v-select
                                         dense
@@ -738,6 +770,7 @@ export default {
             startDate: "",
             endDate: "",
             subjectDataLoading: false,
+            lms_batch_slot_start_time:"",
 
             timeProps: { useSeconds: true },
             textFieldProps: {
@@ -768,6 +801,9 @@ export default {
 
             courseItems: [],
             facultiesItems: [],
+            SlotItems: [],
+            SlotTimeItems: [],
+            slot_id: "",
             lms_user_id: "",
             // For Add Department card
             isAddCardVisible: false,
@@ -942,8 +978,9 @@ export default {
             slotDetails: [
                 {
                     lms_batch_slot_id: null,
-                    lms_batch_slot_start_time: "17:00",
-                    lms_batch_slot_end_time: "21:00",
+                    slot_id: null,
+                    lms_batch_slot_start_time: "",
+                    lms_batch_slot_end_time: "",
                     lms_batch_slot_day: 1,
                     lms_user_id: 2,
                     lms_subject_id: 1,
@@ -1001,8 +1038,10 @@ export default {
             headers: { Authorization: "Bearer " + ls.get("token") },
         };
         // Get Active Sources
+        this.getAllActiveSlot();
         this.getAllActiveCourses();
         this.getAllActiveFaculties();
+       
     },
 
     methods: {
@@ -1033,6 +1072,7 @@ export default {
         addSlot() {
             this.slotDetails.push({
                 lms_batch_slot_id: null,
+                slot_id: null,
                 lms_batch_slot_start_time: "",
                 lms_batch_slot_end_time: "",
                 lms_batch_slot_day: "",
@@ -1041,13 +1081,87 @@ export default {
         },
         //get all data including deleted data
 
+
+        // Get all active Slot
+        getAllActiveSlot() {
+            this.isSourceDataLoading = true;
+            this.$http
+                .get(`web_get_slot_time`, {
+                    params: {
+                        centerId: ls.get("loggedUserCenterId"),
+                    },
+                    headers: { Authorization: "Bearer " + ls.get("token") },
+                })
+                .then(({ data }) => {
+                    this.isSourceDataLoading = false;
+                    //User Unauthorized
+                    if (
+                        data.error == "Unauthorized" ||
+                        data.permissionError == "Unauthorized"
+                    ) {
+                        this.$store.dispatch("actionUnauthorizedLogout");
+                    } else {
+                        this.SlotItems = data;
+                    }
+                })
+                .catch((error) => {
+                    this.isSourceDataLoading = false;
+                    this.snackBarColor = "error";
+                    this.changeSnackBarMessage(
+                        this.$t("label_something_went_wrong")
+                    );
+                });
+        },
+
+        // getAllSlotTime
+        getAllSlotTime(slot) {
+            this.isSourceDataLoading = true;
+            this.$http
+                .get(`web_get_individual_slot_time`, {
+                    params: {
+                        centerId: ls.get("loggedUserCenterId"),
+                        slotId: slot
+                    },
+                    headers: { Authorization: "Bearer " + ls.get("token") },
+                })
+                .then(({ data }) => {
+                   
+                 
+                    this.isSourceDataLoading = false;
+                    //User Unauthorized
+                    if (
+                        data.error == "Unauthorized" ||
+                        data.permissionError == "Unauthorized"
+                    ) {
+                        this.$store.dispatch("actionUnauthorizedLogout");
+                    } else 
+                    {
+                       // this.slot.lms_batch_slot_start_time= data[0].slot_start_time;
+                        this.slotDetails[0].lms_batch_slot_start_time= data[0].slot_start_time;
+                        this.slotDetails[0].lms_batch_slot_end_time= data[0].slot_end_time;
+                        
+                    }
+                   
+                })
+                .catch((error) => {
+                 
+                    this.isSourceDataLoading = false;
+                    this.snackBarColor = "error";
+                    this.changeSnackBarMessage(
+                        this.$t("label_something_went_wrong")
+                    );
+                });
+        },
+
         // Get all active faculties
-        getAllActiveFaculties() {
+        getAllActiveFaculties(slotDay,slotId) {
             this.isSourceDataLoading = true;
             this.$http
                 .get(`web_get_all_active_faculties_without_pagination`, {
                     params: {
                         centerId: ls.get("loggedUserCenterId"),
+                        slotId: slotId,
+                        lmsBatchSlotDay: slotDay,
                     },
                     headers: { Authorization: "Bearer " + ls.get("token") },
                 })

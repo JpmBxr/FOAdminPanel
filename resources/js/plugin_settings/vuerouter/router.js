@@ -191,6 +191,15 @@ const router = new Router({
                         requiresAuth: true
                     }
                 },
+                {
+                    path: "academics/routine",
+                    component: require("../../components/academic_components/RoutineView.vue")
+                        .default,
+                    name: "RoutineView",
+                    meta: {
+                        requiresAuth: true
+                    }
+                },
                 // View Assignment
                 {
                     path: "academics/assignment",
